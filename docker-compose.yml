@@ -1,0 +1,63 @@
+# docker-compose.yml — Single-VPS deployment
+# Run: docker compose up -d
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rentalin-api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Default=${CONNECTIONSTRINGS__DEFAULT:-Data Source=/data/rentalin.db}
+      - Jwt__Secret=${JWT__SECRET}
+      - Cors__FrontendOrigin=${CORS__FRONTENDORIGIN:-http://localhost:3000}
+    volumes:
+      - rentalin_data:/data
+      - rentalin_uploads:/app/uploads
+    networks:
+      - rentalin_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: rentalin-frontend
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:5000}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - rentalin_net
+
+  nginx:
+    image: nginx:alpine
+    container_name: rentalin-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - rentalin_net
+
+volumes:
+  rentalin_data:
+  rentalin_uploads:
+
+networks:
+  rentalin_net:
+    driver: bridge

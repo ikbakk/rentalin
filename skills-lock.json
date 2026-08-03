@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "skills": {
+    "ai-app": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-app/SKILL.md",
+      "computedHash": "81ff260e0819163097c14b7d6ab4bd2b56b637159a7f975f98b150584562365f"
+    },
+    "ai-elements": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-elements/SKILL.md",
+      "computedHash": "adbaf684f4d23b6f0f61157b833563fb186a4a19bad12285871ec864e8c7de60"
+    },
+    "ai-sdk": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-sdk/SKILL.md",
+      "computedHash": "6d07db245e760ee32e8375b8c1120ff28d99ea9b6eb5b2ca38b97bd893b0146f"
+    },
+    "ai-sdk-6": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-sdk-6/SKILL.md",
+      "computedHash": "06cbf03ea6d41eaff661535a7dd091973ad46b58ece67192bf867c7361a76fba"
+    },
+    "ai-sdk-7": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-sdk-7/SKILL.md",
+      "computedHash": "18ea8df8c62a60fbdc03027a96ec13255fc57c204a8bddc0c9b8680d06fc2607"
+    },
+    "cache-components": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/cache-components/SKILL.md",
+      "computedHash": "3b40b164c675f55aba5401bb8664ffb1b288d87949728a9f2b82b03ac9117f35"
+    },
+    "checklist": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/checklist/SKILL.md",
+      "computedHash": "3a57bdc487fee05af500f59e0d84e9151539674969441bcb691270b630999d46"
+    },
+    "chrome-devtools": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/chrome-devtools/SKILL.md",
+      "computedHash": "7915780c28b0f7074d33d2c3835b676f743e97e6722ba91511eac7c75c039db4"
+    },
+    "clean-code": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/clean-code/SKILL.md",
+      "computedHash": "4d07b50fc9522f109fee4bf629ea586ba7019b8c1767d422e1bf30602db55aaa"
+    },
+    "code-reviewer": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/code-review/SKILL.md",
+      "computedHash": "3bf9bb2213116870d58b0a218899f1955516e3adf97c367a80728d45042ecbdb"
+    },
+    "create-adr": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/create-adr/SKILL.md",
+      "computedHash": "0a8364d4815101ae842b295e710988a55a601136920cdc9f4972383b27c55281"
+    },
+    "create-pr": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/create-pr/SKILL.md",
+      "computedHash": "58b06c2ffa087924b130c4beaea81d537eabbccbae9832ab92c34d6bc027b420"
+    },
+    "dotnet-csharp": {
+      "source": "novotnyllc/dotnet-artisan",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-artisan/skills/dotnet-csharp/SKILL.md",
+      "computedHash": "1dd7f86c7501025e0f3822a8b79e620ea735de597bcdcb1621535c02024f651e"
+    },
+    "frontend-design": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "dc0f58e1ab15ea6ce9e96b06a03746819050b5ad785d54bd2619cae9dafaf7d3"
+    },
+    "go": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/go/SKILL.md",
+      "computedHash": "6833cb80959ca1736abf62dfa2ab8f54f9d6db4ce86e25b15a2f86a668174144"
+    },
+    "handoff": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/handoff/SKILL.md",
+      "computedHash": "2d20584b5827c10a5cca25d011d2bf30b9c9d02aeaadc9e5b9919222d8031a8c"
+    },
+    "hetzner-cloud": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/hetzner-cloud/SKILL.md",
+      "computedHash": "5778d96e8ae13d7726fbe1e834af62b797ae421bfe029a080006d8f8bc75a840"
+    },
+    "migrate-radix-to-base": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-radix-to-base/SKILL.md",
+      "computedHash": "e1f2030ee5059be3dff0812ca0e4b995ee9fa3132176f049ebe6c90346a6755e"
+    },
+    "next-best-practices": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/next-best-practices/SKILL.md",
+      "computedHash": "d7d2faad22806e2947b8e18809d3548bd716917f8f6b5d7125dadabaf03ba013"
+    },
+    "nextjs-chatbot": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-chatbot/SKILL.md",
+      "computedHash": "30f5d0a1d588f5b2696f575bb841fd96c7a3b6b96c368a9272d59bed92d6e323"
+    },
+    "nextjs-seo": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-seo/SKILL.md",
+      "computedHash": "d34602e896a5e23d547feb7c9f97adf178d4c2e1515d722e35e8457edb0acf1d"
+    },
+    "nextjs-shadcn": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-shadcn/SKILL.md",
+      "computedHash": "15b2f834060ca3877a9bb83edf1a16d5ee743b631f0da8453c08ac301b4ecd34"
+    },
+    "openai-agents-sdk": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/openai-agents-sdk/SKILL.md",
+      "computedHash": "fc39f4672be762b968af8864ce0eeb4949ddcf9340530e283a542a174d881559"
+    },
+    "postgres-semantic-search": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/postgres-semantic-search/SKILL.md",
+      "computedHash": "1190d40144053a5e58cfd9ac790212b2debd0b312b639bfe786e130374002e90"
+    },
+    "react-best-practices": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "e9b981a1955b45dc34810e444c8f4e9555364110e1f80b952078d30ba6dccb76"
+    },
+    "shadcn": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "80a6226e78f6d1fe464214ae0ef449d49d8ffaa3e7704f011e9b418c678ad4d1"
+    },
+    "ship-changes": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ship-changes/SKILL.md",
+      "computedHash": "375fef949eae11b4d5696099da9227a1f2a99b7a2f33acf53dc252c3c4c37bb2"
+    },
+    "skill-creator": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/skill-creator/SKILL.md",
+      "computedHash": "e15f966e0a74a0c353a5080b0cabc3fba5eece9352d9bb14c36a7548423db7a7"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
+      "computedHash": "cd777a9c2ab54fd9ee266a3a661354d01d3ef00ab48fabcd8bc79601b43bcc15"
+    },
+    "ui": {
+      "source": "alexandru360/claude-skill-modular-monolith-reviewer",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui/SKILL.md",
+      "computedHash": "96f493ff9f02d3add6bc6c5350d6ab4106ea574c8ed37930c8eb95e85c12a8fe"
+    },
+    "web-design-guidelines": {
+      "source": "laguagu/claude-code-nextjs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "babe14475a262e56ebc74add69067b82e8c2e34c6d7c09ebf079f98f16827b39"
+    }
+  }
+}

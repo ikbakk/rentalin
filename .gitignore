@@ -1,0 +1,40 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+*.user
+*.suo
+*.sln.docstates
+*.db
+*.db-shm
+*.db-wal
+
+# Node
+node_modules/
+.next/
+out/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Skills (generated, in .agents/)
+.agents/
+
+# Impeccable (generated)
+.impeccable/
+
+# AI agent configs
+.omo/
+.opencode/

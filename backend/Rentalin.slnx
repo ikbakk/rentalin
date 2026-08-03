@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Rentalin.Api/Rentalin.Api.csproj" />
+    <Project Path="src/Rentalin.Core/Rentalin.Core.csproj" />
+    <Project Path="src/Rentalin.Fleet/Rentalin.Fleet.csproj" />
+    <Project Path="src/Rentalin.Infrastructure/Rentalin.Infrastructure.csproj" />
+    <Project Path="src/Rentalin.Inspections/Rentalin.Inspections.csproj" />
+    <Project Path="src/Rentalin.Reservations/Rentalin.Reservations.csproj" />
+    <Project Path="src/Rentalin.Timeline/Rentalin.Timeline.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Rentalin.Domain.Tests/Rentalin.Domain.Tests.csproj" />
+    <Project Path="tests/Rentalin.Integration.Tests/Rentalin.Integration.Tests.csproj" />
+  </Folder>
+</Solution>
