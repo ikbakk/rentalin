@@ -38,6 +38,24 @@ services:
     networks:
       - rentalin_net
 
+  landing:
+    build:
+      context: ./landing
+      dockerfile: Dockerfile
+    container_name: rentalin-landing
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=4321
+    networks:
+      - rentalin_net
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4321/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   nginx:
     image: nginx:alpine
     container_name: rentalin-nginx
@@ -51,6 +69,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - landing
     networks:
       - rentalin_net
 
