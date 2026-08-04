@@ -1,0 +1,154 @@
+---
+import ClientSplitText from '../components/ClientSplitText.astro';
+import ClientBlurText from '../components/ClientBlurText.astro';
+
+const proofs = [
+  {
+    num: '01',
+    title: 'Works offline',
+    desc: 'Patchy signal? No problem. Every critical flow works without a connection.',
+    numClass: 'text-primary'
+  },
+  {
+    num: '02',
+    title: 'One-handed use',
+    desc: 'Designed for staff on their feet — every action within three taps, one thumb.',
+    numClass: 'text-accent'
+  },
+  {
+    num: '03',
+    title: 'Sunlight-readable',
+    desc: 'High-contrast UI that stays legible in harsh midday glare.',
+    numClass: 'text-primary'
+  }
+];
+---
+
+<section id="indonesia" class="relative py-24 lg:py-32 overflow-hidden">
+  <!-- Jakarta street-grid backdrop — subtle, typographic, no stock photography -->
+  <div class="street-grid pointer-events-none absolute inset-0 opacity-[0.35]" aria-hidden="true"></div>
+
+  <div class="relative max-w-6xl mx-auto px-4 lg:px-8">
+    <div class="max-w-2xl">
+      <ClientSplitText
+        text="Built for Indonesia. Tested in the sun."
+        tag="h2"
+        className="text-3xl lg:text-5xl font-bold font-heading tracking-tight"
+      />
+      <ClientBlurText
+        text="Rental shops are loud, bright, and fast-moving. Rentalin was designed for that reality."
+        className="text-muted-foreground text-lg mt-4"
+      />
+    </div>
+
+    <div class="reveal-group grid gap-10 md:grid-cols-3 mt-16 lg:mt-20">
+      {
+        proofs.map((proof, i) => (
+          <div class:list={[`reveal-child`, `stagger-${i + 1}`]}>
+            <div
+              class:list={[
+                'proof-num',
+                proof.numClass,
+                'text-5xl lg:text-6xl font-mono font-bold'
+              ]}
+              aria-hidden="true"
+            >
+              {proof.num}
+            </div>
+            <h3 class="proof-title font-heading text-xl font-semibold mt-4">
+              {proof.title}
+            </h3>
+            <p class="proof-desc text-sm text-muted-foreground mt-2 max-w-xs text-pretty">
+              {proof.desc}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Street-grid: two repeating gradients = the Jakarta block grid. Masked to a soft radial
+     so the pattern breathes out at the edges instead of hard-cutting. */
+  .street-grid {
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 48px, var(--border) 48px 49px),
+      repeating-linear-gradient(90deg, transparent 0 48px, var(--border) 48px 49px);
+    -webkit-mask-image: radial-gradient(
+      ellipse 90% 80% at 50% 40%,
+      black 25%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 25%, transparent 100%);
+  }
+
+  @keyframes proof-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Scroll-triggered sequence: children hold at the hidden frame (paused) until the
+     section scrolls into view, then play with the system stagger delays. */
+  .reveal-child,
+  .proof-title,
+  .proof-desc {
+    animation: proof-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-play-state: paused;
+    will-change: transform, opacity;
+  }
+
+  .reveal-group.is-revealed .reveal-child,
+  .reveal-group.is-revealed .proof-title,
+  .reveal-group.is-revealed .proof-desc {
+    animation-play-state: running;
+  }
+
+  /* Inner sequence: number lands first, then title, then description. */
+  .proof-title {
+    animation-delay: 120ms;
+  }
+  .proof-desc {
+    animation-delay: 200ms;
+  }
+</style>
+
+<noscript>
+  <style>
+    .reveal-child,
+    .proof-title,
+    .proof-desc {
+      animation-play-state: running;
+    }
+  </style>
+</noscript>
+
+<script>
+  const group = document.querySelector('.reveal-group');
+  if (group) {
+    const reveal = () => group.classList.add('is-revealed');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!('IntersectionObserver' in window) || reduceMotion) {
+      reveal();
+    } else {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              reveal();
+              io.disconnect();
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      io.observe(group);
+    }
+  }
+</script>

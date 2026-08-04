@@ -1,0 +1,80 @@
+---
+import { ArrowRight, MessageCircle } from 'lucide-react';
+import ClientAurora from '../components/ClientAurora.astro';
+import ClientBlurText from '../components/ClientBlurText.astro';
+---
+
+<section class="relative overflow-hidden py-24 lg:py-36">
+  <!-- Atmosphere bleed: aurora mist at the top edge only, masked so it never obscures the CTA -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 z-0 h-64 opacity-40" aria-hidden="true">
+    <ClientAurora colorStops={['#5227FF', '#e6a817', '#22c55e']} />
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-transparent" />
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-4xl px-4 text-center lg:px-8">
+    <ClientBlurText
+      text="Start your rental business today."
+      className="text-4xl lg:text-6xl font-bold font-heading tracking-tight"
+    />
+
+    <ClientBlurText
+      text="Every rental business gets a personalized booking link — your customers book through your-brand.rentalin.id."
+      className="text-muted-foreground text-lg mt-6"
+    />
+
+    <!-- Personalized booking link demo (illustrative) -->
+    <div class="mt-8 flex justify-center">
+      <div
+        class="link-glow inline-flex max-w-full items-center gap-3 rounded-full border border-primary/40 px-6 py-3 font-mono text-sm shadow-[0_0_24px_-6px_var(--primary)] transition-colors hover:border-primary sm:text-base"
+      >
+        <span class="size-2 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+        <span class="min-w-0 truncate">your-brand.rentalin.id</span>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a
+        href="/login"
+        class="inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-8 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        Get Started
+        <ArrowRight class="size-5" />
+      </a>
+      <a
+        href="/login"
+        class="inline-flex h-12 items-center rounded-lg border border-border px-8 font-semibold text-foreground transition-colors hover:border-primary"
+      >
+        Staff Login
+      </a>
+    </div>
+
+    <!-- Closing footer — this section ends the page -->
+    <footer class="mt-12 border-t border-border/60 pt-8">
+      <p class="text-xs text-muted-foreground">© 2026 Rentalin. All rights reserved.</p>
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+        <a href="/login" class="transition-colors hover:text-foreground">Get Started</a>
+        <a href="/login" class="transition-colors hover:text-foreground">Staff Login</a>
+        <span class="inline-flex items-center gap-1.5">
+          <MessageCircle class="size-3.5" />
+          WhatsApp support
+        </span>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<style>
+  .link-glow {
+    animation: link-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes link-glow {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.82;
+    }
+  }
+</style>
