@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" fill="none">
+  <!-- Inspection Checklists — electric green Camera with viewfinder corner brackets + before/after frames -->
+  <rect width="400" height="300" fill="oklch(0.15 0.008 280)"/>
+  <rect x="1.5" y="1.5" width="397" height="297" rx="13" stroke="oklch(0.24 0.008 280)" stroke-width="1.5"/>
+
+  <!-- ambient ring -->
+  <circle cx="200" cy="142" r="80" stroke="oklch(0.70 0.20 145)" stroke-opacity="0.06" stroke-width="1.5"/>
+
+  <!-- lucide Camera icon (24x24 scaled 3.2x) -->
+  <g transform="translate(161.6 110.6) scale(3.2)" stroke="oklch(0.70 0.20 145)" stroke-width="0.62" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/>
+    <circle cx="12" cy="13" r="3"/>
+  </g>
+
+  <!-- viewfinder corner brackets -->
+  <g stroke="oklch(0.70 0.20 145)" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round">
+    <path d="M26 42V28a4 4 0 0 1 4-4h14"/>
+    <path d="M374 42V28a4 4 0 0 0-4-4h-14"/>
+    <path d="M26 202v14a4 4 0 0 0 4 4h14"/>
+    <path d="M374 202v14a4 4 0 0 1-4 4h-14"/>
+  </g>
+
+  <!-- before / after photo frames -->
+  <rect x="160" y="182" width="36" height="26" rx="5" fill="none" stroke="oklch(0.70 0.20 145)" stroke-opacity="0.8" stroke-width="1.5"/>
+  <rect x="204" y="182" width="36" height="26" rx="5" fill="oklch(0.70 0.20 145)" fill-opacity="0.22"/>
+</svg>

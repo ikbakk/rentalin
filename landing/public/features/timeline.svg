@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" fill="none">
+  <!-- Timeline Audit Trail — neutral Activity pulse over a timeline node track -->
+  <rect width="400" height="300" fill="oklch(0.15 0.008 280)"/>
+  <rect x="1.5" y="1.5" width="397" height="297" rx="13" stroke="oklch(0.24 0.008 280)" stroke-width="1.5"/>
+
+  <!-- ambient ring -->
+  <circle cx="200" cy="140" r="80" stroke="oklch(0.60 0.008 280)" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- lucide Activity icon (24x24 scaled 3.2x) -->
+  <g transform="translate(161.6 108.6) scale(3.2)" stroke="oklch(0.92 0.002 280)" stroke-opacity="0.9" stroke-width="0.62" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>
+  </g>
+
+  <!-- timeline track -->
+  <line x1="40" y1="198" x2="360" y2="198" stroke="oklch(0.24 0.008 280)" stroke-width="2"/>
+
+  <!-- timeline nodes: logged events, middle one settled (amber) -->
+  <circle cx="110" cy="198" r="4" fill="none" stroke="oklch(0.60 0.008 280)" stroke-width="1.5"/>
+  <circle cx="200" cy="198" r="5" fill="oklch(0.75 0.18 85)"/>
+  <circle cx="290" cy="198" r="4" fill="none" stroke="oklch(0.60 0.008 280)" stroke-width="1.5"/>
+
+  <!-- tick marks -->
+  <path d="M60 194v8M160 194v8M240 194v8M340 194v8" stroke="oklch(0.24 0.008 280)" stroke-width="2" stroke-linecap="round"/>
+</svg>

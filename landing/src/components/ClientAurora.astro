@@ -1,0 +1,21 @@
+---
+import Aurora from './Aurora';
+
+interface Props {
+  colorStops?: string[];
+  amplitude?: number;
+  blend?: number;
+  time?: number;
+  speed?: number;
+}
+
+const {
+  colorStops = ['#5227FF', '#7cff67', '#5227FF'],
+  amplitude = 1.0,
+  blend = 0.5,
+  time,
+  speed
+}: Props = Astro.props;
+---
+
+<Aurora colorStops={colorStops} amplitude={amplitude} blend={blend} time={time} speed={speed} client:load />

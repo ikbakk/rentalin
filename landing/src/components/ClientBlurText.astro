@@ -1,0 +1,21 @@
+---
+import BlurText from './BlurText';
+
+interface Props {
+  text?: string;
+  className?: string;
+  animateBy?: 'words' | 'letters';
+  direction?: 'top' | 'bottom';
+  delay?: number;
+}
+
+const {
+  text = '',
+  className = '',
+  animateBy = 'words',
+  direction = 'top',
+  delay = 200
+}: Props = Astro.props;
+---
+
+<BlurText text={text} className={className} animateBy={animateBy} direction={direction} delay={delay} client:load />

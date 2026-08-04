@@ -1,0 +1,21 @@
+---
+import SplitText from './SplitText';
+
+interface Props {
+  text: string;
+  className?: string;
+  splitType?: 'chars' | 'words' | 'lines' | 'words, chars';
+  delay?: number;
+  duration?: number;
+}
+
+const {
+  text,
+  className = '',
+  splitType = 'chars',
+  delay = 50,
+  duration = 1.25
+}: Props = Astro.props;
+---
+
+<SplitText text={text} className={className} splitType={splitType} delay={delay} duration={duration} client:load />
