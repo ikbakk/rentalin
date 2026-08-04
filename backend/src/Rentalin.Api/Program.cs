@@ -18,6 +18,7 @@ using Rentalin.Maintenance.Api.Endpoints;
 using Rentalin.Maintenance.Domain.Entities;
 using Rentalin.Infrastructure.Extensions;
 using Rentalin.Infrastructure.Services;
+using Rentalin.Inspections.Domain.Entities;
 using Rentalin.Reservations.Domain.Entities;
 using Rentalin.Timeline.Domain.Entities;
 using Serilog;
@@ -45,6 +46,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<In
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<TimelineEntry>());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<DamageRecord>());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<MaintenanceRecord>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Inspection>());
 builder.Services.AddOpenApi();
 
 // ── CORS ────────────────────────────────────────────────────

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Rentalin.Core\Rentalin.Core.csproj" />
     <ProjectReference Include="..\Rentalin.Fleet\Rentalin.Fleet.csproj" />
+    <ProjectReference Include="..\Rentalin.Inspections\Rentalin.Inspections.csproj" />
     <ProjectReference Include="..\Rentalin.Timeline\Rentalin.Timeline.csproj" />
   </ItemGroup>
 
