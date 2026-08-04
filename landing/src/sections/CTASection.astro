@@ -2,6 +2,7 @@
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import ClientAurora from '../components/ClientAurora.astro';
 import ClientBlurText from '../components/ClientBlurText.astro';
+import { DEMO_WA_LINK } from '../lib/contact';
 ---
 
 <section class="relative overflow-hidden py-24 lg:py-36">
@@ -34,10 +35,12 @@ import ClientBlurText from '../components/ClientBlurText.astro';
 
     <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
       <a
-        href="/login"
+        href={DEMO_WA_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
         class="inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-8 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
       >
-        Get Started
+        Book a Demo
         <ArrowRight class="size-5" />
       </a>
       <a
@@ -52,12 +55,12 @@ import ClientBlurText from '../components/ClientBlurText.astro';
     <footer class="mt-12 border-t border-border/60 pt-8">
       <p class="text-xs text-muted-foreground">© 2026 Rentalin. All rights reserved.</p>
       <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-        <a href="/login" class="transition-colors hover:text-foreground">Get Started</a>
+        <a href={DEMO_WA_LINK} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-foreground">Book a Demo</a>
         <a href="/login" class="transition-colors hover:text-foreground">Staff Login</a>
-        <span class="inline-flex items-center gap-1.5">
+        <a href={DEMO_WA_LINK} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
           <MessageCircle class="size-3.5" />
           WhatsApp support
-        </span>
+        </a>
       </div>
     </footer>
   </div>

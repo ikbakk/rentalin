@@ -1,8 +1,9 @@
 ---
-import { Car } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import ClientAurora from '../components/ClientAurora.astro';
 import ClientSplitText from '../components/ClientSplitText.astro';
 import ClientBlurText from '../components/ClientBlurText.astro';
+import { DEMO_WA_LINK } from '../lib/contact';
 
 const trustSignals = [
   'For rental businesses with 1\u201350 vehicles',
@@ -38,11 +39,13 @@ const trustSignals = [
 
       <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
         <a
-          href="/login"
+          href={DEMO_WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
           class="inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-8 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
-          <Car class="size-5" />
-          Start Your Rental Business
+          <MessageCircle class="size-5" />
+          Book a Demo
         </a>
         <a
           href="/login"

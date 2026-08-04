@@ -177,9 +177,10 @@ Sections in `landing/src/sections/`, rendered in order by
 - **Hero.astro**: full-viewport open (`min-h-dvh`, centered content). Layer 1:
   Aurora plus a readability gradient (`from-background/70 via-transparent
   to-background`). Layer 2: badge pill ("Operational tool, not a marketplace", mono, `border-primary/40 bg-background/40 text-primary`),
-  SplitText H1, BlurText subheadline, two CTAs (solid `bg-primary` / outline
-  `border-border hover:border-primary`, both to `/login`), and a trust-signal
-  row of three claims each with an amber dot.
+  SplitText H1, BlurText subheadline, two CTAs (solid `bg-primary` "Book a
+  Demo" → the WhatsApp demo link from `src/lib/contact.ts`, opened in a new
+  tab / outline `border-border hover:border-primary` "Staff Login" →
+  `/login`), and a trust-signal row of three claims each with an amber dot.
 - **OperationalFlow.astro**: `id="operational-flow"`. The four-stage pipeline
   Inquiry, Reservation, Handover, Return as TiltedCards. Each card's artwork
   is a data-URI SVG composed from locked palette literals: tinted plate,
@@ -208,8 +209,10 @@ Sections in `landing/src/sections/`, rendered in order by
   (`h-64 opacity-40`, masked by a gradient) so it never obscures the CTA.
   BlurText headline and subhead, then a booking-link demo
   (`your-brand.rentalin.id` in mono, `border-primary/40`, a 3s
-  `link-glow` opacity pulse and a soft `--primary` shadow), two CTAs to
-  `/login`, and a footer with the 2026 copyright line and links.
+  `link-glow` opacity pulse and a soft `--primary` shadow), two CTAs ("Book a
+  Demo" → the WhatsApp demo link, "Staff Login" → `/login`), and a footer with
+  the 2026 copyright line and links (including the same WhatsApp demo link on
+  the "Book a Demo" and "WhatsApp support" entries).
 
 ## 7. Bans
 
