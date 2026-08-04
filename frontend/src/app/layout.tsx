@@ -10,8 +10,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Rentalin",
-  description: "Vehicle rental operations",
+  title: "Rentalin — Workspace",
+  description: "Vehicle rental operations workspace",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
