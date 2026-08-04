@@ -1,0 +1,52 @@
+---
+import TiltedCard from './TiltedCard';
+
+// NOTE: Astro props cannot easily pass ReactNode (overlayContent). For the same
+// reason showMobileWarning/showTooltip default to false here so the wrapper only
+// renders the image card. Use displayOverlayContent={false} (default).
+interface Props {
+  imageSrc?: string;
+  altText?: string;
+  captionText?: string;
+  containerHeight?: string;
+  containerWidth?: string;
+  imageHeight?: string;
+  imageWidth?: string;
+  scaleOnHover?: number;
+  rotateAmplitude?: number;
+  showMobileWarning?: boolean;
+  showTooltip?: boolean;
+  displayOverlayContent?: boolean;
+}
+
+const {
+  imageSrc,
+  altText = 'Tilted card image',
+  captionText = '',
+  containerHeight = '300px',
+  containerWidth = '100%',
+  imageHeight = '300px',
+  imageWidth = '300px',
+  scaleOnHover = 1.1,
+  rotateAmplitude = 14,
+  showMobileWarning = false,
+  showTooltip = false,
+  displayOverlayContent = false
+}: Props = Astro.props;
+---
+
+<TiltedCard
+  imageSrc={imageSrc}
+  altText={altText}
+  captionText={captionText}
+  containerHeight={containerHeight}
+  containerWidth={containerWidth}
+  imageHeight={imageHeight}
+  imageWidth={imageWidth}
+  scaleOnHover={scaleOnHover}
+  rotateAmplitude={rotateAmplitude}
+  showMobileWarning={showMobileWarning}
+  showTooltip={showTooltip}
+  displayOverlayContent={displayOverlayContent}
+  client:load
+/>
