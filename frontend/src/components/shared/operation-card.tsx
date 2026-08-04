@@ -48,7 +48,7 @@ export function OperationCard({ item, onClick }: { item: OperationItem; onClick?
       <div className="flex flex-1 flex-col gap-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <span className="text-sm font-semibold truncate">{item.title}</span>
-          <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold", priority.class)}>{priority.label}</span>
+          <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-xs font-semibold", priority.class)}>{priority.label}</span>
         </div>
         <p className="text-sm text-muted-foreground">{item.subtitle}</p>
         <div className="flex items-center gap-2 mt-1">

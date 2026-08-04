@@ -37,6 +37,21 @@ interface ExtendedOperationItem extends OperationItem {
   endDate?: string
 }
 
+function getActionPath(item: ExtendedOperationItem): string {
+  switch (item.type) {
+    case "pickup":
+      return `/reservations/${item.id}/handover`
+    case "return":
+      return `/rentals/${item.id}/return`
+    case "preparation":
+      return `/reservations/${item.id}/preparation`
+    case "inquiry":
+      return `/inquiries/${item.id}/review`
+    default:
+      return "/reservations"
+  }
+}
+
 function buildOperationItems(
   vehicles: unknown[], reservations: unknown[], rentals: unknown[], inquiries: unknown[]
 ): ExtendedOperationItem[] {
@@ -123,12 +138,12 @@ function getTimeBucket(item: ExtendedOperationItem, now: Date): TimeFilter {
 }
 
 const typeConfig: Record<string, { icon: typeof Car; bg: string; text: string; label: string }> = {
-  pickup: { icon: Clock, bg: "bg-blue-500/10", text: "text-blue-500", label: "Pickup" },
-  return: { icon: ArrowRight, bg: "bg-amber-500/10", text: "text-amber-500", label: "Return" },
-  preparation: { icon: Car, bg: "bg-purple-500/10", text: "text-purple-500", label: "Prep" },
+  pickup: { icon: Clock, bg: "bg-blue-500/10", text: "text-blue-600 dark:text-blue-400", label: "Pickup" },
+  return: { icon: ArrowRight, bg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", label: "Return" },
+  preparation: { icon: Car, bg: "bg-purple-500/10", text: "text-purple-600 dark:text-purple-400", label: "Prep" },
   late: { icon: AlertTriangle, bg: "bg-destructive/10", text: "text-destructive", label: "Late" },
   inquiry: { icon: MessageSquare, bg: "bg-primary/10", text: "text-primary", label: "Inquiry" },
-  inspection: { icon: CheckCircle2, bg: "bg-emerald-500/10", text: "text-emerald-500", label: "Inspection" },
+  inspection: { icon: CheckCircle2, bg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", label: "Inspection" },
 }
 
 const timeBucketOrder: TimeFilter[] = ["overdue", "today", "tomorrow", "week"]
@@ -196,14 +211,6 @@ export function OperationsView() {
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-4 py-4 lg:px-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Today</h1>
-          <p className="text-sm text-muted-foreground">
-            {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-          </p>
-        </div>
-      </div>
 
       <div className="px-4 lg:px-6">
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -212,13 +219,13 @@ export function OperationsView() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className={cn("flex size-10 items-center justify-center rounded-lg", s.icon === Car ? "bg-emerald-500/10" : s.icon === TrendingUp ? "bg-blue-500/10" : s.icon === MessageSquare ? "bg-amber-500/10" : "bg-primary/10")}>
-                    <s.icon className={cn("size-5", s.icon === Car ? "text-emerald-500" : s.icon === TrendingUp ? "text-blue-500" : s.icon === MessageSquare ? "text-amber-500" : "text-primary")} />
+                    <s.icon className={cn("size-5", s.icon === Car ? "text-emerald-600 dark:text-emerald-400" : s.icon === TrendingUp ? "text-blue-600 dark:text-blue-400" : s.icon === MessageSquare ? "text-amber-600 dark:text-amber-400" : "text-primary")} />
                   </div>
                 </div>
                 <div className="mt-3">
                   <p className="font-mono text-2xl font-bold tabular-nums">{s.value}</p>
                   <p className="text-xs font-medium text-muted-foreground">{s.label}</p>
-                  <p className="text-[10px] text-muted-foreground/60 mt-0.5">{s.trend}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{s.trend}</p>
                 </div>
               </CardContent>
             </Card>
@@ -243,7 +250,7 @@ export function OperationsView() {
               {f.label}
               {counts[f.key] > 0 && (
                 <span className={cn(
-                  "ml-1 px-1.5 py-0.5 rounded-full text-[10px]",
+                  "ml-1 px-1.5 py-0.5 rounded-full text-xs",
                   timeFilter === f.key ? "bg-primary-foreground/20" : "bg-muted"
                 )}>
                   {counts[f.key]}
@@ -295,10 +302,10 @@ export function OperationsView() {
                       <Card
                         key={item.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md animate-slide-up border-destructive/30 bg-destructive/5",
+                          "cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md animate-slide-up border-destructive/30 bg-destructive/5",
                           `stagger-${(i % 8) + 1}`
                         )}
-                        onClick={() => router.push("/reservations")}
+                        onClick={() => router.push(getActionPath(item))}
                       >
                         <CardContent className="flex items-center gap-4 p-4">
                           <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", config.bg)}>
@@ -334,10 +341,10 @@ export function OperationsView() {
                       <Card
                         key={item.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md animate-slide-up",
+                          "cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md animate-slide-up",
                           `stagger-${(i % 8) + 1}`
                         )}
-                        onClick={() => router.push("/reservations")}
+                        onClick={() => router.push(getActionPath(item))}
                       >
                         <CardContent className="flex items-center gap-4 p-4">
                           <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", config.bg)}>
@@ -373,10 +380,10 @@ export function OperationsView() {
                       <Card
                         key={item.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md animate-slide-up opacity-75",
+                          "cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md animate-slide-up",
                           `stagger-${(i % 8) + 1}`
                         )}
-                        onClick={() => router.push("/reservations")}
+                        onClick={() => router.push(getActionPath(item))}
                       >
                         <CardContent className="flex items-center gap-4 p-4">
                           <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", config.bg)}>

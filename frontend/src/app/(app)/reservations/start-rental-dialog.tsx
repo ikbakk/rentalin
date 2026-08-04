@@ -30,7 +30,7 @@ export function StartRentalDialog({ open, reservationId, onClose, mutate }: {
       <DialogContent>
         <DialogHeader><DialogTitle>Start Rental</DialogTitle></DialogHeader>
         <div className="flex flex-col gap-3">
-          <div><Label>Odometer Reading (km)</Label><Input type="number" value={odometer} onChange={e => setOdometer(+e.target.value)} /></div>
+          <div><Label htmlFor="start-odometer">Odometer Reading (km)</Label><Input id="start-odometer" type="number" value={odometer} onChange={e => setOdometer(+e.target.value)} /></div>
           <Button onClick={submit} disabled={mutate.isPending}>Start Rental</Button>
         </div>
       </DialogContent>

@@ -42,20 +42,20 @@ export function SearchBar() {
   }, [])
 
   if (!open) return (
-    <button onClick={() => setOpen(true)} className="flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+    <button onClick={() => setOpen(true)} aria-label="Open search" className="flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
       <Search className="size-4" />
       <span>Search</span>
-      <kbd className="ml-auto text-[10px] tracking-wider opacity-50">⌘K</kbd>
+      <kbd className="ml-auto text-xs tracking-wider opacity-50">⌘K</kbd>
     </button>
   )
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={() => setOpen(false)}>
+    <div role="dialog" aria-modal="true" aria-label="Search" className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={() => setOpen(false)}>
       <div ref={ref} className="mx-auto mt-20 max-w-lg px-4" onClick={e => e.stopPropagation()}>
         <div className="flex items-center gap-2 rounded-xl border bg-card p-3">
           <Search className="size-5 text-muted-foreground shrink-0" />
-          <Input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search vehicles, customers..." className="border-0 bg-transparent p-0 text-base shadow-none focus-visible:ring-0" autoFocus />
-          <button onClick={() => setOpen(false)}><X className="size-5 text-muted-foreground" /></button>
+          <Input value={query} onChange={e => setQuery(e.target.value)} aria-label="Search vehicles, customers" placeholder="Search vehicles, customers..." className="border-0 bg-transparent p-0 text-base shadow-none focus-visible:ring-0" autoFocus />
+          <button onClick={() => setOpen(false)} aria-label="Close search"><X className="size-5 text-muted-foreground" /></button>
         </div>
         {results && (
           <div className="mt-2 rounded-xl border bg-card p-2 max-h-64 overflow-y-auto">

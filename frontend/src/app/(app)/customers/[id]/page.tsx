@@ -1,10 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, use } from "react"
 import { useCustomerById, useUpdateCustomer } from "@/hooks/use-customer-by-id"
 import { useRentals } from "@/hooks/use-reservations"
 import { useInquiries } from "@/hooks/use-inquiries"
-import { PageHeader } from "@/components/shared/page-header"
 import { StatusChip } from "@/components/shared/status-chip"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
@@ -20,24 +19,9 @@ import Link from "next/link"
 import { format } from "date-fns"
 
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const [id, setId] = useState<string | null>(null)
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
+  const { id } = use(params)
 
-  if (!resolvedParams && id === null) {
-    params.then(p => {
-      setId(p.id)
-      setResolvedParams(p)
-    })
-    return (
-      <div className="p-4 lg:p-6">
-        <ListSkeleton count={3} />
-      </div>
-    )
-  }
-
-  const customerId = id || resolvedParams?.id || ""
-
-  return <CustomerDetailContent customerId={customerId} />
+  return <CustomerDetailContent customerId={id} />
 }
 
 function CustomerDetailContent({ customerId }: { customerId: string }) {
@@ -49,20 +33,10 @@ function CustomerDetailContent({ customerId }: { customerId: string }) {
   const [notes, setNotes] = useState("")
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  useEffect(() => {
-    if (customer?.notes) {
-      setNotes(customer.notes)
-    }
-  }, [customer?.notes])
-
   const customerRentals = rentals?.filter(r => r.customerId === customerId) ?? []
   const activeRentals = customerRentals.filter(r => r.status === "Active")
   const pastRentals = customerRentals.filter(r => r.status === "Completed")
   const customerInquiries = inquiries?.filter(i => i.customerId === customerId) ?? []
-
-  const totalSpent = pastRentals.reduce((sum, r) => {
-    return sum + (r.estimatedCost || 0)
-  }, 0)
 
   if (customerLoading) {
     return (
@@ -242,7 +216,7 @@ function CustomerDetailContent({ customerId }: { customerId: string }) {
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Internal Notes</CardTitle>
-              <Button size="sm" variant="ghost" onClick={() => setDialogOpen(true)}>
+              <Button size="sm" variant="ghost" onClick={() => { setNotes(customer.notes ?? ""); setDialogOpen(true) }}>
                 Edit
               </Button>
             </div>
@@ -256,7 +230,7 @@ function CustomerDetailContent({ customerId }: { customerId: string }) {
       </div>
 
       <div className="fixed bottom-20 right-4 lg:bottom-6">
-        <Button size="lg" className="rounded-2xl shadow-lg gap-2">
+        <Button size="lg" aria-label="New inquiry" className="rounded-2xl shadow-lg gap-2">
           <Plus className="size-5" />
           New Inquiry
         </Button>

@@ -3,13 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, User, MessageSquare, ArrowRight, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { statusColor } from "@/lib/status-config"
 import type { InquiryResponse } from "@/lib/types"
-
-const statusColors: Record<string, string> = {
-  New: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  Pending: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  Responded: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-}
 
 export function InquiryCard({ inquiry, onConfirm }: { inquiry: InquiryResponse; onConfirm: () => void }) {
   const startDate = new Date(inquiry.startDate)
@@ -51,7 +46,7 @@ export function InquiryCard({ inquiry, onConfirm }: { inquiry: InquiryResponse; 
           </div>
 
           <div className="flex flex-col items-end gap-2">
-            <Badge variant="outline" className={cn("font-medium", statusColors[inquiry.status] || "")}>
+            <Badge variant="outline" className={cn("font-medium", statusColor(inquiry.status))}>
               {inquiry.status}
             </Badge>
             {inquiry.status === "New" && (

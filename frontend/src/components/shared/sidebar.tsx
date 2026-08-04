@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutList, Car, ClipboardList, Users, History, Settings, ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useSidebar } from "@/components/shared/sidebar-context"
 
 const workLinks = [
   { href: "/operations", label: "Operations", icon: LayoutList },
@@ -21,17 +21,7 @@ const managementLinks = [
 
 export function Sidebar() {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false
-    return localStorage.getItem("sidebar-collapsed") === "true"
-  })
-
-  const toggleCollapse = () => {
-    setCollapsed(prev => {
-      localStorage.setItem("sidebar-collapsed", JSON.stringify(!prev))
-      return !prev
-    })
-  }
+  const { collapsed, toggle } = useSidebar()
 
   return (
     <aside
@@ -52,7 +42,7 @@ export function Sidebar() {
       <nav className="flex-1 overflow-y-auto p-3">
         <div className="space-y-1">
           {!collapsed && (
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Work
             </p>
           )}
@@ -65,12 +55,12 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   active
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   collapsed && "justify-center px-2"
                 )}
               >
-                <Icon className={cn("size-5 shrink-0", active && "text-primary")} />
+                <Icon className={cn("size-5 shrink-0", active && "text-primary-foreground")} />
                 {!collapsed && <span>{label}</span>}
               </Link>
             )
@@ -79,7 +69,7 @@ export function Sidebar() {
 
         <div className="mt-6 space-y-1">
           {!collapsed && (
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Management
             </p>
           )}
@@ -90,14 +80,14 @@ export function Sidebar() {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   active
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   collapsed && "justify-center px-2"
                 )}
               >
-                <Icon className={cn("size-5 shrink-0", active && "text-primary")} />
+                <Icon className={cn("size-5 shrink-0", active && "text-primary-foreground")} />
                 {!collapsed && <span>{label}</span>}
               </Link>
             )
@@ -107,7 +97,8 @@ export function Sidebar() {
 
       <div className="border-t border-border p-3">
         <button
-          onClick={toggleCollapse}
+          onClick={toggle}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           {collapsed ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}

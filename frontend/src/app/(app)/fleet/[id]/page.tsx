@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, use } from "react"
 import { useVehicleById } from "@/hooks/use-vehicle-by-id"
 import { useVehicleRentalHistory } from "@/hooks/use-vehicle-rental-history"
-import { PageHeader } from "@/components/shared/page-header"
 import { StatusChip } from "@/components/shared/status-chip"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
@@ -14,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Car, Calendar, Gauge, Wrench, Image, History, ChevronLeft, MapPin } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { statusColor } from "@/lib/status-config"
 import { format } from "date-fns"
 
 const tabs = [
@@ -24,23 +24,9 @@ const tabs = [
 ]
 
 export default function FleetDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const [id, setId] = useState<string | null>(null)
-  const [tab, setTab] = useState("overview")
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
+  const { id } = use(params)
 
-  if (!resolvedParams && id === null) {
-    params.then(p => {
-      setId(p.id)
-      setResolvedParams(p)
-    })
-    return (
-      <div className="p-4 lg:p-6">
-        <ListSkeleton count={3} />
-      </div>
-    )
-  }
-
-  const vehicleId = id || resolvedParams?.id || ""
+  const vehicleId = id
 
   return <FleetDetailContent vehicleId={vehicleId} />
 }
@@ -73,13 +59,6 @@ function FleetDetailContent({ vehicleId }: { vehicleId: string }) {
     )
   }
 
-  const statusColors: Record<string, string> = {
-    Available: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-    Rented: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-    Maintenance: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-    Retired: "bg-muted text-muted-foreground",
-  }
-
   return (
     <div className="pb-20 lg:pb-6">
       <div className="border-b border-border px-4 py-4 lg:px-6">
@@ -102,7 +81,7 @@ function FleetDetailContent({ vehicleId }: { vehicleId: string }) {
               </p>
             </div>
           </div>
-          <Badge variant="outline" className={cn("font-medium", statusColors[vehicle.status])}>
+          <Badge variant="outline" className={cn("font-medium", statusColor(vehicle.status))}>
             {vehicle.status}
           </Badge>
         </div>

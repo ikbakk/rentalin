@@ -3,14 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, User, Car, ArrowRight, DollarSign } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { statusColor } from "@/lib/status-config"
 import type { ReservationResponse } from "@/lib/types"
-
-const statusColors: Record<string, string> = {
-  Confirmed: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  Preparing: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  Ready: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  Cancelled: "bg-muted text-muted-foreground",
-}
 
 export function ReservationCard({ reservation, onStart }: { reservation: ReservationResponse; onStart: () => void }) {
   const startDate = new Date(reservation.startDate)
@@ -24,7 +18,7 @@ export function ReservationCard({ reservation, onStart }: { reservation: Reserva
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10">
-                <User className="size-4 text-blue-500" />
+                <User className="size-4 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
                 <h3 className="font-semibold">{reservation.customerName}</h3>
@@ -45,7 +39,7 @@ export function ReservationCard({ reservation, onStart }: { reservation: Reserva
           </div>
 
           <div className="flex flex-col items-end gap-2">
-            <Badge variant="outline" className={cn("font-medium", statusColors[reservation.status] || "")}>
+            <Badge variant="outline" className={cn("font-medium", statusColor(reservation.status))}>
               {reservation.status}
             </Badge>
             <div className="flex items-center gap-1 text-sm">

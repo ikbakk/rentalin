@@ -3,17 +3,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Car, Users } from "lucide-react"
 import type { VehicleResponse } from "@/lib/types"
 import { cn } from "@/lib/utils"
-
-const statusColors: Record<string, string> = {
-  Available: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  Rented: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  Maintenance: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  Retired: "bg-muted text-muted-foreground",
-}
+import { statusColor } from "@/lib/status-config"
 
 export function VehicleCard({ vehicle }: { vehicle: VehicleResponse }) {
   return (
-    <Card className="cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md">
+    <Card className="cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md">
       <CardContent className="flex items-center gap-4 p-4">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
           <Car className="size-6 text-primary" />
@@ -21,7 +15,7 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleResponse }) {
         <div className="flex flex-1 flex-col gap-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-mono text-sm font-bold">{vehicle.licensePlate}</span>
-            <Badge variant="outline" className={cn("text-[10px] font-medium px-1.5 py-0", statusColors[vehicle.status])}>
+            <Badge variant="outline" className={cn("text-xs font-medium px-1.5", statusColor(vehicle.status))}>
               {vehicle.status}
             </Badge>
           </div>
@@ -42,7 +36,7 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleResponse }) {
           <span className="font-mono text-base font-bold text-primary">
             {vehicle.dailyRateCurrency} {vehicle.dailyRateAmount.toLocaleString()}
           </span>
-          <span className="text-[10px] text-muted-foreground">/day</span>
+          <span className="text-xs text-muted-foreground">/day</span>
         </div>
       </CardContent>
     </Card>

@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Plus, Search, Car, SlidersHorizontal, ArrowUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { statusColor } from "@/lib/status-config"
 import { useRouter } from "next/navigation"
 import type { VehicleResponse } from "@/lib/types"
 
@@ -24,13 +25,6 @@ const statuses = [
   { key: "Maintenance", label: "Maintenance" },
   { key: "Retired", label: "Retired" },
 ]
-
-const statusColors: Record<string, string> = {
-  Available: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  Rented: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  Maintenance: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  Retired: "bg-muted text-muted-foreground",
-}
 
 type SortKey = "licensePlate" | "make" | "status" | "dailyRateAmount"
 type SortDir = "asc" | "desc"
@@ -138,12 +132,6 @@ export function FleetView() {
     <div className="flex flex-col pb-20 lg:pb-6">
       <div className="px-4 py-4 lg:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Fleet</h1>
-            <p className="text-sm text-muted-foreground">
-              {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""} total
-            </p>
-          </div>
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -154,7 +142,7 @@ export function FleetView() {
                 className="h-10 w-full pl-9 lg:w-64 rounded-xl bg-muted/50"
               />
             </div>
-            <Button variant="outline" size="icon" className="shrink-0 size-10 rounded-xl">
+            <Button variant="outline" size="icon" aria-label="Filter vehicles" className="shrink-0 size-10 rounded-xl">
               <SlidersHorizontal className="size-4" />
             </Button>
           </div>
@@ -185,8 +173,9 @@ export function FleetView() {
       </div>
 
       <div className="hidden lg:block px-6">
-        <Card>
-          <CardHeader className="border-b py-3 px-4">
+        {sorted.length > 0 ? (
+          <Card>
+            <CardHeader className="border-b py-3 px-4">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
@@ -250,7 +239,7 @@ export function FleetView() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={cn("font-medium", statusColors[v.status])}>
+                      <Badge variant="outline" className={cn("font-medium", statusColor(v.status))}>
                         {v.status}
                       </Badge>
                     </TableCell>
@@ -265,7 +254,12 @@ export function FleetView() {
               </TableBody>
             </Table>
           </CardContent>
-        </Card>
+          </Card>
+        ) : (
+          <div className="py-10 text-center text-sm text-muted-foreground">
+            No vehicles match your search
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-3 px-4 lg:hidden">
@@ -285,12 +279,18 @@ export function FleetView() {
             <VehicleCard key={v.id} vehicle={v} />
           ))
         )}
+        {sorted.length === 0 && (
+          <div className="py-8 text-center text-sm text-muted-foreground">
+            No vehicles match your search
+          </div>
+        )}
       </div>
 
       <Button
         className="fixed bottom-20 right-4 size-14 rounded-2xl shadow-lg lg:bottom-6"
         onClick={() => setOpen(true)}
         size="icon"
+        aria-label="Add vehicle"
       >
         <Plus className="size-5" />
       </Button>

@@ -3,13 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { User, Gauge, Calendar, ArrowRight, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { statusColor } from "@/lib/status-config"
 import type { RentalResponse } from "@/lib/types"
-
-const statusColors: Record<string, string> = {
-  Active: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  Completed: "bg-muted text-muted-foreground",
-  Overdue: "bg-destructive/10 text-destructive",
-}
 
 export function RentalCard({ rental, onComplete }: { rental: RentalResponse; onComplete: () => void }) {
   const startDate = rental.actualStart ? new Date(rental.actualStart) : null
@@ -22,7 +17,7 @@ export function RentalCard({ rental, onComplete }: { rental: RentalResponse; onC
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                <User className="size-4 text-emerald-500" />
+                <User className="size-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
                 <h3 className="font-semibold">{rental.customerName}</h3>
@@ -65,7 +60,7 @@ export function RentalCard({ rental, onComplete }: { rental: RentalResponse; onC
           </div>
 
           <div className="flex flex-col items-end gap-2">
-            <Badge variant="outline" className={cn("font-medium", statusColors[rental.status] || "")}>
+            <Badge variant="outline" className={cn("font-medium", statusColor(rental.status))}>
               {rental.status}
             </Badge>
             {rental.status === "Active" && (

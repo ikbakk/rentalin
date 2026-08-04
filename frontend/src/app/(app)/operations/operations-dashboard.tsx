@@ -26,8 +26,8 @@ export function OperationsDashboard() {
         <Card key={s.label} className={cn("animate-slide-up", stagger[i])}>
           <CardContent className={cn("flex flex-col items-center p-4", s.accent && "bg-primary/5")}>
             <span className={cn("font-mono text-2xl font-bold tabular-nums", s.accent && "text-primary")}>{s.value}</span>
-            <span className="mt-1 text-[11px] font-medium text-muted-foreground">{s.label}</span>
-            <span className="text-[10px] text-muted-foreground/60">{s.sub}</span>
+            <span className="mt-1 text-xs font-medium text-muted-foreground">{s.label}</span>
+            <span className="text-xs text-muted-foreground">{s.sub}</span>
           </CardContent>
         </Card>
       ))}

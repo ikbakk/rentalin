@@ -106,12 +106,6 @@ export function EventsList() {
     <div className="flex flex-col pb-20 lg:pb-6">
       <div className="px-4 py-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
-            <p className="text-sm text-muted-foreground">
-              Chronological event log
-            </p>
-          </div>
           <div className="flex items-center gap-2 overflow-x-auto">
             {dayFilters.map(f => (
               <button
@@ -134,7 +128,7 @@ export function EventsList() {
       <div className="flex flex-col px-4 lg:px-6">
         {Object.entries(grouped).map(([date, items]) => (
           <div key={date} className="mb-6">
-            <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-2 lg:top-14">
+            <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-2">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {date}
               </h2>

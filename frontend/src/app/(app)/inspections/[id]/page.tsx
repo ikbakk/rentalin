@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, use } from "react"
 import { useInspectionById, useCompleteInspection, useFailInspection } from "@/hooks/use-inspections"
 import { useVehicleById } from "@/hooks/use-vehicle-by-id"
-import { PageHeader } from "@/components/shared/page-header"
 import { StatusChip } from "@/components/shared/status-chip"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
@@ -12,32 +11,19 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronLeft, Car, Camera, CheckCircle2, XCircle, Image, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 export default function InspectionDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const [id, setId] = useState<string | null>(null)
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
+  const { id } = use(params)
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false)
   const [failDialogOpen, setFailDialogOpen] = useState(false)
   const [failReason, setFailReason] = useState("")
 
-  if (!resolvedParams && id === null) {
-    params.then(p => {
-      setId(p.id)
-      setResolvedParams(p)
-    })
-    return (
-      <div className="p-4 lg:p-6">
-        <ListSkeleton count={3} />
-      </div>
-    )
-  }
-
-  const inspectionId = id || resolvedParams?.id || ""
+  const inspectionId = id
 
   return <InspectionDetailContent
     inspectionId={inspectionId}

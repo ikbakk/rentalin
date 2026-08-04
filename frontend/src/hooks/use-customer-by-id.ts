@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-import type { CustomerResponse, UpdateCustomerRequest } from "@/lib/types";
+import type { CustomerResponse } from "@/lib/types";
 
 export function useCustomerById(id: string) {
   return useQuery<CustomerResponse>({

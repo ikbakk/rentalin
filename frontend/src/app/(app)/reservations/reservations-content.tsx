@@ -47,38 +47,32 @@ export function ReservationsContent() {
     <div className="flex flex-col pb-20 lg:pb-6">
       <div className="px-4 py-4 lg:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Reservations</h1>
-            <p className="text-sm text-muted-foreground">
-              Manage inquiries, bookings, and active rentals
-            </p>
-          </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-6">
             <div className="flex items-center gap-2">
               <div className="flex size-9 items-center justify-center rounded-lg bg-amber-500/10">
-                <MessageSquare className="size-4 text-amber-500" />
+                <MessageSquare className="size-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.inquiries}</p>
-                <p className="text-[10px] text-muted-foreground">New</p>
+                <p className="text-xs text-muted-foreground">New</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex size-9 items-center justify-center rounded-lg bg-blue-500/10">
-                <Calendar className="size-4 text-blue-500" />
+                <Calendar className="size-4 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.reservations}</p>
-                <p className="text-[10px] text-muted-foreground">Confirmed</p>
+                <p className="text-xs text-muted-foreground">Confirmed</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10">
-                <Car className="size-4 text-emerald-500" />
+                <Car className="size-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.rentals}</p>
-                <p className="text-[10px] text-muted-foreground">Active</p>
+                <p className="text-xs text-muted-foreground">Active</p>
               </div>
             </div>
           </div>
@@ -93,13 +87,13 @@ export function ReservationsContent() {
               onClick={() => setTab(t.key)}
               className={cn(
                 "relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
-                tab === t.key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                tab === t.key ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
               <t.icon className="size-4" />
               {t.label}
               {stats[t.key] > 0 && (
-                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">
+                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
                   {stats[t.key]}
                 </Badge>
               )}
@@ -176,6 +170,7 @@ export function ReservationsContent() {
           className="fixed bottom-20 right-4 size-14 rounded-2xl shadow-lg lg:bottom-6"
           onClick={() => setNewOpen(true)}
           size="icon"
+          aria-label="New inquiry"
         >
           <Plus className="size-5" />
         </Button>

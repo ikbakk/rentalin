@@ -89,8 +89,9 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
           </DialogHeader>
           <div className="flex flex-col gap-4 py-2">
             <div className="space-y-2">
-              <Label>WhatsApp Number *</Label>
+              <Label htmlFor="quick-inquiry-phone">WhatsApp Number *</Label>
               <Input
+                id="quick-inquiry-phone"
                 value={form.customerPhone}
                 onChange={e => setForm({ ...form, customerPhone: e.target.value })}
                 placeholder="+62 812 xxxx xxxx"
@@ -99,8 +100,9 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
               />
             </div>
             <div className="space-y-2">
-              <Label>Vehicle *</Label>
+              <Label htmlFor="quick-inquiry-vehicle">Vehicle *</Label>
               <select
+                id="quick-inquiry-vehicle"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={form.vehicleId}
                 onChange={e => setForm({ ...form, vehicleId: e.target.value })}
@@ -163,8 +165,9 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
             </div>
 
             <div className="space-y-2">
-              <Label>Vehicle *</Label>
+              <Label htmlFor="inquiry-vehicle">Vehicle *</Label>
               <select
+                id="inquiry-vehicle"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={form.vehicleId}
                 onChange={e => setForm({ ...form, vehicleId: e.target.value })}

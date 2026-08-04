@@ -48,6 +48,7 @@ export function FileUpload({
         <div className="relative size-20 rounded-lg overflow-hidden">
           <img src={preview} alt="" className="size-full object-cover" />
           <button
+            aria-label="Remove photo"
             className="absolute top-1 right-1 rounded-full bg-destructive p-0.5"
             onClick={() => {
               setPreview(null)

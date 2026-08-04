@@ -91,12 +91,6 @@ export function CustomersView() {
     <div className="flex flex-col pb-20 lg:pb-6">
       <div className="px-4 py-4 lg:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Customers</h1>
-            <p className="text-sm text-muted-foreground">
-              {customers.length} contact{customers.length !== 1 ? "s" : ""}
-            </p>
-          </div>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input

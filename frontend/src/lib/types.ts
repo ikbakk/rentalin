@@ -162,6 +162,7 @@ export interface BusinessResponse {
   phoneNumber: string;
   email: string;
   logoUrl?: string;
+  slug: string;
 }
 
 export interface StaffResponse {
@@ -186,6 +187,14 @@ export interface AttachmentResponse {
 }
 
 export interface CreateBusinessRequest {
+  name: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+}
+
+export interface UpdateBusinessRequest {
+  id: string;
   name: string;
   address: string;
   phoneNumber: string;
