@@ -14,6 +14,8 @@ public sealed class BusinessConfiguration : IEntityTypeConfiguration<Business>
         builder.Property(b => b.Address).IsRequired().HasMaxLength(500);
         builder.Property(b => b.PhoneNumber).IsRequired().HasMaxLength(50);
         builder.Property(b => b.Email).IsRequired().HasMaxLength(200);
+        builder.Property(b => b.Slug).IsRequired().HasMaxLength(100);
+        builder.HasIndex(b => b.Slug).IsUnique();
         builder.Property(b => b.LogoUrl).HasMaxLength(1000);
     }
 }

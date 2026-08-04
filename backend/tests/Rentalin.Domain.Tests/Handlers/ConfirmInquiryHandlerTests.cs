@@ -30,7 +30,6 @@ public sealed class ConfirmInquiryHandlerTests
     {
         var vehicle = Vehicle.Create("B TEST", "Toyota", "Avanza", 2023, "White", 7,
             Money.Zero("IDR"), Guid.NewGuid());
-        vehicle.UpdateStatus(Fleet.Domain.Enums.VehicleStatus.Available);
         var inquiry = Inquiry.Create(Guid.NewGuid(), vehicle.Id,
             new DateRange(DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(5)), null);
         _inquiries.GetByIdAsync(inquiry.Id).Returns(inquiry);
@@ -91,7 +90,6 @@ public sealed class ConfirmInquiryHandlerTests
     {
         var vehicle = Vehicle.Create("B TEST", "Toyota", "Avanza", 2023, "White", 7,
             Money.Zero("IDR"), Guid.NewGuid());
-        vehicle.UpdateStatus(Fleet.Domain.Enums.VehicleStatus.Available);
         var period = new DateRange(DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(5));
         var inquiry = Inquiry.Create(Guid.NewGuid(), vehicle.Id, period, null);
         _inquiries.GetByIdAsync(inquiry.Id).Returns(inquiry);

@@ -6,4 +6,5 @@ public sealed record BusinessResponse(
     string Address,
     string PhoneNumber,
     string Email,
-    string? LogoUrl);
+    string? LogoUrl,
+    string Slug);

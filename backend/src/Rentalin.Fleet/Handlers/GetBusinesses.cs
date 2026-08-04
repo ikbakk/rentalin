@@ -17,7 +17,7 @@ public sealed class GetBusinessesHandler : IRequestHandler<GetBusinessesRequest,
     public async Task<IReadOnlyList<BusinessResponse>> Handle(GetBusinessesRequest request, CancellationToken ct)
     {
         var businesses = await _businesses.GetAllAsync(ct);
-        return businesses.Select(b => new BusinessResponse(b.Id, b.Name, b.Address, b.PhoneNumber, b.Email, b.LogoUrl)).ToList();
+        return businesses.Select(b => new BusinessResponse(b.Id, b.Name, b.Address, b.PhoneNumber, b.Email, b.LogoUrl, b.Slug)).ToList();
     }
 }
 

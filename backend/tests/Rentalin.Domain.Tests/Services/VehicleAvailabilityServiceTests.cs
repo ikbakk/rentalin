@@ -112,7 +112,8 @@ public sealed class VehicleAvailabilityServiceTests
     {
         var vehicle = Vehicle.Create("B TEST", "Make", "Model", 2023, "Color", 5,
             Money.Zero("IDR"), _businessId);
-        vehicle.UpdateStatus(status);
+        if (status != VehicleStatus.Available)
+            vehicle.UpdateStatus(status);
         return vehicle;
     }
 
@@ -123,7 +124,8 @@ public sealed class VehicleAvailabilityServiceTests
     {
         var vehicle = Vehicle.Create("B TEMP", "Make", "Model", 2023, "Color", 5,
             Money.Zero("IDR"), Guid.NewGuid());
-        vehicle.UpdateStatus(vehicleStatus);
+        if (vehicleStatus != VehicleStatus.Available)
+            vehicle.UpdateStatus(vehicleStatus);
         var inquiry = Inquiry.Create(Guid.NewGuid(), vehicleId, period, null);
         inquiry.Confirm();
         return Reservation.CreateFromInquiry(inquiry, Money.Zero("IDR"));

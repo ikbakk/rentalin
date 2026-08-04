@@ -1,4 +1,5 @@
 using MediatR;
+using Rentalin.Core.Exceptions;
 using Rentalin.Core.Interfaces;
 using Rentalin.Fleet.Contracts;
 using Rentalin.Fleet.Domain.Entities;
@@ -20,7 +21,7 @@ public sealed class UpdateVehicleStatusHandler : IRequestHandler<UpdateVehicleSt
     public async Task<VehicleResponse> Handle(UpdateVehicleStatusRequest request, CancellationToken ct)
     {
         var vehicle = await _vehicles.GetByIdAsync(request.VehicleId, ct)
-            ?? throw new InvalidOperationException($"Vehicle {request.VehicleId} not found.");
+            ?? throw new DomainException($"Vehicle {request.VehicleId} not found.");
 
         var status = Enum.Parse<VehicleStatus>(request.Status);
         vehicle.UpdateStatus(status);

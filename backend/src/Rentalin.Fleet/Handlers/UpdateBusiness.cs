@@ -25,6 +25,6 @@ public sealed class UpdateBusinessHandler : IRequestHandler<UpdateBusinessReques
         _businesses.Update(business);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        return new BusinessResponse(business.Id, business.Name, business.Address, business.PhoneNumber, business.Email, business.LogoUrl);
+        return new BusinessResponse(business.Id, business.Name, business.Address, business.PhoneNumber, business.Email, business.LogoUrl, business.Slug);
     }
 }
