@@ -1,4 +1,7 @@
+"use client"
+
 import type { TimelineEntryResponse } from "@/lib/types"
+import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -58,9 +61,19 @@ const friendlyLabel: Record<string, string> = {
 }
 
 export function EventsEntry({ entry }: { entry: TimelineEntryResponse }) {
+  const router = useRouter()
   const config = iconMap[entry.eventType] || { icon: MessageSquare, bg: "bg-muted", color: "text-muted-foreground" }
   const Icon = config.icon
   const label = friendlyLabel[entry.eventType] ?? entry.eventType.replace(/([A-Z])/g, " $1").trim()
+  const isInquiry = entry.referenceType === "Inquiry"
+
+  const description = entry.eventType.endsWith("Created")
+    ? (friendlyLabel[entry.eventType] ?? label)
+    : entry.description
+        .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "")
+        .replace(/\s{2,}/g, " ")
+        .replace(/\s+([.,])/g, "$1")
+        .trim()
 
   const getColorClass = (eventType: string) => {
     for (const [key, value] of Object.entries(typeColors)) {
@@ -78,10 +91,16 @@ export function EventsEntry({ entry }: { entry: TimelineEntryResponse }) {
         <Icon className={cn("size-4", config.color)} />
       </div>
 
-      <Card className="ml-12 mr-0 transition-all hover:shadow-sm lg:ml-20">
+      <Card
+        className={cn(
+          "ml-12 mr-0 transition-all hover:shadow-sm lg:ml-20",
+          isInquiry && "cursor-pointer hover:ring-2 hover:ring-primary/40 hover:shadow-md"
+        )}
+        onClick={isInquiry ? () => router.push(`/inquiries/${entry.referenceId}/review`) : undefined}
+      >
         <CardContent className="flex items-start justify-between gap-3 p-3">
           <div className="flex flex-col gap-1 min-w-0 flex-1">
-            <p className="text-sm leading-snug">{entry.description}</p>
+            <p className="text-sm leading-snug">{description}</p>
             <div className="flex items-center gap-1.5">
               <Badge variant="secondary" className={cn("text-xs font-medium", getColorClass(entry.eventType))}>
                 {label}

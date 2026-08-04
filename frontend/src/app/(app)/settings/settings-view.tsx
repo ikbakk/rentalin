@@ -38,7 +38,7 @@ function BusinessForm({
   const [phoneNumber, setPhoneNumber] = useState(business.phoneNumber)
   const [email, setEmail] = useState(business.email)
 
-  const bookingUrl = `${frontendOrigin}/booking/${business.slug}`
+  const bookingUrl = `${frontendOrigin}/r/${business.slug}`
 
   const copyLink = async () => {
     try {

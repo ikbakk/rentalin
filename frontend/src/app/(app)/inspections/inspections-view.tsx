@@ -11,6 +11,7 @@ import { SectionHeader } from "@/components/shared/section-header"
 import { Camera, CheckCircle2, AlertTriangle, Clock, ClipboardCheck } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { useVehicleById } from "@/hooks/use-vehicle-by-id"
 import type { InspectionResponse } from "@/lib/types"
 
 type FilterStatus = "all" | "Pending" | "Completed" | "Failed"
@@ -184,6 +185,7 @@ export function InspectionsView() {
 
 function InspectionListItem({ inspection }: { inspection: InspectionResponse }) {
   const router = useRouter()
+  const { data: vehicle } = useVehicleById(inspection.vehicleId ?? "")
   const isPreRental = inspection.inspectionType === "PreRental"
 
   const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
@@ -202,11 +204,14 @@ function InspectionListItem({ inspection }: { inspection: InspectionResponse }) 
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs font-medium">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="truncate text-sm font-semibold">
+              {vehicle?.licensePlate || `${inspection.vehicleId.slice(0, 8)}…`}
+            </span>
+            <Badge variant="outline" className="shrink-0 text-xs font-medium">
               {isPreRental ? "Pre-Rental" : "Post-Rental"}
             </Badge>
-            <span className="text-xs text-muted-foreground">
+            <span className="shrink-0 text-xs text-muted-foreground">
               {inspection.inspectionDate
                 ? new Date(inspection.inspectionDate).toLocaleDateString()
                 : "No date"}

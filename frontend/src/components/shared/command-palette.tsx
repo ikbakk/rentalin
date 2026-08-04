@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { api } from "@/lib/api"
 import {
+  Command,
   CommandDialog,
   CommandInput,
   CommandList,
@@ -29,25 +30,18 @@ import {
 
 interface SearchResult {
   vehicles: Array<{
-    Id: string
-    LicensePlate: string
-    Make: string
-    Model: string
-    Status: string
-    Type: "Vehicle"
+    id: string
+    licensePlate: string
+    make: string
+    model: string
+    status: string
+    type: "Vehicle"
   }>
   customers: Array<{
-    Id: string
-    Name: string
-    Phone: string
-    Type: "Customer"
-  }>
-  reservations: Array<{
-    Id: string
-    CustomerName: string
-    VehicleSummary: string
-    Status: string
-    Type: "Reservation"
+    id: string
+    name: string
+    phone: string
+    type: "Customer"
   }>
 }
 
@@ -72,126 +66,111 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     router.push(href)
   }, [onOpenChange, router])
 
-  useEffect(() => {
-    if (!open) setQuery("")
-  }, [open])
+  const handleOpenChange = useCallback((next: boolean) => {
+    onOpenChange(next)
+    if (!next) setQuery("")
+  }, [onOpenChange])
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput
-        placeholder="Search vehicles, customers, reservations..."
-        value={query}
-        onValueChange={setQuery}
-      />
-      <CommandList>
-        {isLoading && (
-          <div className="py-6 flex items-center justify-center">
-            <Loader2 className="size-4 animate-spin text-muted-foreground" />
-          </div>
-        )}
-
-        <CommandEmpty>
-          {query.length < 2 ? (
-            <span className="text-muted-foreground">Type at least 2 characters to search...</span>
-          ) : (
-            <span>No results found for &quot;{query}&quot;</span>
+    <CommandDialog open={open} onOpenChange={handleOpenChange}>
+      <Command shouldFilter={false}>
+        <CommandInput
+          placeholder="Search vehicles, customers, reservations..."
+          value={query}
+          onValueChange={setQuery}
+        />
+        <CommandList>
+          {isLoading && (
+            <div className="py-6 flex items-center justify-center">
+              <Loader2 className="size-4 animate-spin text-muted-foreground" />
+            </div>
           )}
-        </CommandEmpty>
 
-        {searchResults && (
+          {query.length >= 2 && searchResults && (
+            <>
+              {searchResults.vehicles.length === 0 && searchResults.customers.length === 0 && (
+                <CommandEmpty>
+                  <span>No results found for &quot;{query}&quot;</span>
+                </CommandEmpty>
+              )}
+
+              {searchResults.vehicles.length > 0 && (
+                <CommandGroup heading="Vehicles">
+                  {searchResults.vehicles.map((v) => (
+                    <CommandItem
+                      key={v.id}
+                      value={`${v.licensePlate} ${v.make} ${v.model}`}
+                      onSelect={() => handleSelect(`/fleet?vehicle=${v.id}`)}
+                    >
+                      <Car className="size-4 text-muted-foreground" />
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                        <span className="font-medium truncate">{v.make} {v.model}</span>
+                        <span className="text-xs text-muted-foreground font-mono">{v.licensePlate}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{v.status}</span>
+                      <ArrowRight className="size-3 opacity-50" />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+
+              {searchResults.customers.length > 0 && (
+                <CommandGroup heading="Customers">
+                  {searchResults.customers.map((c) => (
+                    <CommandItem
+                      key={c.id}
+                      value={`${c.name} ${c.phone}`}
+                      onSelect={() => handleSelect(`/customers?customer=${c.id}`)}
+                    >
+                      <Users className="size-4 text-muted-foreground" />
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                        <span className="font-medium truncate">{c.name}</span>
+                        <span className="text-xs text-muted-foreground font-mono">{c.phone}</span>
+                      </div>
+                      <ArrowRight className="size-3 opacity-50" />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+            </>
+          )}
+        </CommandList>
+
+        {query.length < 2 && (
           <>
-            {searchResults.vehicles.length > 0 && (
-              <CommandGroup heading="Vehicles">
-                {searchResults.vehicles.map((v) => (
-                  <CommandItem
-                    key={v.Id}
-                    value={`${v.LicensePlate} ${v.Make} ${v.Model}`}
-                    onSelect={() => handleSelect(`/fleet?vehicle=${v.Id}`)}
-                  >
-                    <Car className="size-4 text-muted-foreground" />
-                    <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                      <span className="font-medium truncate">{v.Make} {v.Model}</span>
-                      <span className="text-xs text-muted-foreground font-mono">{v.LicensePlate}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{v.Status}</span>
-                    <ArrowRight className="size-3 opacity-50" />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
+            <CommandSeparator />
 
-            {searchResults.customers.length > 0 && (
-              <CommandGroup heading="Customers">
-                {searchResults.customers.map((c) => (
-                  <CommandItem
-                    key={c.Id}
-                    value={`${c.Name} ${c.Phone}`}
-                    onSelect={() => handleSelect(`/customers?customer=${c.Id}`)}
-                  >
-                    <Users className="size-4 text-muted-foreground" />
-                    <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                      <span className="font-medium truncate">{c.Name}</span>
-                      <span className="text-xs text-muted-foreground font-mono">{c.Phone}</span>
-                    </div>
-                    <ArrowRight className="size-3 opacity-50" />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
-
-            {searchResults.reservations && searchResults.reservations.length > 0 && (
-              <CommandGroup heading="Reservations">
-                {searchResults.reservations.map((r) => (
-                  <CommandItem
-                    key={r.Id}
-                    value={`${r.CustomerName} ${r.VehicleSummary}`}
-                    onSelect={() => handleSelect(`/reservations?reservation=${r.Id}`)}
-                  >
-                    <ClipboardList className="size-4 text-muted-foreground" />
-                    <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                      <span className="font-medium truncate">{r.CustomerName}</span>
-                      <span className="text-xs text-muted-foreground">{r.VehicleSummary}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{r.Status}</span>
-                    <ArrowRight className="size-3 opacity-50" />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
+            <CommandGroup heading="Quick Actions">
+              <CommandItem onSelect={() => handleSelect("/reservations?new=true")}>
+                <Plus className="size-4 text-muted-foreground" />
+                <span>New Inquiry</span>
+                <CommandShortcut>⌘N</CommandShortcut>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect("/fleet?add=true")}>
+                <Plus className="size-4 text-muted-foreground" />
+                <span>Add Vehicle</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect("/inspections?new=true")}>
+                <ClipboardList className="size-4 text-muted-foreground" />
+                <span>Start Inspection</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect("/customers?new=true")}>
+                <Users className="size-4 text-muted-foreground" />
+                <span>Add Customer</span>
+              </CommandItem>
+              <CommandSeparator />
+              <CommandItem onSelect={() => handleSelect("/events")}>
+                <Calendar className="size-4 text-muted-foreground" />
+                <span>View Events</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleSelect("/settings")}>
+                <Settings className="size-4 text-muted-foreground" />
+                <span>Settings</span>
+              </CommandItem>
+            </CommandGroup>
           </>
         )}
-      </CommandList>
-
-      <CommandSeparator />
-
-      <CommandGroup heading="Quick Actions">
-        <CommandItem onSelect={() => handleSelect("/reservations?new=true")}>
-          <Plus className="size-4 text-muted-foreground" />
-          <span>New Inquiry</span>
-          <CommandShortcut>⌘N</CommandShortcut>
-        </CommandItem>
-        <CommandItem onSelect={() => handleSelect("/fleet?add=true")}>
-          <Plus className="size-4 text-muted-foreground" />
-          <span>Add Vehicle</span>
-        </CommandItem>
-        <CommandItem onSelect={() => handleSelect("/inspections?new=true")}>
-          <ClipboardList className="size-4 text-muted-foreground" />
-          <span>Start Inspection</span>
-        </CommandItem>
-        <CommandItem onSelect={() => handleSelect("/customers?new=true")}>
-          <Users className="size-4 text-muted-foreground" />
-          <span>Add Customer</span>
-        </CommandItem>
-        <CommandSeparator />
-        <CommandItem onSelect={() => handleSelect("/events")}>
-          <Calendar className="size-4 text-muted-foreground" />
-          <span>View Events</span>
-        </CommandItem>
-        <CommandItem onSelect={() => handleSelect("/settings")}>
-          <Settings className="size-4 text-muted-foreground" />
-          <span>Settings</span>
-        </CommandItem>
-      </CommandGroup>
+      </Command>
     </CommandDialog>
   )
 }

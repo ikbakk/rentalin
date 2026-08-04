@@ -1,11 +1,14 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Car, Users } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Car, Pencil, Users } from "lucide-react"
 import type { VehicleResponse } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { statusColor } from "@/lib/status-config"
 
-export function VehicleCard({ vehicle }: { vehicle: VehicleResponse }) {
+export function VehicleCard({ vehicle, onEdit }: { vehicle: VehicleResponse; onEdit?: () => void }) {
   return (
     <Card className="cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md">
       <CardContent className="flex items-center gap-4 p-4">
@@ -37,6 +40,17 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleResponse }) {
             {vehicle.dailyRateCurrency} {vehicle.dailyRateAmount.toLocaleString()}
           </span>
           <span className="text-xs text-muted-foreground">/day</span>
+          {onEdit && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={`Edit ${vehicle.licensePlate}`}
+              onClick={e => { e.stopPropagation(); onEdit() }}
+              className="mt-1 size-8 rounded-lg"
+            >
+              <Pencil className="size-4" />
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

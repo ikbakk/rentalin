@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { useVehicles } from "@/hooks/use-vehicles"
 import { VehicleCard } from "./vehicle-card"
 import { AddVehicleDialog } from "./add-vehicle-dialog"
+import { EditVehicleDialog } from "./edit-vehicle-dialog"
 import { SectionHeader } from "@/components/shared/section-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
@@ -12,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Search, Car, SlidersHorizontal, ArrowUpDown } from "lucide-react"
+import { Plus, Search, Car, SlidersHorizontal, ArrowUpDown, Pencil } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { statusColor } from "@/lib/status-config"
 import { useRouter } from "next/navigation"
@@ -33,6 +34,7 @@ export function FleetView() {
   const { data: vehicles, isLoading } = useVehicles()
   const router = useRouter()
   const [open, setOpen] = useState(false)
+  const [editingVehicle, setEditingVehicle] = useState<VehicleResponse | null>(null)
   const [filter, setFilter] = useState<string>("all")
   const [search, setSearch] = useState("")
   const [sortKey, setSortKey] = useState<SortKey>("licensePlate")
@@ -219,6 +221,7 @@ export function FleetView() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -249,6 +252,17 @@ export function FleetView() {
                       </span>
                       <span className="text-xs text-muted-foreground">/day</span>
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Edit ${v.licensePlate}`}
+                        onClick={e => { e.stopPropagation(); setEditingVehicle(v) }}
+                        className="size-8 rounded-lg"
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -269,14 +283,14 @@ export function FleetView() {
               <SectionHeader title={status} count={vehicles.length} />
               <div className="space-y-2">
                 {vehicles.map(v => (
-                  <VehicleCard key={v.id} vehicle={v} />
+                  <VehicleCard key={v.id} vehicle={v} onEdit={() => setEditingVehicle(v)} />
                 ))}
               </div>
             </div>
           ))
         ) : (
           sorted.map(v => (
-            <VehicleCard key={v.id} vehicle={v} />
+            <VehicleCard key={v.id} vehicle={v} onEdit={() => setEditingVehicle(v)} />
           ))
         )}
         {sorted.length === 0 && (
@@ -296,6 +310,15 @@ export function FleetView() {
       </Button>
 
       <AddVehicleDialog open={open} onOpenChange={setOpen} />
+
+      {editingVehicle && (
+        <EditVehicleDialog
+          key={editingVehicle.id}
+          vehicle={editingVehicle}
+          open={true}
+          onOpenChange={v => { if (!v) setEditingVehicle(null) }}
+        />
+      )}
     </div>
   )
 }

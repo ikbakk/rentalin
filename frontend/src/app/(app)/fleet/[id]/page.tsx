@@ -3,6 +3,7 @@
 import { useState, use } from "react"
 import { useVehicleById } from "@/hooks/use-vehicle-by-id"
 import { useVehicleRentalHistory } from "@/hooks/use-vehicle-rental-history"
+import { EditVehicleDialog } from "../edit-vehicle-dialog"
 import { StatusChip } from "@/components/shared/status-chip"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
@@ -10,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Car, Calendar, Gauge, Wrench, Image, History, ChevronLeft, MapPin } from "lucide-react"
+import { Car, Calendar, Gauge, Wrench, Image, History, ChevronLeft, MapPin, Pencil } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { statusColor } from "@/lib/status-config"
@@ -33,6 +34,7 @@ export default function FleetDetailPage({ params }: { params: Promise<{ id: stri
 
 function FleetDetailContent({ vehicleId }: { vehicleId: string }) {
   const [tab, setTab] = useState("overview")
+  const [editOpen, setEditOpen] = useState(false)
   const { data: vehicle, isLoading: vehicleLoading } = useVehicleById(vehicleId)
   const { data: history, isLoading: historyLoading } = useVehicleRentalHistory(vehicleId)
 
@@ -81,9 +83,20 @@ function FleetDetailContent({ vehicleId }: { vehicleId: string }) {
               </p>
             </div>
           </div>
-          <Badge variant="outline" className={cn("font-medium", statusColor(vehicle.status))}>
-            {vehicle.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Edit vehicle"
+              onClick={() => setEditOpen(true)}
+              className="size-9 rounded-lg"
+            >
+              <Pencil className="size-4" />
+            </Button>
+            <Badge variant="outline" className={cn("font-medium", statusColor(vehicle.status))}>
+              {vehicle.status}
+            </Badge>
+          </div>
         </div>
       </div>
 
@@ -206,6 +219,8 @@ function FleetDetailContent({ vehicleId }: { vehicleId: string }) {
           </div>
         </TabsContent>
       </Tabs>
+
+      <EditVehicleDialog vehicle={vehicle} open={editOpen} onOpenChange={setEditOpen} />
     </div>
   )
 }

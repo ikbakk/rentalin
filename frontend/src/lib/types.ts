@@ -91,6 +91,19 @@ export interface CreateVehicleRequest {
   businessId: string;
 }
 
+export interface UpdateVehicleRequest {
+  id: string;
+  licensePlate: string;
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  seatingCapacity: number;
+  dailyRate: number;
+  currency: string;
+  businessId: string;
+}
+
 export interface CreateInquiryRequest {
   customerId?: string;
   customerName?: string;

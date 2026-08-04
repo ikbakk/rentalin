@@ -34,7 +34,6 @@ export function SearchBar() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setOpen(true) }
       if (e.key === "Escape") setOpen(false)
     }
     window.addEventListener("keydown", handler)
