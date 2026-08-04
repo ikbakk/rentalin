@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rentalin.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using Rentalin.Infrastructure.Data;
 namespace Rentalin.Infrastructure.Migrations
 {
     [DbContext(typeof(RentalinDbContext))]
-    partial class RentalinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260803200647_AddSlugToBusiness")]
+    partial class AddSlugToBusiness
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");

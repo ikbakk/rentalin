@@ -1,4 +1,5 @@
 using Rentalin.Core.Entities;
+using Rentalin.Core.Exceptions;
 using Rentalin.Core.ValueObjects;
 using Rentalin.Fleet.Domain.Documents;
 using Rentalin.Fleet.Domain.Enums;
@@ -56,6 +57,18 @@ public sealed class Vehicle : AggregateRoot
 
     public void UpdateStatus(VehicleStatus status)
     {
+        if (Status == VehicleStatus.Retired)
+            throw new DomainException("Cannot update status of a retired vehicle.");
+
+        if (Status == VehicleStatus.Available && status != VehicleStatus.Rented && status != VehicleStatus.Maintenance && status != VehicleStatus.Retired)
+            throw new DomainException("Available vehicle can only transition to Rented or Maintenance.");
+
+        if (Status == VehicleStatus.Rented && status != VehicleStatus.Available && status != VehicleStatus.Retired)
+            throw new DomainException("Rented vehicle can only transition to Available.");
+
+        if (Status == VehicleStatus.Maintenance && status != VehicleStatus.Available && status != VehicleStatus.Retired)
+            throw new DomainException("Vehicle under maintenance can only transition to Available.");
+
         Status = status;
     }
 
