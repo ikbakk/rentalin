@@ -8,8 +8,9 @@ import type {
   RentalResponse,
   CreateReservationRequest,
   StartRentalRequest,
-  CompleteRentalRequest,
 } from "@/lib/types";
+
+export { useRentals, useActiveRentals, useCompleteRental } from "./use-rentals";
 
 export function useReservations() {
   return useQuery<ReservationResponse[]>({
@@ -49,31 +50,34 @@ export function useStartRental() {
   });
 }
 
-export function useCompleteRental() {
+export function useReservationById(id: string) {
+  return useQuery<ReservationResponse>({
+    queryKey: ["reservations", id],
+    queryFn: () => api.get(`/api/reservations/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function usePrepareReservation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CompleteRentalRequest) =>
-      api.post<RentalResponse>(`/api/rentals/${data.rentalId}/complete`, data),
+    mutationFn: (id: string) => api.post(`/api/reservations/${id}/prepare`, {}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
     },
-    onError: () => {
-      toast.error("Failed to complete rental.");
+    onError: () => toast.error("Failed to prepare reservation."),
+  });
+}
+
+export function useReadyForHandover() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.post(`/api/reservations/${id}/ready-for-handover`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reservations"] });
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
     },
-  });
-}
-
-export function useRentals() {
-  return useQuery<RentalResponse[]>({
-    queryKey: ["rentals"],
-    queryFn: () => api.get("/api/rentals"),
-  });
-}
-
-export function useActiveRentals() {
-  return useQuery<RentalResponse[]>({
-    queryKey: ["rentals", "active"],
-    queryFn: () => api.get("/api/rentals?status=Active"),
+    onError: () => toast.error("Failed to mark reservation ready."),
   });
 }

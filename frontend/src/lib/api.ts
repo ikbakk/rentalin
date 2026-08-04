@@ -21,6 +21,24 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+async function publicRequest<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    ...options,
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({} as ErrorBody));
+    throw new Error(body.error ?? `API error: ${res.status}`);
+  }
+  return res.json();
+}
+
+export const publicApi = {
+  get: <T>(path: string) => publicRequest<T>(path),
+  post: <T>(path: string, body?: unknown) =>
+    publicRequest<T>(path, { method: "POST", body: body ? JSON.stringify(body) : undefined }),
+};
+
 export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body?: unknown) =>

@@ -36,3 +36,23 @@ export function useConfirmInquiry() {
     },
   });
 }
+
+export function useInquiryById(id: string) {
+  return useQuery<InquiryResponse>({
+    queryKey: ["inquiries", id],
+    queryFn: () => api.get(`/api/inquiries/${id}`),
+    enabled: !!id,
+  });
+}
+
+export function useCancelInquiry() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.post(`/api/inquiries/${id}/cancel`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["inquiries"] });
+      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+    },
+    onError: () => toast.error("Failed to cancel inquiry."),
+  });
+}
