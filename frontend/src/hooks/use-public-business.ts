@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { publicApi } from "@/lib/api";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 export interface PublicBusiness {
   name: string;
@@ -13,8 +13,19 @@ export interface PublicBusiness {
 }
 
 export function usePublicBusiness(slug: string) {
-  return useQuery<PublicBusiness>({
-    queryKey: ["public-business", slug],
-    queryFn: () => publicApi.get("/api/public/" + slug),
-  });
+  const business = useQuery(api.businesses.getBySlug, slug ? { slug } : "skip");
+  return {
+    data: business
+      ? {
+          name: business.name,
+          slug: business.slug,
+          address: business.address ?? "",
+          phone: business.phone ?? "",
+          email: business.email ?? "",
+          logoUrl: business.logoUrl ?? null,
+        }
+      : undefined,
+    isLoading: business === undefined,
+    isError: false,
+  };
 }
