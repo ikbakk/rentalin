@@ -1,8 +1,10 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { toast } from "sonner";
-import { publicApi } from "@/lib/api";
+import { useState } from "react";
 
 export interface CreatePublicInquiryRequest {
   customerName: string;
@@ -14,17 +16,20 @@ export interface CreatePublicInquiryRequest {
 }
 
 export function useCreatePublicInquiry(slug: string) {
-  const queryClient = useQueryClient();
+  const createInquiry = useMutation(api.inquiries.createPublic);
+  const [isPending, setIsPending] = useState(false);
+  const submit = (data: CreatePublicInquiryRequest) => {
+    setIsPending(true);
+    return createInquiry({ ...data, slug, vehicleId: data.vehicleId as Id<"vehicles"> })
+      .finally(() => setIsPending(false));
+  };
 
-  return useMutation({
-    mutationFn: (data: CreatePublicInquiryRequest) =>
-      publicApi.post("/api/public/" + slug + "/inquiries", data),
-    onSuccess: () => {
-      toast.success("Inquiry sent!");
-      queryClient.invalidateQueries({ queryKey: ["public-vehicles", slug] });
-    },
+  return {
+    mutate: submit,
+    mutateAsync: submit,
+    isPending,
     onError: (error: Error) => {
       toast.error(error.message ?? "Failed to submit inquiry.");
     },
-  });
+  };
 }

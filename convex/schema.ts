@@ -11,6 +11,18 @@ export default defineSchema({
     logoUrl: v.optional(v.string()),
   }).index("by_slug", ["slug"]),
 
+  inquiries: defineTable({
+    businessId: v.id("businesses"),
+    vehicleId: v.id("vehicles"),
+    customerName: v.string(),
+    customerPhone: v.string(),
+    startDate: v.string(),
+    endDate: v.string(),
+    notes: v.optional(v.string()),
+    status: v.union(v.literal("new"), v.literal("contacted"), v.literal("converted"), v.literal("cancelled")),
+  })
+    .index("by_business", ["businessId"]),
+
   vehicles: defineTable({
     businessId: v.id("businesses"),
     make: v.string(),
