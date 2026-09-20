@@ -3,13 +3,14 @@ import { v } from "convex/values";
 
 export default defineSchema({
   businesses: defineTable({
+    externalId: v.optional(v.string()),
     name: v.string(),
     slug: v.string(),
     phone: v.optional(v.string()),
     email: v.optional(v.string()),
     address: v.optional(v.string()),
     logoUrl: v.optional(v.string()),
-  }).index("by_slug", ["slug"]),
+  }).index("by_slug", ["slug"]).index("by_external_id", ["externalId"]),
 
   inquiries: defineTable({
     businessId: v.id("businesses"),
