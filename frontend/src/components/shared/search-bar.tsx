@@ -1,6 +1,9 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useQuery } from "convex/react"
+import { api } from "../../../../convex/_generated/api"
+import { useActiveBusiness } from "@/hooks/use-active-business"
 import { useRouter } from "next/navigation"
 import { Search, X, Car, User } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -14,23 +17,11 @@ interface SearchResult {
 export function SearchBar() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<SearchResult | null>(null)
-  const [loading, setLoading] = useState(false)
+  const { businessId } = useActiveBusiness()
+  const searchData = useQuery(api.search.search, businessId && query.length >= 2 ? { businessId, query } : "skip")
+  const results: SearchResult | null = searchData ? { vehicles: searchData.vehicles.map(v => ({ Id: v._id, LicensePlate: v.plateNumber, Make: v.make, Model: v.model, Status: v.status })), customers: searchData.customers.map(c => ({ Id: c._id, Name: c.name, Phone: c.phoneNumber })) } : null
   const router = useRouter()
   const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const t = setTimeout(async () => {
-      if (query.length < 2) { setResults(null); return }
-      setLoading(true)
-      try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"
-        const res = await fetch(`${baseUrl}/api/search?q=${encodeURIComponent(query)}`)
-        setResults(await res.json())
-      } catch { } finally { setLoading(false) }
-    }, 300)
-    return () => clearTimeout(t)
-  }, [query])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
