@@ -34,11 +34,11 @@ Create a first-class Convex membership model that lets an authenticated user man
 ## Steps
 
 - [x] Define `memberships`, active-business preference, business creation fields, and opaque public reservation/rental token fields in the Convex schema.
-- [ ] Add authenticated membership resolution with role checks; authorize every tenant-scoped Convex function against an explicit business ID instead of legacy external IDs.
-- [ ] Implement onboarding: first account creates a default business and owner membership; users can create/select additional businesses; render workspace empty states when a business has no fleet or activity.
-- [ ] Replace all legacy `getAuth()` tenancy access with an authenticated active-business hook/query and add a business switcher to the app shell.
-- [ ] Add tenant-scoped search and rental-history functions; migrate search UI and history hook.
-- [ ] Add public booking metadata and opaque-token-scoped reservation/rental tracking functions; migrate public pages without exposing document IDs.
+- [x] Add authenticated membership resolution with role checks; authorize every tenant-scoped Convex function against an explicit business ID instead of legacy external IDs.
+- [x] Implement onboarding: first account creates a default business and owner membership; users can create/select additional businesses; render workspace empty states when a business has no fleet or activity.
+- [x] Replace all legacy `getAuth()` tenancy access with an authenticated active-business hook/query and add a business switcher to the app shell.
+- [x] Add tenant-scoped search and rental-history functions; migrate search UI and history hook.
+- [x] Add public booking metadata and opaque-token-scoped reservation/rental tracking functions; migrate public pages without exposing document IDs.
 - [ ] Remove REST client, JWT/localStorage helper, API URL variables, and React Query wrappers no longer needed.
 - [ ] Run Convex deployment/type generation, frontend typecheck/lint/build, and browser smoke tests.
 

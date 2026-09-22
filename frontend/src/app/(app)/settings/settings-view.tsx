@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { getAuth, clearAuth } from "@/lib/auth"
+import { useAuthActions } from "@convex-dev/auth/react"
+import { useActiveBusiness } from "@/hooks/use-active-business"
 import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -125,15 +126,16 @@ function BusinessForm({
 }
 
 export function SettingsView() {
-  const auth = getAuth()
   const router = useRouter()
-  const businessId = auth?.businessId ?? ""
+  const { signOut } = useAuthActions()
+  const { businessId } = useActiveBusiness()
   const { data: business, isLoading } = useBusiness(businessId)
   const updateBusiness = useUpdateBusiness()
   const queryClient = useQueryClient()
 
   const handleSave = async (values: BusinessValues) => {
     try {
+      if (!businessId) throw new Error("No active business")
       await updateBusiness.mutateAsync({ id: businessId, ...values })
       toast.success("Business updated")
       queryClient.invalidateQueries({ queryKey: ["business", businessId] })
@@ -161,13 +163,13 @@ export function SettingsView() {
             <div className="flex items-center gap-4">
               <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
                 <span className="text-xl font-semibold text-primary">
-                  {auth?.name?.charAt(0).toUpperCase() || "U"}
+                  {"U"}
                 </span>
               </div>
               <div>
-                <p className="font-semibold">{auth?.name || "User"}</p>
+                <p className="font-semibold">User</p>
                 <Badge variant="secondary" className="mt-1 text-xs">
-                  {auth?.role || "Staff"}
+                  Staff
                 </Badge>
               </div>
             </div>
@@ -177,11 +179,11 @@ export function SettingsView() {
             <div className="space-y-3">
               <div className="grid gap-2">
                 <Label htmlFor="name" className="text-xs text-muted-foreground">Full Name</Label>
-                <Input id="name" value={auth?.name || ""} readOnly className="h-10 rounded-lg" />
+                <Input id="name" value="" readOnly className="h-10 rounded-lg" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email" className="text-xs text-muted-foreground">Email</Label>
-                <Input id="email" type="email" value={auth?.email || ""} readOnly className="h-10 rounded-lg" />
+                <Input id="email" type="email" value="" readOnly className="h-10 rounded-lg" />
               </div>
             </div>
           </CardContent>
@@ -277,7 +279,7 @@ export function SettingsView() {
               variant="destructive"
               className="w-full"
               onClick={() => {
-                clearAuth()
+                void signOut()
                 router.push("/login")
               }}
             >

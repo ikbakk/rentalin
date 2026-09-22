@@ -18,8 +18,10 @@ import type * as http from "../http.js";
 import type * as inquiries from "../inquiries.js";
 import type * as inspections from "../inspections.js";
 import type * as operations from "../operations.js";
+import type * as public_ from "../public.js";
 import type * as rentals from "../rentals.js";
 import type * as reservations from "../reservations.js";
+import type * as search from "../search.js";
 import type * as tenancy from "../tenancy.js";
 import type * as vehicles from "../vehicles.js";
 
@@ -40,8 +42,10 @@ declare const fullApi: ApiFromModules<{
   inquiries: typeof inquiries;
   inspections: typeof inspections;
   operations: typeof operations;
+  public: typeof public_;
   rentals: typeof rentals;
   reservations: typeof reservations;
+  search: typeof search;
   tenancy: typeof tenancy;
   vehicles: typeof vehicles;
 }>;
