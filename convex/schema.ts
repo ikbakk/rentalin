@@ -50,6 +50,16 @@ export default defineSchema({
     status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
   }).index("by_business", ["businessId"]),
 
+  timeline: defineTable({
+    businessId: v.id("businesses"),
+    referenceType: v.string(),
+    referenceId: v.string(),
+    eventType: v.string(),
+    description: v.string(),
+    occurredAt: v.string(),
+    actor: v.string(),
+  }).index("by_business", ["businessId"]),
+
   inspections: defineTable({
     businessId: v.id("businesses"),
     rentalId: v.id("rentals"),
