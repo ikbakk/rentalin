@@ -1,6 +1,7 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "convex/react"
+import { api } from "../../../../../../convex/_generated/api"
 import { CheckCircle2, Clock, Circle, MessageCircle, Car, Calendar, Gauge, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -28,8 +29,6 @@ interface RentalData {
   inspectionNotes?: string
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"
-
 const steps = [
   { key: "Inquiry", label: "Inquiry Received", icon: MessageCircle },
   { key: "Confirmed", label: "Confirmed", icon: CheckCircle2 },
@@ -49,15 +48,8 @@ const statusConfig: Record<string, { bg: string; text: string; label: string }> 
 }
 
 export function BookingView({ reservationId }: { reservationId: string }) {
-  const { data: rental, isLoading } = useQuery<RentalData>({
-    queryKey: ["rental", reservationId],
-    queryFn: () =>
-      fetch(`${API_BASE}/api/portal/reservation/${reservationId}`).then((r) =>
-        r.ok ? r.json() : Promise.reject(new Error("Not found"))
-      ),
-    refetchInterval: 30_000,
-    retry: false,
-  })
+  const rental = useQuery(api.public.reservationByToken, { token: reservationId })
+  const isLoading = rental === undefined
 
   if (isLoading) {
     return (
