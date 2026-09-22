@@ -40,6 +40,7 @@ export default defineSchema({
       v.literal("inactive"),
     ),
     dailyRate: v.optional(v.number()),
+    currency: v.optional(v.string()),
     imageStorageId: v.optional(v.id("_storage")),
   })
     .index("by_business", ["businessId"])

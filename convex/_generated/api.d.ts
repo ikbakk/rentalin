@@ -9,6 +9,7 @@
  */
 
 import type * as businesses from "../businesses.js";
+import type * as fleet from "../fleet.js";
 import type * as inquiries from "../inquiries.js";
 import type * as vehicles from "../vehicles.js";
 
@@ -20,6 +21,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   businesses: typeof businesses;
+  fleet: typeof fleet;
   inquiries: typeof inquiries;
   vehicles: typeof vehicles;
 }>;
