@@ -6,6 +6,7 @@ export default defineSchema({
   ...authTables,
   businesses: defineTable({
     externalId: v.optional(v.string()),
+    createdBy: v.optional(v.id("users")),
     name: v.string(),
     slug: v.string(),
     phone: v.optional(v.string()),
@@ -13,6 +14,18 @@ export default defineSchema({
     address: v.optional(v.string()),
     logoUrl: v.optional(v.string()),
   }).index("by_slug", ["slug"]).index("by_external_id", ["externalId"]),
+
+  memberships: defineTable({
+    userId: v.id("users"),
+    businessId: v.id("businesses"),
+    role: v.union(v.literal("owner"), v.literal("admin"), v.literal("staff")),
+    isActive: v.boolean(),
+  }).index("by_user", ["userId"]).index("by_user_and_business", ["userId", "businessId"]),
+
+  userPreferences: defineTable({
+    userId: v.id("users"),
+    activeBusinessId: v.optional(v.id("businesses")),
+  }).index("by_user", ["userId"]),
 
   customers: defineTable({
     businessId: v.id("businesses"),
@@ -48,6 +61,7 @@ export default defineSchema({
     estimatedCost: v.number(),
     currency: v.string(),
     status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
+    publicToken: v.optional(v.string()),
   }).index("by_business", ["businessId"]),
 
   timeline: defineTable({
@@ -81,6 +95,7 @@ export default defineSchema({
     status: v.union(v.literal("active"), v.literal("completed")),
     odometerStart: v.optional(v.number()),
     odometerEnd: v.optional(v.number()),
+    publicToken: v.optional(v.string()),
   }).index("by_business", ["businessId"]).index("by_status", ["status"]),
 
   vehicles: defineTable({
