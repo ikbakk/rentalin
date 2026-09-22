@@ -1,43 +1,30 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { api } from "@/lib/api";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
+import { getAuth } from "@/lib/auth";
 import type { RentalResponse, CompleteRentalRequest } from "@/lib/types";
 
+const mapRental = (r: any): RentalResponse => ({ id: r._id, reservationId: r.reservationId, vehicleId: r.vehicleId, vehicleSummary: "", customerId: r.customerId ?? "", customerName: "", actualStart: r.actualStart, actualEnd: r.actualEnd, status: r.status === "active" ? "Active" : "Completed" });
+
 export function useRentals() {
-  return useQuery<RentalResponse[]>({
-    queryKey: ["rentals"],
-    queryFn: () => api.get("/api/rentals"),
-  });
+  const externalId = getAuth()?.businessId;
+  const rentals = useQuery(api.rentals.listByExternalId, externalId ? { externalId } : "skip");
+  return { data: rentals?.map(mapRental), isLoading: rentals === undefined, isError: false };
 }
 
 export function useActiveRentals() {
-  return useQuery<RentalResponse[]>({
-    queryKey: ["rentals", "active"],
-    queryFn: () => api.get("/api/rentals?status=Active"),
-  });
+  const all = useRentals();
+  return { ...all, data: all.data?.filter(r => r.status === "Active") };
 }
 
 export function useCompleteRental() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CompleteRentalRequest) =>
-      api.post<RentalResponse>(`/api/rentals/${data.rentalId}/complete`, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reservations"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-    },
-    onError: () => {
-      toast.error("Failed to complete rental.");
-    },
-  });
+  const complete = useMutation(api.rentals.complete);
+  return { mutate: (data: CompleteRentalRequest) => complete({ rentalId: data.rentalId as Id<"rentals">, odometerEnd: data.odometerEnd }), mutateAsync: (data: CompleteRentalRequest) => complete({ rentalId: data.rentalId as Id<"rentals">, odometerEnd: data.odometerEnd }), isPending: false } as any;
 }
 
 export function useRentalById(id: string) {
-  return useQuery<RentalResponse>({
-    queryKey: ["rentals", id],
-    queryFn: () => api.get(`/api/rentals/${id}`),
-    enabled: !!id,
-  });
+  const all = useRentals();
+  return { data: all.data?.find(r => r.id === id), isLoading: all.isLoading, isError: false };
 }
