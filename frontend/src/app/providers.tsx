@@ -6,8 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState } from "react";
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL ?? "http://127.0.0.1:3210";
+const convex = new ConvexReactClient(convexUrl);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -20,5 +20,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 
-  return convex ? <ConvexAuthProvider client={convex}>{content}</ConvexAuthProvider> : content;
+  return <ConvexAuthProvider client={convex}>{content}</ConvexAuthProvider>;
 }
