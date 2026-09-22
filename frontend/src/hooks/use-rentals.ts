@@ -3,14 +3,14 @@
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import { getAuth } from "@/lib/auth";
+import { useActiveBusiness } from "./use-active-business";
 import type { RentalResponse, CompleteRentalRequest } from "@/lib/types";
 
 const mapRental = (r: any): RentalResponse => ({ id: r._id, reservationId: r.reservationId, vehicleId: r.vehicleId, vehicleSummary: "", customerId: r.customerId ?? "", customerName: "", actualStart: r.actualStart, actualEnd: r.actualEnd, status: r.status === "active" ? "Active" : "Completed" });
 
 export function useRentals() {
-  const externalId = getAuth()?.businessId;
-  const rentals = useQuery(api.rentals.listByExternalId, externalId ? { externalId } : "skip");
+  const { businessId } = useActiveBusiness();
+  const rentals = useQuery(api.rentals.list, businessId ? { businessId } : "skip");
   return { data: rentals?.map(mapRental), isLoading: rentals === undefined, isError: false };
 }
 

@@ -20,6 +20,7 @@ import type * as inspections from "../inspections.js";
 import type * as operations from "../operations.js";
 import type * as rentals from "../rentals.js";
 import type * as reservations from "../reservations.js";
+import type * as tenancy from "../tenancy.js";
 import type * as vehicles from "../vehicles.js";
 
 import type {
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   operations: typeof operations;
   rentals: typeof rentals;
   reservations: typeof reservations;
+  tenancy: typeof tenancy;
   vehicles: typeof vehicles;
 }>;
 

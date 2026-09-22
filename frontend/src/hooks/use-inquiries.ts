@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
-import { getAuth } from "@/lib/auth";
+import { useActiveBusiness } from "./use-active-business";
 import { toast } from "sonner";
 import type { InquiryResponse, CreateInquiryRequest } from "@/lib/types";
 
@@ -20,17 +20,17 @@ const mapInquiry = (item: any): InquiryResponse => ({
 });
 
 export function useInquiries() {
-  const externalId = getAuth()?.businessId;
-  const inquiries = useQuery(api.operations.listInquiries, externalId ? { externalId } : "skip");
+  const { businessId } = useActiveBusiness();
+  const inquiries = useQuery(api.operations.listInquiries, businessId ? { businessId } : "skip");
   return { data: inquiries?.map(mapInquiry), isLoading: inquiries === undefined, isError: false };
 }
 
 export function useCreateInquiry() {
   const create = useMutation(api.operations.createInquiry);
+  const { businessId } = useActiveBusiness();
   const submit = async (data: CreateInquiryRequest) => {
-    const externalId = getAuth()?.businessId;
-    if (!externalId) throw new Error("Business session not found");
-    try { return await create({ ...data, externalId, customerName: data.customerName ?? "", vehicleId: data.vehicleId as Id<"vehicles">, customerId: data.customerId as Id<"customers"> | undefined }); }
+    if (!businessId) throw new Error("Business session not found");
+    try { return await create({ ...data, businessId, customerName: data.customerName ?? "", vehicleId: data.vehicleId as Id<"vehicles">, customerId: data.customerId as Id<"customers"> | undefined }); }
     catch (error) { toast.error(error instanceof Error ? error.message : "Failed to create inquiry."); throw error; }
   };
   return { mutate: submit, mutateAsync: submit, isPending: false };
