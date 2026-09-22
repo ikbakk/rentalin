@@ -38,6 +38,30 @@ export default defineSchema({
   })
     .index("by_business", ["businessId"]),
 
+  reservations: defineTable({
+    businessId: v.id("businesses"),
+    inquiryId: v.optional(v.id("inquiries")),
+    customerId: v.optional(v.id("customers")),
+    vehicleId: v.id("vehicles"),
+    startDate: v.string(),
+    endDate: v.string(),
+    estimatedCost: v.number(),
+    currency: v.string(),
+    status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
+  }).index("by_business", ["businessId"]),
+
+  rentals: defineTable({
+    businessId: v.id("businesses"),
+    reservationId: v.id("reservations"),
+    vehicleId: v.id("vehicles"),
+    customerId: v.optional(v.id("customers")),
+    actualStart: v.optional(v.string()),
+    actualEnd: v.optional(v.string()),
+    status: v.union(v.literal("active"), v.literal("completed")),
+    odometerStart: v.optional(v.number()),
+    odometerEnd: v.optional(v.number()),
+  }).index("by_business", ["businessId"]).index("by_status", ["status"]),
+
   vehicles: defineTable({
     businessId: v.id("businesses"),
     make: v.string(),

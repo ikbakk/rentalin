@@ -15,6 +15,8 @@ import type * as fleet from "../fleet.js";
 import type * as http from "../http.js";
 import type * as inquiries from "../inquiries.js";
 import type * as operations from "../operations.js";
+import type * as rentals from "../rentals.js";
+import type * as reservations from "../reservations.js";
 import type * as vehicles from "../vehicles.js";
 
 import type {
@@ -31,6 +33,8 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   inquiries: typeof inquiries;
   operations: typeof operations;
+  rentals: typeof rentals;
+  reservations: typeof reservations;
   vehicles: typeof vehicles;
 }>;
 
