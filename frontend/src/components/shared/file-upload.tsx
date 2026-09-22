@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, useRef } from "react"
+import { useMutation } from "convex/react"
+import { api } from "../../../../convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { ImagePlus, X } from "lucide-react"
-import { uploadFile } from "@/lib/upload"
 
 interface FileUploadProps {
   onUpload: (url: string) => void
@@ -19,12 +20,16 @@ export function FileUpload({
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
   const ref = useRef<HTMLInputElement>(null)
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl)
 
   const upload = async (file: File) => {
     setUploading(true)
     try {
-      const url = await uploadFile(file, referenceType)
-      onUpload(url)
+      const uploadUrl = await generateUploadUrl()
+      const response = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": file.type }, body: file })
+      if (!response.ok) throw new Error("Upload failed")
+      const { storageId } = await response.json()
+      onUpload(storageId)
       setPreview(URL.createObjectURL(file))
     } catch {
     } finally {

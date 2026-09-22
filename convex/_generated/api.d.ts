@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as businesses from "../businesses.js";
 import type * as customers from "../customers.js";
 import type * as dashboard from "../dashboard.js";
+import type * as files from "../files.js";
 import type * as fleet from "../fleet.js";
 import type * as http from "../http.js";
 import type * as inquiries from "../inquiries.js";
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   businesses: typeof businesses;
   customers: typeof customers;
   dashboard: typeof dashboard;
+  files: typeof files;
   fleet: typeof fleet;
   http: typeof http;
   inquiries: typeof inquiries;
