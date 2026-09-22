@@ -1,6 +1,7 @@
 "use client";
 
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexReactClient } from "convex/react";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState } from "react";
@@ -19,5 +20,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 
-  return convex ? <ConvexProvider client={convex}>{content}</ConvexProvider> : content;
+  return convex ? <ConvexAuthProvider client={convex}>{content}</ConvexAuthProvider> : content;
 }
