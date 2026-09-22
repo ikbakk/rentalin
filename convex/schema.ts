@@ -50,6 +50,17 @@ export default defineSchema({
     status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
   }).index("by_business", ["businessId"]),
 
+  inspections: defineTable({
+    businessId: v.id("businesses"),
+    rentalId: v.id("rentals"),
+    vehicleId: v.id("vehicles"),
+    inspectionType: v.union(v.literal("PreRental"), v.literal("PostRental")),
+    notes: v.optional(v.string()),
+    photoUrls: v.array(v.string()),
+    status: v.union(v.literal("Pending"), v.literal("Completed"), v.literal("Failed")),
+    inspectionDate: v.optional(v.string()),
+  }).index("by_business", ["businessId"]),
+
   rentals: defineTable({
     businessId: v.id("businesses"),
     reservationId: v.id("reservations"),
