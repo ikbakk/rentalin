@@ -28,6 +28,7 @@ export default defineSchema({
   inquiries: defineTable({
     businessId: v.id("businesses"),
     vehicleId: v.id("vehicles"),
+    customerId: v.optional(v.id("customers")),
     customerName: v.string(),
     customerPhone: v.string(),
     startDate: v.string(),

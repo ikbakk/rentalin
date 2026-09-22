@@ -14,6 +14,7 @@ import type * as customers from "../customers.js";
 import type * as fleet from "../fleet.js";
 import type * as http from "../http.js";
 import type * as inquiries from "../inquiries.js";
+import type * as operations from "../operations.js";
 import type * as vehicles from "../vehicles.js";
 
 import type {
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   fleet: typeof fleet;
   http: typeof http;
   inquiries: typeof inquiries;
+  operations: typeof operations;
   vehicles: typeof vehicles;
 }>;
 
