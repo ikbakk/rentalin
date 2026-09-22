@@ -27,6 +27,11 @@ export const listByBusinessExternalId = query({
   },
 });
 
+export const get = query({
+  args: { id: v.id("vehicles") },
+  handler: (ctx, { id }) => ctx.db.get(id),
+});
+
 export const create = mutation({
   args: { externalId: v.string(), ...vehicleArgs },
   handler: async (ctx, { externalId, ...vehicle }) => {
