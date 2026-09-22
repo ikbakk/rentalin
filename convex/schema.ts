@@ -14,6 +14,17 @@ export default defineSchema({
     logoUrl: v.optional(v.string()),
   }).index("by_slug", ["slug"]).index("by_external_id", ["externalId"]),
 
+  customers: defineTable({
+    businessId: v.id("businesses"),
+    externalId: v.optional(v.string()),
+    name: v.string(),
+    phoneNumber: v.string(),
+    email: v.string(),
+    notes: v.optional(v.string()),
+  })
+    .index("by_business", ["businessId"])
+    .index("by_external_id", ["externalId"]),
+
   inquiries: defineTable({
     businessId: v.id("businesses"),
     vehicleId: v.id("vehicles"),
