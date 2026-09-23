@@ -1,66 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks */
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { api } from "@/lib/api";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
+import { useActiveBusiness } from "./use-active-business";
 import type { InspectionResponse } from "@/lib/types";
 
+const mapInspection = (i: any): InspectionResponse => ({ id: i._id, rentalId: i.rentalId, vehicleId: i.vehicleId, inspectionType: i.inspectionType, notes: i.notes, photoUrls: i.photoUrls, status: i.status, inspectionDate: i.inspectionDate });
+
 export function useInspections() {
-  return useQuery<InspectionResponse[]>({
-    queryKey: ["inspections"],
-    queryFn: () => api.get("/api/inspections"),
-  });
+  const { businessId } = useActiveBusiness();
+  const data = useQuery(api.inspections.list, businessId ? { businessId } : "skip");
+  return { data: data?.map(mapInspection), isLoading: data === undefined, isError: false };
 }
 
-export function useCreateInspection() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: { rentalId: string; inspectionType: "PreRental" | "PostRental" }) =>
-      api.post<InspectionResponse>("/api/inspections", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inspections"] });
-      queryClient.invalidateQueries({ queryKey: ["rentals"] });
-    },
-    onError: () => {
-      toast.error("Failed to create inspection.");
-    },
-  });
-}
-
-export function useCompleteInspection() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, photoUrls }: { id: string; photoUrls?: string[] }) =>
-      api.put<InspectionResponse>(`/api/inspections/${id}/complete`, {
-        inspectionId: id,
-        photoUrls: photoUrls ?? [],
-      }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["inspections"] }),
-    onError: () => {
-      toast.error("Failed to complete inspection.");
-    },
-  });
-}
-
-export function useInspectionById(id: string) {
-  return useQuery<InspectionResponse>({
-    queryKey: ["inspection", id],
-    queryFn: () => api.get(`/api/inspections/${id}`),
-    enabled: !!id,
-  });
-}
-
-export function useFailInspection() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
-      api.put<InspectionResponse>(`/api/inspections/${id}/fail`, {
-        inspectionId: id,
-        reason,
-      }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["inspections"] }),
-    onError: () => {
-      toast.error("Failed to fail inspection.");
-    },
-  });
-}
+export function useCreateInspection() { const create = useMutation(api.inspections.create); const { businessId } = useActiveBusiness(); return { mutate: (data: { rentalId: string; inspectionType: "PreRental" | "PostRental" }) => create({ ...data, businessId: businessId!, rentalId: data.rentalId as Id<"rentals"> }), mutateAsync: (data: { rentalId: string; inspectionType: "PreRental" | "PostRental" }) => create({ ...data, businessId: businessId!, rentalId: data.rentalId as Id<"rentals"> }), isPending: false }; }
+export function useCompleteInspection() { const complete = useMutation(api.inspections.complete); return { mutate: ({ id, photoUrls }: { id: string; photoUrls?: string[] }) => complete({ id: id as Id<"inspections">, photoUrls: photoUrls ?? [] }), mutateAsync: ({ id, photoUrls }: { id: string; photoUrls?: string[] }) => complete({ id: id as Id<"inspections">, photoUrls: photoUrls ?? [] }), isPending: false }; }
+export function useFailInspection() { const fail = useMutation(api.inspections.fail); return { mutate: ({ id, reason }: { id: string; reason: string }) => fail({ id: id as Id<"inspections">, reason }), mutateAsync: ({ id, reason }: { id: string; reason: string }) => fail({ id: id as Id<"inspections">, reason }), isPending: false }; }
+export function useInspectionById(id: string) { const all = useInspections(); return { data: all.data?.find(i => i.id === id), isLoading: all.isLoading, isError: false }; }

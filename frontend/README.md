@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rentalin frontend
 
-## Getting Started
+Next.js application for Rentalin's authenticated rental workspace and public booking/tracking pages.
 
-First, run the development server:
+## Environment
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Create `frontend/.env.local` with the Convex deployment URL:
+
+```env
+NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Start Convex from the repository root first:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run convex:dev
+```
 
-## Learn More
+Then run the frontend:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Data and authentication
 
-## Deploy on Vercel
+The frontend uses Convex Auth and Convex React hooks directly. It does not use a REST client, browser JWT/localStorage helper, or `NEXT_PUBLIC_API_URL`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Authenticated workspace queries and mutations include the active business ID, which Convex validates against the user's membership. The app shell exposes a business switcher for users with more than one business.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Public pages use business slugs and opaque reservation/rental tokens only; they never expose Convex document IDs.
+
+## Checks
+
+```bash
+npx tsc --noEmit
+npm run lint
+npm run build
+```
+
+`npm run lint` may report existing warnings, but it must complete without errors before deployment.

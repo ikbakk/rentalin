@@ -1,0 +1,7 @@
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+import { requireMembership } from "./tenancy";
+
+export const listInquiries = query({ args: { businessId: v.id("businesses") }, handler: async (ctx, { businessId }) => { await requireMembership(ctx, businessId); return ctx.db.query("inquiries").withIndex("by_business", q => q.eq("businessId", businessId)).collect(); } });
+export const createInquiry = mutation({ args: { businessId: v.id("businesses"), customerId: v.optional(v.id("customers")), customerName: v.string(), customerPhone: v.optional(v.string()), vehicleId: v.id("vehicles"), startDate: v.string(), endDate: v.optional(v.string()), notes: v.optional(v.string()) }, handler: async (ctx, { businessId, customerPhone, endDate, ...data }) => { await requireMembership(ctx, businessId); const vehicle = await ctx.db.get(data.vehicleId); if (!vehicle || vehicle.businessId !== businessId) throw new Error("Vehicle not found"); return ctx.db.insert("inquiries", { ...data, businessId, customerPhone: customerPhone ?? "", endDate: endDate ?? data.startDate, status: "new" }); } });
+export const setInquiryStatus = mutation({ args: { id: v.id("inquiries"), status: v.union(v.literal("new"), v.literal("contacted"), v.literal("converted"), v.literal("cancelled")) }, handler: async (ctx, { id, status }) => { const item = await ctx.db.get(id); if (!item) throw new Error("Inquiry not found"); await requireMembership(ctx, item.businessId); return ctx.db.patch(id, { status }); } });

@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
-import { api } from "@/lib/api"
+import { useQuery } from "convex/react"
+import { api } from "../../../../convex/_generated/api"
+import { useActiveBusiness } from "@/hooks/use-active-business"
 import {
   Command,
   CommandDialog,
@@ -53,12 +54,10 @@ interface CommandPaletteProps {
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const [query, setQuery] = useState("")
   const router = useRouter()
-
-  const { data: searchResults, isLoading } = useQuery<SearchResult>({
-    queryKey: ["search", query],
-    queryFn: () => api.get<SearchResult>(`/api/search?q=${encodeURIComponent(query)}&includeReservations=true`),
-    enabled: query.length >= 2,
-  })
+  const { businessId } = useActiveBusiness()
+  const searchData = useQuery(api.search.search, businessId && query.length >= 2 ? { businessId, query } : "skip")
+  const searchResults: SearchResult | undefined = searchData ? { vehicles: searchData.vehicles.map(v => ({ id: v._id, licensePlate: v.plateNumber, make: v.make, model: v.model, status: v.status, type: "Vehicle" as const })), customers: searchData.customers.map(c => ({ id: c._id, name: c.name, phone: c.phoneNumber, type: "Customer" as const })) } : undefined
+  const isLoading = query.length >= 2 && searchData === undefined
 
   const handleSelect = useCallback((href: string) => {
     onOpenChange(false)

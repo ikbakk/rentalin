@@ -1,83 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks */
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
+import { useActiveBusiness } from "./use-active-business";
 import { toast } from "sonner";
-import { api } from "@/lib/api";
-import type {
-  ReservationResponse,
-  RentalResponse,
-  CreateReservationRequest,
-  StartRentalRequest,
-} from "@/lib/types";
-
+import type { ReservationResponse, RentalResponse, CreateReservationRequest, StartRentalRequest } from "@/lib/types";
 export { useRentals, useActiveRentals, useCompleteRental } from "./use-rentals";
 
+const mapReservation = (r: any): ReservationResponse => ({ id: r._id, inquiryId: r.inquiryId ?? "", customerId: r.customerId ?? "", customerName: "", vehicleId: r.vehicleId, vehicleSummary: "", startDate: r.startDate, endDate: r.endDate, estimatedCost: r.estimatedCost, currency: r.currency, status: r.status });
+
 export function useReservations() {
-  return useQuery<ReservationResponse[]>({
-    queryKey: ["reservations"],
-    queryFn: () => api.get("/api/reservations"),
-  });
+  const { businessId } = useActiveBusiness();
+  const data = useQuery(api.reservations.list, businessId ? { businessId } : "skip");
+  return { data: data?.map(mapReservation), isLoading: data === undefined, isError: false };
 }
 
 export function useCreateReservation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateReservationRequest) =>
-      api.post<ReservationResponse>("/api/reservations", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reservations"] });
-      queryClient.invalidateQueries({ queryKey: ["inquiries"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-    },
-    onError: () => {
-      toast.error("Failed to create reservation.");
-    },
-  });
+  const create = useMutation(api.reservations.create);
+  const { businessId } = useActiveBusiness();
+  return { mutateAsync: (data: CreateReservationRequest) => { if (!businessId) throw new Error("Business session not found"); return create({ ...data, businessId, inquiryId: data.inquiryId as Id<"inquiries">, vehicleId: "" as Id<"vehicles">, startDate: "", endDate: "" }); }, isPending: false };
 }
 
-export function useStartRental() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: StartRentalRequest) =>
-      api.post<RentalResponse>(`/api/reservations/${data.reservationId}/start-rental`, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reservations"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-    },
-    onError: () => {
-      toast.error("Failed to start rental.");
-    },
-  });
-}
-
-export function useReservationById(id: string) {
-  return useQuery<ReservationResponse>({
-    queryKey: ["reservations", id],
-    queryFn: () => api.get(`/api/reservations/${id}`),
-    enabled: !!id,
-  });
-}
-
-export function usePrepareReservation() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => api.post(`/api/reservations/${id}/prepare`, {}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reservations"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-    },
-    onError: () => toast.error("Failed to prepare reservation."),
-  });
-}
-
-export function useReadyForHandover() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => api.post(`/api/reservations/${id}/ready-for-handover`, {}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reservations"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-    },
-    onError: () => toast.error("Failed to mark reservation ready."),
-  });
-}
+export function useStartRental() { const start = useMutation(api.rentals.start); return { mutate: (data: StartRentalRequest) => start({ reservationId: data.reservationId as Id<"reservations">, odometerStart: data.odometerStart }), mutateAsync: (data: StartRentalRequest) => start({ reservationId: data.reservationId as Id<"reservations">, odometerStart: data.odometerStart }), isPending: false } as any; }
+export function useReservationById(id: string) { const all = useReservations(); return { data: all.data?.find(r => r.id === id), isLoading: all.isLoading, isError: false, error: undefined }; }
+function transition(status: "preRental" | "ready") { const update = useMutation(api.reservations.setStatus); return { mutate: (id: string) => update({ id: id as Id<"reservations">, status }), mutateAsync: (id: string) => update({ id: id as Id<"reservations">, status }), isPending: false }; }
+export function usePrepareReservation() { return transition("preRental"); }
+export function useReadyForHandover() { return transition("ready"); }

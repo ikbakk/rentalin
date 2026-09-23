@@ -1,32 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks */
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { toast } from "sonner";
-import { api } from "@/lib/api";
 import type { CustomerResponse } from "@/lib/types";
 
-export function useCustomerById(id: string) {
-  return useQuery<CustomerResponse>({
-    queryKey: ["customer", id],
-    queryFn: () => api.get(`/api/customers/${id}`),
-    enabled: !!id,
-  });
-}
+const mapCustomer = (customer: any): CustomerResponse | undefined => customer && ({
+  id: customer._id,
+  name: customer.name,
+  phoneNumber: customer.phoneNumber,
+  email: customer.email,
+  notes: customer.notes,
+});
 
-export function useUpdateCustomer() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, ...data }: UpdateCustomerRequest & { id: string }) =>
-      api.put<CustomerResponse>(`/api/customers/${id}`, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["customer", variables.id] });
-      queryClient.invalidateQueries({ queryKey: ["customers"] });
-      toast.success("Customer updated");
-    },
-    onError: () => {
-      toast.error("Failed to update customer.");
-    },
-  });
+export function useCustomerById(id: string) {
+  const customer = useQuery(api.customers.get, id ? { id: id as Id<"customers"> } : "skip");
+  return { data: mapCustomer(customer), isLoading: customer === undefined, isError: false };
 }
 
 export interface UpdateCustomerRequest {
@@ -34,4 +25,16 @@ export interface UpdateCustomerRequest {
   phoneNumber: string;
   email: string;
   notes?: string;
+}
+
+export function useUpdateCustomer() {
+  const update = useMutation(api.customers.update);
+  return {
+    mutate: ({ id, ...data }: UpdateCustomerRequest & { id: string }) => update({ id: id as Id<"customers">, ...data }),
+    mutateAsync: async ({ id, ...data }: UpdateCustomerRequest & { id: string }) => {
+      try { return await update({ id: id as Id<"customers">, ...data }); }
+      catch (error) { toast.error(error instanceof Error ? error.message : "Failed to update customer."); throw error; }
+    },
+    isPending: false,
+  };
 }

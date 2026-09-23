@@ -1,20 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getAuth } from "@/lib/auth";
+import { useConvexAuth } from "convex/react";
+import { useEffect } from "react";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [ok, setOk] = useState(false);
+  const { isAuthenticated, isLoading } = useConvexAuth();
 
   useEffect(() => {
-    const auth = getAuth();
-    if (!auth) {
-      window.location.href = "/login";
-      return;
-    }
-    setOk(true);
-  }, []);
-
-  if (!ok) return null;
+    if (!isLoading && !isAuthenticated) window.location.href = "/login";
+  }, [isLoading, isAuthenticated]);
+  if (isLoading || !isAuthenticated) return null;
   return <>{children}</>;
 }

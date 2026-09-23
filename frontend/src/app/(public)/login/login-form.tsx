@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuthActions } from "@convex-dev/auth/react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { setAuth } from "@/lib/auth"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
@@ -14,20 +14,14 @@ export function LoginForm() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { signIn } = useAuthActions()
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000"}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? "Login failed")
-      setAuth(data)
-      window.location.href = "/operations"
+      await signIn("password", { email, password, flow: "signIn" })
+      router.push("/operations")
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Login failed")
     } finally {

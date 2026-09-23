@@ -1,13 +1,5 @@
 "use client";
-
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
-import type { OperationsSummary } from "@/lib/types";
-
-export function useOperationsSummary() {
-  return useQuery<OperationsSummary>({
-    queryKey: ["operations-summary"],
-    queryFn: () => api.get("/api/operations/summary"),
-    refetchInterval: 30_000,
-  });
-}
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { useActiveBusiness } from "./use-active-business";
+export function useOperationsSummary() { const { businessId } = useActiveBusiness(); const data = useQuery(api.dashboard.summary, businessId ? { businessId } : "skip"); return { data, isLoading: data === undefined, isError: false }; }

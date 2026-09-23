@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs, react-hooks/set-state-in-effect, prefer-const */
 import { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 

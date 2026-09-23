@@ -1,20 +1,34 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
-import { api } from "@/lib/api";
+import { useState } from "react";
 import type { BusinessResponse, UpdateBusinessRequest } from "@/lib/types";
 
 export function useUpdateBusiness() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (request: UpdateBusinessRequest) =>
-      api.put<BusinessResponse>(`/api/businesses/${request.id}`, request),
-    onSuccess: (_data, request) => {
-      queryClient.invalidateQueries({ queryKey: ["business", request.id] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message ?? "Failed to update business");
-    },
-  });
+  const update = useMutation(api.businesses.updateByExternalId);
+  const [isPending, setIsPending] = useState(false);
+
+  const mutateAsync = async (request: UpdateBusinessRequest) => {
+    setIsPending(true);
+    try {
+      const business = await update({
+        externalId: request.id,
+        name: request.name,
+        address: request.address,
+        phone: request.phoneNumber,
+        email: request.email,
+      });
+      return business as unknown as BusinessResponse;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to update business";
+      toast.error(message);
+      throw error;
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  return { mutateAsync, isPending };
 }

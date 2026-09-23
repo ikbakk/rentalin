@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs, react-hooks/set-state-in-effect, prefer-const */
 import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

@@ -1,24 +1,11 @@
-"use client"
-
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
-import { api } from "@/lib/api"
-import type { CustomerResponse, CreateCustomerRequest } from "@/lib/types"
-
-export function useCustomers() {
-  return useQuery<CustomerResponse[]>({
-    queryKey: ["customers"],
-    queryFn: () => api.get("/api/customers"),
-  })
-}
-
-export function useCreateCustomer() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (data: CreateCustomerRequest) => api.post<CustomerResponse>("/api/customers", data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customers"] }),
-    onError: () => {
-      toast.error("Failed to create customer.")
-    },
-  })
-}
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/rules-of-hooks */
+"use client";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
+import { useActiveBusiness } from "./use-active-business";
+import { toast } from "sonner";
+import type { CustomerResponse, CreateCustomerRequest } from "@/lib/types";
+const map = (c: any): CustomerResponse => ({ id: c._id, name: c.name, phoneNumber: c.phoneNumber, email: c.email, notes: c.notes });
+export function useCustomers() { const { businessId } = useActiveBusiness(); const data = useQuery(api.customers.list, businessId ? { businessId } : "skip"); return { data: data?.map(map), isLoading: data === undefined, isError: false }; }
+export function useCreateCustomer() { const create = useMutation(api.customers.create); const { businessId } = useActiveBusiness(); return { mutateAsync: async (data: CreateCustomerRequest) => { if (!businessId) throw new Error("Business session not found"); try { return await create({ businessId, ...data }); } catch (e) { toast.error(e instanceof Error ? e.message : "Failed to create customer."); throw e; } }, isPending: false }; }

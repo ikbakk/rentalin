@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useCreateVehicle } from "@/hooks/use-vehicles"
-import { getAuth } from "@/lib/auth"
 import { toast } from "sonner"
 import type { CreateVehicleRequest } from "@/lib/types"
 
@@ -14,7 +13,7 @@ export function AddVehicleDialog({ open, onOpenChange }: { open: boolean; onOpen
   const [form, setForm] = useState<CreateVehicleRequest>({
     licensePlate: "", make: "", model: "", year: new Date().getFullYear(),
     color: "", seatingCapacity: 5, dailyRate: 0, currency: "IDR",
-    businessId: getAuth()?.businessId ?? ""
+    businessId: ""
   })
   const createVehicle = useCreateVehicle()
 
