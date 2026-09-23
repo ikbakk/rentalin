@@ -2,22 +2,57 @@
 
 Vehicle-rental operations software for small businesses in Indonesia.
 
-## Stack
+## Architecture
 
-- Next.js frontend (`frontend/`)
-- Convex database, functions, realtime, storage, and auth (`convex/`)
-- Astro marketing site (`landing/`)
+Rentalin is a TypeScript-only application:
 
-## Development
+- `frontend/` — Next.js operations and public booking application.
+- `convex/` — Convex database schema, authentication, realtime queries, mutations, storage, and scheduled work.
+- `landing/` — Astro marketing site.
+
+There is no separate REST API or .NET backend. Tenant-scoped operations use an explicit Convex business ID and authenticated membership authorization.
+
+## Core tenancy model
+
+- A user's first authenticated session provisions a default business and owner membership.
+- Users can create and switch between businesses.
+- Product records are authorized against the active business membership.
+- Public booking and tracking use a business slug and opaque reservation/rental tokens; Convex document IDs are not public URLs.
+
+## Local development
+
+Install dependencies, then start Convex and the frontend in separate terminals:
 
 ```bash
 npm install
-npx convex dev
-cd frontend && npm run dev
+npm run convex:dev
 ```
 
-Set `NEXT_PUBLIC_CONVEX_URL` from the Convex command output in `frontend/.env.local`.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Set the Convex deployment URL printed by the first command in `frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
+```
+
+## Verification
+
+```bash
+npx convex dev --once
+cd frontend && npx tsc --noEmit && npm run lint && npm run build
+```
+
+The lint command currently reports non-blocking warnings; the typecheck and production build must pass.
 
 ## Deployment
 
-Deploy Convex with `npm run convex:deploy`; deploy the Next.js frontend and landing site independently or run `docker compose up`.
+Deploy Convex first, then deploy the frontend and landing site independently:
+
+```bash
+npm run convex:deploy
+```

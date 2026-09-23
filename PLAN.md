@@ -39,8 +39,12 @@ Create a first-class Convex membership model that lets an authenticated user man
 - [x] Replace all legacy `getAuth()` tenancy access with an authenticated active-business hook/query and add a business switcher to the app shell.
 - [x] Add tenant-scoped search and rental-history functions; migrate search UI and history hook.
 - [x] Add public booking metadata and opaque-token-scoped reservation/rental tracking functions; migrate public pages without exposing document IDs.
-- [ ] Remove REST client, JWT/localStorage helper, API URL variables, and React Query wrappers no longer needed.
-- [ ] Run Convex deployment/type generation, frontend typecheck/lint/build, and browser smoke tests.
+- [x] Remove REST client, JWT/localStorage helper, API URL variables, and React Query wrappers no longer needed.
+- [x] Run Convex deployment/type generation, frontend typecheck/lint/build, and browser smoke tests.
+
+## Completion status
+
+Completed on the current branch. Convex generation, frontend typecheck, production build, and a `/login` HTTP smoke test passed. ESLint completed with pre-existing warnings but no errors.
 
 ## Verification
 
