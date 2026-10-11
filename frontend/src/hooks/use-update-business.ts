@@ -2,19 +2,20 @@
 
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { useState } from "react";
 import type { BusinessResponse, UpdateBusinessRequest } from "@/lib/types";
 
 export function useUpdateBusiness() {
-  const update = useMutation(api.businesses.updateByExternalId);
+  const update = useMutation(api.businesses.updateSettings);
   const [isPending, setIsPending] = useState(false);
 
   const mutateAsync = async (request: UpdateBusinessRequest) => {
     setIsPending(true);
     try {
       const business = await update({
-        externalId: request.id,
+        businessId: request.id as Id<"businesses">,
         name: request.name,
         address: request.address,
         phone: request.phoneNumber,

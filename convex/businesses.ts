@@ -1,32 +1,33 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requirePermission } from "./tenancy";
 
-export const updateByExternalId = mutation({
+export const updateSettings = mutation({
   args: {
-    externalId: v.string(),
+    businessId: v.id("businesses"),
     name: v.string(),
     address: v.string(),
     phone: v.string(),
     email: v.string(),
   },
-  handler: async (ctx, { externalId, ...updates }) => {
-    const business = await ctx.db
-      .query("businesses")
-      .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
-      .unique();
-    if (!business) throw new Error("Business not found");
-    await ctx.db.patch(business._id, updates);
-    return ctx.db.get(business._id);
+  handler: async (ctx, { businessId, ...updates }) => {
+    await requirePermission(ctx, businessId, "manageBusiness");
+    await ctx.db.patch(businessId, updates);
+    return ctx.db.get(businessId);
   },
 });
 
 export const getByExternalId = query({
   args: { externalId: v.string() },
-  handler: async (ctx, { externalId }) =>
-    ctx.db
+  handler: async (ctx, { externalId }) => {
+    const business = await ctx.db
       .query("businesses")
       .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
-      .unique(),
+      .unique();
+    if (!business) return null;
+    await requirePermission(ctx, business._id, "read");
+    return business;
+  },
 });
 
 export const getBySlug = query({
