@@ -1,5 +1,6 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { parseBookingInterval } from "./bookingRules";
 
 export const createPublic = mutation({
   args: {
@@ -14,11 +15,9 @@ export const createPublic = mutation({
   handler: async (ctx, args) => {
     const customerName = args.customerName.trim();
     const customerPhone = args.customerPhone.replace(/\D/g, "");
-    const startTime = Date.parse(args.startDate);
-    const endTime = Date.parse(args.endDate);
+    const interval = parseBookingInterval(args.startDate, args.endDate);
     if (customerName.length < 2 || customerName.length > 100) throw new Error("Enter a valid name");
     if (customerPhone.length < 8 || customerPhone.length > 15) throw new Error("Enter a valid phone number");
-    if (!Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) throw new Error("Choose a valid rental date range");
     if (args.notes && args.notes.length > 500) throw new Error("Notes are too long");
 
     const business = await ctx.db
@@ -47,8 +46,8 @@ export const createPublic = mutation({
       vehicleId: args.vehicleId,
       customerName,
       customerPhone,
-      startDate: args.startDate,
-      endDate: args.endDate,
+      startDate: interval.startDate,
+      endDate: interval.endDate,
       notes: args.notes,
       status: "new",
     });

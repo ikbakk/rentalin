@@ -72,7 +72,7 @@ export default defineSchema({
     currency: v.string(),
     status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
     publicToken: v.optional(v.string()),
-  }).index("by_business", ["businessId"]).index("by_public_token", ["publicToken"]),
+  }).index("by_business", ["businessId"]).index("by_public_token", ["publicToken"]).index("by_vehicle", ["vehicleId"]).index("by_inquiry", ["inquiryId"]),
 
   timeline: defineTable({
     businessId: v.id("businesses"),
@@ -106,7 +106,7 @@ export default defineSchema({
     odometerStart: v.optional(v.number()),
     odometerEnd: v.optional(v.number()),
     publicToken: v.optional(v.string()),
-  }).index("by_business", ["businessId"]).index("by_status", ["status"]).index("by_reservation", ["reservationId"]),
+  }).index("by_business", ["businessId"]).index("by_status", ["status"]).index("by_reservation", ["reservationId"]).index("by_vehicle", ["vehicleId"]),
 
   vehicles: defineTable({
     businessId: v.id("businesses"),
