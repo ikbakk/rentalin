@@ -34,11 +34,22 @@ npm install
 npm run dev
 ```
 
-Set the Convex deployment URL printed by the first command in `frontend/.env.local`:
+Copy each runtime's example file and fill in the public URLs or contact number before starting or building it:
 
 ```env
-NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
+cp frontend/.env.example frontend/.env.local
+cp landing/.env.example landing/.env
 ```
+
+`NEXT_PUBLIC_CONVEX_URL`, `CONVEX_SITE_URL`, and `NEXT_PUBLIC_FRONTEND_URL` belong in `frontend/.env.local`. The marketing site's `PUBLIC_WHATSAPP_NUMBER` belongs in `landing/.env`. These values are configuration; do not put API secrets in `NEXT_PUBLIC_*` or `PUBLIC_*` variables. The example files contain placeholders, and release builds stop until valid values are set.
+
+For Convex Auth, configure the same site URL on the Convex deployment itself as well as in the frontend build environment:
+
+```bash
+npx convex env set CONVEX_SITE_URL
+```
+
+Enter the URL shown by your Convex deployment when prompted. Convex deployment variables are separate from local Next.js `.env.local` values.
 
 ## Verification
 
@@ -47,7 +58,7 @@ npm ci
 npm run typecheck
 npm test
 cd frontend && npm ci && npm run typecheck && npm run lint && npm run build
-cd ../landing && npm ci && ASTRO_TELEMETRY_DISABLED=1 npm run build
+cd ../landing && npm ci && npm run test:release-env && ASTRO_TELEMETRY_DISABLED=1 npm run build
 ```
 
 Run the package installs sequentially: root `npm ci` removes nested `node_modules`
