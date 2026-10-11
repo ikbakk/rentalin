@@ -128,6 +128,10 @@ export function TxView({ rentalId }: { rentalId: string }) {
                 </span>
               </div>
             </div>
+            <div className="mt-3 space-y-1 text-sm">
+              <p className="flex justify-between"><span className="text-muted-foreground">Payments recorded</span><span>{rental.currency} {rental.amountReceived.toLocaleString()}</span></p>
+              <p className="flex justify-between font-medium"><span>Outstanding</span><span>{rental.currency} {rental.amountDue.toLocaleString()}</span></p>
+            </div>
           </CardContent>
         </Card>
 

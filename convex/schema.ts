@@ -13,6 +13,7 @@ export default defineSchema({
     email: v.optional(v.string()),
     address: v.optional(v.string()),
     logoUrl: v.optional(v.string()),
+    timeZone: v.optional(v.string()),
   }).index("by_slug", ["slug"]).index("by_external_id", ["externalId"]),
 
   memberships: defineTable({
@@ -73,6 +74,20 @@ export default defineSchema({
     status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active"), v.literal("completed")),
     publicToken: v.optional(v.string()),
   }).index("by_business", ["businessId"]).index("by_public_token", ["publicToken"]).index("by_vehicle", ["vehicleId"]).index("by_inquiry", ["inquiryId"]),
+
+  payments: defineTable({
+    businessId: v.id("businesses"),
+    reservationId: v.id("reservations"),
+    kind: v.union(v.literal("payment"), v.literal("deposit"), v.literal("refund")),
+    amount: v.number(),
+    currency: v.literal("IDR"),
+    method: v.union(v.literal("cash"), v.literal("bank_transfer"), v.literal("other")),
+    reference: v.optional(v.string()),
+    note: v.optional(v.string()),
+    recordedAt: v.string(),
+    recordedBy: v.id("users"),
+    requestKey: v.string(),
+  }).index("by_business", ["businessId"]).index("by_reservation", ["reservationId"]).index("by_business_and_request", ["businessId", "requestKey"]),
 
   timeline: defineTable({
     businessId: v.id("businesses"),

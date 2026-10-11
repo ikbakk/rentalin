@@ -1,5 +1,6 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { summarizeLedger } from "./financeRules";
 
 export const businessBySlug = query({
   args: { slug: v.string() },
@@ -24,11 +25,13 @@ export const reservationByToken = query({
     const reservation = await ctx.db.query("reservations").withIndex("by_public_token", q => q.eq("publicToken", token)).unique();
     if (!reservation) return null;
 
-    const [vehicle, business, rental] = await Promise.all([
+    const [vehicle, business, rental, payments] = await Promise.all([
       ctx.db.get(reservation.vehicleId),
       ctx.db.get(reservation.businessId),
       ctx.db.query("rentals").withIndex("by_reservation", q => q.eq("reservationId", reservation._id)).first(),
+      ctx.db.query("payments").withIndex("by_reservation", q => q.eq("reservationId", reservation._id)).collect(),
     ]);
+    const balance = summarizeLedger(reservation.estimatedCost, payments);
 
     const status = rental?.status === "completed"
       ? "Completed"
@@ -49,6 +52,8 @@ export const reservationByToken = query({
       startDate: reservation.startDate,
       endDate: reservation.endDate,
       estimatedCost: reservation.estimatedCost,
+      amountReceived: balance.received,
+      amountDue: balance.outstanding,
       currency: reservation.currency,
       vehicleMake: vehicle?.make ?? "",
       vehicleModel: vehicle?.model ?? "",
