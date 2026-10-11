@@ -7,7 +7,7 @@ import type { Id } from "../../../convex/_generated/dataModel";
 import { useActiveBusiness } from "./use-active-business";
 import type { InspectionResponse } from "@/lib/types";
 
-const mapInspection = (i: any): InspectionResponse => ({ id: i._id, rentalId: i.rentalId, vehicleId: i.vehicleId, inspectionType: i.inspectionType, notes: i.notes, photoUrls: i.photoUrls, status: i.status, inspectionDate: i.inspectionDate });
+const mapInspection = (i: any): InspectionResponse => ({ id: i._id, rentalId: i.rentalId ?? i.reservationId ?? "", vehicleId: i.vehicleId, inspectionType: i.inspectionType, notes: i.notes, photoUrls: i.photoUrls, status: i.status, inspectionDate: i.inspectionDate });
 
 export function useInspections() {
   const { businessId } = useActiveBusiness();

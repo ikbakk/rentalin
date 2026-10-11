@@ -70,7 +70,7 @@ export default defineSchema({
     endDate: v.string(),
     estimatedCost: v.number(),
     currency: v.string(),
-    status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
+    status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active"), v.literal("completed")),
     publicToken: v.optional(v.string()),
   }).index("by_business", ["businessId"]).index("by_public_token", ["publicToken"]).index("by_vehicle", ["vehicleId"]).index("by_inquiry", ["inquiryId"]),
 
@@ -86,14 +86,15 @@ export default defineSchema({
 
   inspections: defineTable({
     businessId: v.id("businesses"),
-    rentalId: v.id("rentals"),
+    rentalId: v.optional(v.id("rentals")),
+    reservationId: v.optional(v.id("reservations")),
     vehicleId: v.id("vehicles"),
     inspectionType: v.union(v.literal("PreRental"), v.literal("PostRental")),
     notes: v.optional(v.string()),
     photoUrls: v.array(v.string()),
     status: v.union(v.literal("Pending"), v.literal("Completed"), v.literal("Failed")),
     inspectionDate: v.optional(v.string()),
-  }).index("by_business", ["businessId"]),
+  }).index("by_business", ["businessId"]).index("by_rental", ["rentalId"]).index("by_reservation", ["reservationId"]),
 
   rentals: defineTable({
     businessId: v.id("businesses"),
