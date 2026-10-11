@@ -3,6 +3,7 @@ import type { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
+import { DEFAULT_BUSINESS_TIME_ZONE } from "./businessTime";
 
 type AuthCtx = QueryCtx | MutationCtx;
 type Permission = "read" | "operate" | "manageFleet" | "managePayments" | "manageBusiness";
@@ -46,7 +47,7 @@ export const ensureOnboarded = mutation({ args: {}, handler: async (ctx) => {
   const activeMembership = memberships.find((membership) => membership.isActive);
   if (activeMembership) return activeMembership.businessId;
   const suffix = String(userId).slice(-6).toLowerCase();
-  const businessId = await ctx.db.insert("businesses", { name: "My Rental Business", slug: `rental-${suffix}`, createdBy: userId });
+  const businessId = await ctx.db.insert("businesses", { name: "My Rental Business", slug: `rental-${suffix}`, createdBy: userId, timeZone: DEFAULT_BUSINESS_TIME_ZONE });
   await ctx.db.insert("memberships", { userId, businessId, role: "owner", isActive: true });
   await ctx.db.insert("userPreferences", { userId, activeBusinessId: businessId });
   return businessId;
@@ -72,6 +73,13 @@ export const myBusinesses = query({ args: {}, handler: async (ctx) => {
   return businesses.filter((business) => business !== null);
 }});
 
+export const currentUser = query({ args: {}, handler: async (ctx) => {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) return null;
+  const user = await ctx.db.get(userId);
+  return user ? { id: user._id, email: user.email ?? "", name: user.name ?? "" } : null;
+}});
+
 export const selectBusiness = mutation({ args: { businessId: v.id("businesses") }, handler: async (ctx, { businessId }) => {
   const membership = await requireMembership(ctx, businessId);
   const userId = membership.userId;
@@ -83,7 +91,7 @@ export const createBusiness = mutation({ args: { name: v.string(), slug: v.strin
   const userId = await getAuthUserId(ctx); if (!userId) throw new Error("Unauthorized");
   if (!args.name.trim() || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(args.slug)) throw new Error("Invalid business name or slug");
   if (await ctx.db.query("businesses").withIndex("by_slug", q => q.eq("slug", args.slug)).unique()) throw new Error("Slug already exists");
-  const businessId = await ctx.db.insert("businesses", { ...args, createdBy: userId });
+  const businessId = await ctx.db.insert("businesses", { ...args, createdBy: userId, timeZone: DEFAULT_BUSINESS_TIME_ZONE });
   await ctx.db.insert("memberships", { userId, businessId, role: "owner", isActive: true });
   const preference = await ctx.db.query("userPreferences").withIndex("by_user", q => q.eq("userId", userId)).unique();
   if (!preference) await ctx.db.insert("userPreferences", { userId, activeBusinessId: businessId });

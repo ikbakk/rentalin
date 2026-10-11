@@ -1,15 +1,15 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { useInquiries, useConfirmInquiry } from "@/hooks/use-inquiries"
-import { useReservations, useStartRental, useRentals, useCompleteRental } from "@/hooks/use-reservations"
+import { useInquiries } from "@/hooks/use-inquiries"
+import { useReservations, useRentals, useCompleteRental } from "@/hooks/use-reservations"
 import { InquiryCard } from "./inquiry-card"
 import { ReservationCard } from "./reservation-card"
 import { RentalCard } from "./rental-card"
 import { NewInquiryDialog } from "./new-inquiry-dialog"
-import { StartRentalDialog } from "./start-rental-dialog"
 import { CompleteRentalDialog } from "./complete-rental-dialog"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
@@ -21,13 +21,11 @@ type Tab = "inquiries" | "reservations" | "rentals"
 export function ReservationsContent() {
   const [tab, setTab] = useState<Tab>("inquiries")
   const [newOpen, setNewOpen] = useState(false)
-  const [startOpen, setStartOpen] = useState<string | null>(null)
   const [completeOpen, setCompleteOpen] = useState<string | null>(null)
+  const router = useRouter()
 
   const { data: inquiries, isLoading: iLoading } = useInquiries()
-  const confirmInquiry = useConfirmInquiry()
   const { data: reservations, isLoading: rLoading } = useReservations()
-  const startRental = useStartRental()
   const { data: rentals, isLoading: aLoading } = useRentals()
   const completeRental = useCompleteRental()
 
@@ -39,7 +37,7 @@ export function ReservationsContent() {
 
   const stats = {
     inquiries: inquiries?.filter(i => i.status === "New").length ?? 0,
-    reservations: reservations?.filter(r => r.status === "Confirmed").length ?? 0,
+    reservations: reservations?.filter(r => ["Confirmed", "PreRental", "Ready"].includes(r.status)).length ?? 0,
     rentals: rentals?.filter(r => r.status === "Active").length ?? 0,
   }
 
@@ -63,7 +61,7 @@ export function ReservationsContent() {
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.reservations}</p>
-                <p className="text-xs text-muted-foreground">Confirmed</p>
+                <p className="text-xs text-muted-foreground">Upcoming</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -113,7 +111,7 @@ export function ReservationsContent() {
             ) : inquiries?.length ? (
               inquiries.map((i, idx) => (
                 <div key={i.id} className={cn("animate-fade-up", `stagger-${(idx % 8) + 1}`)}>
-                  <InquiryCard inquiry={i} onConfirm={() => confirmInquiry.mutate(i.id)} />
+                  <InquiryCard inquiry={i} onConfirm={() => router.push(`/inquiries/${i.id}/review`)} />
                 </div>
               ))
             ) : (
@@ -133,7 +131,7 @@ export function ReservationsContent() {
             ) : reservations?.length ? (
               reservations.map((r, idx) => (
                 <div key={r.id} className={cn("animate-fade-up", `stagger-${(idx % 8) + 1}`)}>
-                  <ReservationCard reservation={r} onStart={() => setStartOpen(r.id)} />
+                  <ReservationCard reservation={r} onStart={() => router.push(`/reservations/${r.id}/${r.status === "Ready" ? "handover" : "preparation"}`)} />
                 </div>
               ))
             ) : (
@@ -177,7 +175,6 @@ export function ReservationsContent() {
       )}
 
       <NewInquiryDialog open={newOpen} onOpenChange={setNewOpen} />
-      <StartRentalDialog open={!!startOpen} reservationId={startOpen} onClose={() => setStartOpen(null)} mutate={startRental} />
       <CompleteRentalDialog open={!!completeOpen} rentalId={completeOpen} onClose={() => setCompleteOpen(null)} mutate={completeRental} />
     </div>
   )

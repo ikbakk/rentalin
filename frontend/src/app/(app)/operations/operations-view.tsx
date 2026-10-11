@@ -58,13 +58,13 @@ function buildOperationItems(
   const items: ExtendedOperationItem[] = []
 
   for (const r of reservations as Array<{id: string; status: string; vehicleSummary: string; customerName: string; currency: string; estimatedCost: number; startDate?: string}>) {
-    if (r.status === "Ready" || r.status === "Active") {
+    if (r.status === "Ready") {
       const startDate = r.startDate ? new Date(r.startDate) : null
       items.push({
         id: r.id, type: "pickup" as const,
         title: `Pickup: ${r.vehicleSummary}`,
         subtitle: `${r.customerName} · ${r.currency} ${r.estimatedCost.toLocaleString()}`,
-        status: r.status === "Ready" ? "Ready" : "Pending",
+        status: "Ready",
         customerName: r.customerName, vehiclePlate: r.vehicleSummary,
         actionLabel: "Start Handover",
         date: startDate?.toISOString(),
@@ -90,14 +90,14 @@ function buildOperationItems(
   }
 
   for (const r of reservations as Array<{id: string; status: string; customerName: string; vehicleSummary: string; currency: string; estimatedCost: number; startDate?: string}>) {
-    if (r.status === "Active" || r.status === "Confirmed") {
+    if (r.status === "Confirmed" || r.status === "PreRental") {
       items.push({
         id: r.id, type: "preparation" as const,
         title: `Prepare: ${r.customerName}`,
         subtitle: `${r.vehicleSummary} · ${r.currency} ${r.estimatedCost.toLocaleString()}`,
         status: "Needs Attention",
         vehiclePlate: r.vehicleSummary,
-        actionLabel: "Prepare Vehicle",
+        actionLabel: r.status === "PreRental" ? "Continue Preparation" : "Prepare Vehicle",
         date: r.startDate,
         endDate: r.startDate,
       })

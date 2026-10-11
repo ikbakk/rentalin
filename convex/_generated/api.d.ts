@@ -26,6 +26,7 @@ import type * as public_ from "../public.js";
 import type * as rentals from "../rentals.js";
 import type * as reservations from "../reservations.js";
 import type * as search from "../search.js";
+import type * as staff from "../staff.js";
 import type * as tenancy from "../tenancy.js";
 import type * as vehicles from "../vehicles.js";
 
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   rentals: typeof rentals;
   reservations: typeof reservations;
   search: typeof search;
+  staff: typeof staff;
   tenancy: typeof tenancy;
   vehicles: typeof vehicles;
 }>;

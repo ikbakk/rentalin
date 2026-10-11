@@ -1,8 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { useQuery } from "convex/react"
+import { api } from "../../../../../convex/_generated/api"
 import { useAuthActions } from "@convex-dev/auth/react"
-import { useActiveBusiness } from "@/hooks/use-active-business"
+import { useActiveBusiness, useBusinesses } from "@/hooks/use-active-business"
 import { useRouter } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -10,18 +12,20 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
 import { Skeleton } from "@/components/ui/skeleton"
 import { User, Bell, LogOut, Building2, Loader2, Link2, Copy } from "lucide-react"
 import { useBusiness } from "@/hooks/use-business"
 import { useUpdateBusiness } from "@/hooks/use-update-business"
 import type { BusinessResponse, UpdateBusinessRequest } from "@/lib/types"
+import { FinanceExport, InvitationAccess, OwnerStaffAdministration } from "./staff-tools"
+import { BUSINESS_TIME_ZONES } from "@/lib/business-time"
 
 const frontendOrigin = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
 
-type BusinessValues = Pick<UpdateBusinessRequest, "name" | "address" | "phoneNumber" | "email">
+type BusinessValues = Pick<UpdateBusinessRequest, "name" | "address" | "phoneNumber" | "email" | "timeZone">
 
 function BusinessForm({
   business,
@@ -38,6 +42,7 @@ function BusinessForm({
   const [address, setAddress] = useState(business.address)
   const [phoneNumber, setPhoneNumber] = useState(business.phoneNumber)
   const [email, setEmail] = useState(business.email)
+  const [timeZone, setTimeZone] = useState(business.timeZone)
 
   const bookingUrl = `${frontendOrigin}/r/${business.slug}`
 
@@ -91,6 +96,19 @@ function BusinessForm({
             className="h-10 rounded-lg"
           />
         </div>
+        <div className="grid gap-2">
+          <Label htmlFor="business-time-zone" className="text-xs text-muted-foreground">Business Time Zone</Label>
+          <Select value={timeZone} onValueChange={(value) => { if (value) setTimeZone(value) }}>
+            <SelectTrigger id="business-time-zone" className="h-10 rounded-lg">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {BUSINESS_TIME_ZONES.map((zone) => (
+                <SelectItem key={zone.value} value={zone.value}>{zone.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="rounded-lg border bg-muted/40 p-3">
@@ -117,7 +135,7 @@ function BusinessForm({
         </p>
       </div>
 
-      <Button className="w-full" onClick={() => onSave({ name, address, phoneNumber, email })} disabled={isPending}>
+      <Button className="w-full" onClick={() => onSave({ name, address, phoneNumber, email, timeZone })} disabled={isPending}>
         {isPending && <Loader2 className="size-4 animate-spin" />}
         Save Changes
       </Button>
@@ -129,7 +147,10 @@ export function SettingsView() {
   const router = useRouter()
   const { signOut } = useAuthActions()
   const { businessId } = useActiveBusiness()
-  const { data: business, isLoading } = useBusiness(businessId)
+  const businesses = useBusinesses()
+  const currentUser = useQuery(api.tenancy.currentUser, {})
+  const businessRole = businesses?.find((item) => item._id === businessId)?.role
+  const { data: business, isLoading } = useBusiness()
   const updateBusiness = useUpdateBusiness()
   const queryClient = useQueryClient()
 
@@ -163,13 +184,13 @@ export function SettingsView() {
             <div className="flex items-center gap-4">
               <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
                 <span className="text-xl font-semibold text-primary">
-                  {"U"}
+                  {(currentUser?.name || currentUser?.email || "U").charAt(0).toUpperCase()}
                 </span>
               </div>
               <div>
-                <p className="font-semibold">User</p>
+                <p className="font-semibold">{currentUser?.name || currentUser?.email || "Rentalin user"}</p>
                 <Badge variant="secondary" className="mt-1 text-xs">
-                  Staff
+                  {businessRole ? businessRole.charAt(0).toUpperCase() + businessRole.slice(1) : "No business"}
                 </Badge>
               </div>
             </div>
@@ -179,11 +200,11 @@ export function SettingsView() {
             <div className="space-y-3">
               <div className="grid gap-2">
                 <Label htmlFor="name" className="text-xs text-muted-foreground">Full Name</Label>
-                <Input id="name" value="" readOnly className="h-10 rounded-lg" />
+                <Input id="name" value={currentUser?.name ?? ""} readOnly className="h-10 rounded-lg" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email" className="text-xs text-muted-foreground">Email</Label>
-                <Input id="email" type="email" value="" readOnly className="h-10 rounded-lg" />
+                <Input id="email" type="email" value={currentUser?.email ?? ""} readOnly className="h-10 rounded-lg" />
               </div>
             </div>
           </CardContent>
@@ -213,6 +234,10 @@ export function SettingsView() {
             <CardContent>
               <p className="text-sm text-muted-foreground">Unable to load business details.</p>
             </CardContent>
+          ) : businessRole !== "owner" ? (
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Business settings are managed by the business owner.</p>
+            </CardContent>
           ) : (
             <BusinessForm
               key={business.id}
@@ -223,6 +248,10 @@ export function SettingsView() {
           )}
         </Card>
 
+        <InvitationAccess />
+        {businessId && businessRole === "owner" && <OwnerStaffAdministration businessId={businessId} />}
+        {businessId && (businessRole === "owner" || businessRole === "admin") && <FinanceExport businessId={businessId} />}
+
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-3">
@@ -231,34 +260,12 @@ export function SettingsView() {
               </div>
               <div>
                 <CardTitle className="text-base">Notifications</CardTitle>
-                <CardDescription className="text-xs">Configure how you receive alerts</CardDescription>
+                <CardDescription className="text-xs">Notification preferences</CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-0.5">
-                <span id="push-notifications-label" className="text-sm font-medium">Push Notifications</span>
-                <span className="text-xs text-muted-foreground">Receive alerts on your device</span>
-              </div>
-              <Switch defaultChecked aria-labelledby="push-notifications-label" />
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-0.5">
-                <span id="email-alerts-label" className="text-sm font-medium">Email Alerts</span>
-                <span className="text-xs text-muted-foreground">Daily summary to your email</span>
-              </div>
-              <Switch aria-labelledby="email-alerts-label" />
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-0.5">
-                <span id="late-return-alerts-label" className="text-sm font-medium">Late Return Alerts</span>
-                <span className="text-xs text-muted-foreground">Notify when rentals are overdue</span>
-              </div>
-              <Switch defaultChecked aria-labelledby="late-return-alerts-label" />
-            </div>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">Automated alerts are not configured yet. Rentalin will not send email or push notifications.</p>
           </CardContent>
         </Card>
 

@@ -22,7 +22,10 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { statusColor } from "@/lib/status-config"
-import { format } from "date-fns"
+import { ReservationFinancePanel } from "./finance-panel"
+import { useInspections, useCreateInspection } from "@/hooks/use-inspections"
+import { useBusiness } from "@/hooks/use-business"
+import { DEFAULT_BUSINESS_TIME_ZONE, durationInBusinessDays, formatBusinessDate } from "@/lib/business-time"
 
 const statusLabels: Record<string, string> = {
   Confirmed: "Confirmed",
@@ -30,6 +33,7 @@ const statusLabels: Record<string, string> = {
   Ready: "Ready for Handover",
   Active: "Active",
   Cancelled: "Cancelled",
+  Completed: "Completed",
 }
 
 export default function PreparationPage() {
@@ -37,9 +41,12 @@ export default function PreparationPage() {
   const router = useRouter()
   const id = params.id as string
 
-  const { data: reservation, isLoading, error } = useReservationById(id)
+  const { data: reservation, isLoading } = useReservationById(id)
   const prepareMutation = usePrepareReservation()
   const readyMutation = useReadyForHandover()
+  const { data: inspections } = useInspections()
+  const { data: business } = useBusiness()
+  const createInspection = useCreateInspection()
 
   if (isLoading) {
     return (
@@ -49,7 +56,7 @@ export default function PreparationPage() {
     )
   }
 
-  if (error || !reservation) {
+  if (!reservation) {
     return (
       <div className="p-4 lg:p-6">
         <EmptyState
@@ -61,22 +68,41 @@ export default function PreparationPage() {
   }
 
   const handlePrepare = async () => {
-    await prepareMutation.mutateAsync(id)
-    toast.success("Preparation started")
+    try {
+      await prepareMutation.mutateAsync(id)
+      toast.success("Preparation started")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Preparation could not be started")
+    }
   }
 
   const handleReady = async () => {
-    await readyMutation.mutateAsync(id)
-    toast.success("Vehicle ready for handover")
-    router.push("/operations")
+    try {
+      await readyMutation.mutateAsync(id)
+      toast.success("Vehicle ready for handover")
+      router.push("/operations")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Vehicle could not be marked ready")
+    }
   }
 
-  const startDate = new Date(reservation.startDate)
-  const endDate = new Date(reservation.endDate)
-  const days = Math.max(
-    1,
-    Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-  )
+  const preRentalInspection = inspections?.filter((inspection) => inspection.reservationId === id && inspection.inspectionType === "PreRental").at(-1)
+  const inspectionPassed = preRentalInspection?.status === "Completed"
+  const handleInspection = async () => {
+    if (preRentalInspection && preRentalInspection.status !== "Failed") {
+      router.push(`/inspections/${preRentalInspection.id}`)
+      return
+    }
+    try {
+      const inspectionId = await createInspection.mutateAsync({ reservationId: id, inspectionType: "PreRental" })
+      router.push(`/inspections/${inspectionId}`)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Inspection could not be created")
+    }
+  }
+
+  const days = durationInBusinessDays(reservation.startDate, reservation.endDate) ?? 0
+  const businessTimeZone = business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE
 
   return (
     <div className="pb-20 lg:pb-6">
@@ -133,13 +159,13 @@ export default function PreparationPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Start Date</span>
                 <span className="font-medium">
-                  {format(startDate, "MMM d, yyyy")}
+                  {formatBusinessDate(reservation.startDate, businessTimeZone)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">End Date</span>
                 <span className="font-medium">
-                  {format(endDate, "MMM d, yyyy")}
+                  {formatBusinessDate(reservation.endDate, businessTimeZone)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -166,6 +192,12 @@ export default function PreparationPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {reservation.status === "PreRental" && (
+                <Button variant="outline" onClick={handleInspection} disabled={createInspection.isPending} className="w-full gap-2">
+                  <ClipboardList className="size-4" />
+                  {createInspection.isPending ? "Creating inspection..." : preRentalInspection?.status === "Failed" ? "Start repeat inspection" : preRentalInspection ? "Open pre-rental inspection" : "Create pre-rental inspection"}
+                </Button>
+              )}
               {reservation.status === "Confirmed" && (
                 <Button
                   onClick={handlePrepare}
@@ -182,11 +214,9 @@ export default function PreparationPage() {
               )}
 
               {reservation.status === "PreRental" && (
-                <Button
-                  onClick={handleReady}
-                  disabled={readyMutation.isPending}
-                  className="w-full gap-2"
-                >
+                <>
+                {!inspectionPassed && <p className="text-sm text-muted-foreground">Complete the pre-rental inspection before marking the vehicle ready.</p>}
+                <Button onClick={handleReady} disabled={readyMutation.isPending || !inspectionPassed} className="w-full gap-2">
                   {readyMutation.isPending ? (
                     <div className="size-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
                   ) : (
@@ -194,6 +224,7 @@ export default function PreparationPage() {
                   )}
                   Mark Ready for Handover
                 </Button>
+                </>
               )}
 
               {reservation.status === "Ready" && (
@@ -230,7 +261,13 @@ export default function PreparationPage() {
                 </p>
               )}
 
-              {!["Confirmed", "PreRental", "Ready", "Active", "Cancelled"].includes(
+              {reservation.status === "Completed" && (
+                <p className="text-center text-sm text-muted-foreground py-4">
+                  This rental is complete. Its payment history remains available below.
+                </p>
+              )}
+
+              {!["Confirmed", "PreRental", "Ready", "Active", "Cancelled", "Completed"].includes(
                 reservation.status
               ) && (
                 <p className="text-center text-sm text-muted-foreground py-4">
@@ -239,6 +276,9 @@ export default function PreparationPage() {
               )}
             </CardContent>
           </Card>
+        </div>
+        <div className="mt-4">
+          <ReservationFinancePanel reservationId={id} />
         </div>
       </div>
     </div>

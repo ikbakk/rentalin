@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requirePermission } from "./tenancy";
+import { isBusinessTimeZone } from "./businessTime";
 
 export const updateSettings = mutation({
   args: {
@@ -9,9 +10,11 @@ export const updateSettings = mutation({
     address: v.string(),
     phone: v.string(),
     email: v.string(),
+    timeZone: v.string(),
   },
   handler: async (ctx, { businessId, ...updates }) => {
     await requirePermission(ctx, businessId, "manageBusiness");
+    if (!isBusinessTimeZone(updates.timeZone)) throw new Error("Choose a supported Indonesian time zone");
     await ctx.db.patch(businessId, updates);
     return ctx.db.get(businessId);
   },

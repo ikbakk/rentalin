@@ -29,6 +29,17 @@ async function setup(reservationStatus: "confirmed" | "ready" = "ready") {
       currency: "IDR",
       status: reservationStatus,
     });
+    if (reservationStatus === "ready") {
+      await ctx.db.insert("inspections", {
+        businessId,
+        reservationId,
+        vehicleId,
+        inspectionType: "PreRental",
+        photoUrls: [],
+        status: "Completed",
+        inspectionDate: "2026-10-11T00:00:00.000Z",
+      });
+    }
     return { userId, businessId, vehicleId, reservationId };
   });
   return { t, ...ids, asUser: t.withIdentity({ subject: String(ids.userId) }) };
@@ -99,7 +110,7 @@ test("return does not clear maintenance state", async () => {
 });
 
 test("pre-rental inspections can be created from a reservation before a rental exists", async () => {
-  const { t, asUser, businessId, reservationId } = await setup();
+  const { t, asUser, businessId, reservationId } = await setup("confirmed");
   const inspectionId = await asUser.mutation(api.inspections.create, {
     businessId,
     reservationId,
@@ -107,5 +118,9 @@ test("pre-rental inspections can be created from a reservation before a rental e
   });
   const inspection = await t.run((ctx) => ctx.db.get(inspectionId));
   expect(inspection).toMatchObject({ reservationId, status: "Pending", inspectionType: "PreRental" });
+  await expect(asUser.mutation(api.rentals.start, { reservationId, odometerStart: 1000 })).rejects.toThrow("ready reservation");
+  await asUser.mutation(api.inspections.complete, { id: inspectionId, photoUrls: [], notes: "Pre-rental check complete" });
+  await asUser.mutation(api.reservations.setStatus, { id: reservationId, status: "preRental" });
+  await asUser.mutation(api.reservations.setStatus, { id: reservationId, status: "ready" });
   await expect(asUser.mutation(api.rentals.start, { reservationId, odometerStart: 1000 })).resolves.toBeTruthy();
 });
