@@ -1,13 +1,63 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
 
-export const businessBySlug = query({ args: { slug: v.string() }, handler: (ctx, { slug }) => ctx.db.query("businesses").withIndex("by_slug", q => q.eq("slug", slug)).unique() });
+export const businessBySlug = query({
+  args: { slug: v.string() },
+  handler: async (ctx, { slug }) => {
+    const business = await ctx.db.query("businesses").withIndex("by_slug", q => q.eq("slug", slug)).unique();
+    if (!business) return null;
+    return {
+      name: business.name,
+      slug: business.slug,
+      address: business.address ?? "",
+      phone: business.phone ?? "",
+      email: business.email ?? "",
+      logoUrl: business.logoUrl ?? null,
+    };
+  },
+});
 
-export const reservationByToken = query({ args: { token: v.string() }, handler: async (ctx, { token }) => {
-  const reservation = await ctx.db.query("reservations").filter(q => q.eq(q.field("publicToken"), token)).unique();
-  if (!reservation) return null;
-  const vehicle = await ctx.db.get(reservation.vehicleId);
-  const customer = reservation.customerId ? await ctx.db.get(reservation.customerId) : null;
-  const rental = await ctx.db.query("rentals").filter(q => q.eq(q.field("reservationId"), reservation._id)).first();
-  return { reservationId: token, rentalId: rental?.publicToken ?? token, status: rental?.status ?? reservation.status, startDate: reservation.startDate, endDate: reservation.endDate, estimatedCost: reservation.estimatedCost, currency: reservation.currency, vehicleMake: vehicle?.make ?? "", vehicleModel: vehicle?.model ?? "", vehiclePlate: vehicle?.plateNumber ?? "", customerName: customer?.name ?? "", customerPhone: customer?.phoneNumber ?? "", rentalStarted: rental?.actualStart, rentalEnded: rental?.actualEnd, odometerStart: rental?.odometerStart, odometerEnd: rental?.odometerEnd, inspectionStatus: undefined, inspectionNotes: undefined };
-} });
+export const reservationByToken = query({
+  args: { token: v.string() },
+  handler: async (ctx, { token }) => {
+    if (token.length < 32 || token.length > 128) return null;
+    const reservation = await ctx.db.query("reservations").withIndex("by_public_token", q => q.eq("publicToken", token)).unique();
+    if (!reservation) return null;
+
+    const [vehicle, business, rental] = await Promise.all([
+      ctx.db.get(reservation.vehicleId),
+      ctx.db.get(reservation.businessId),
+      ctx.db.query("rentals").withIndex("by_reservation", q => q.eq("reservationId", reservation._id)).first(),
+    ]);
+
+    const status = rental?.status === "completed"
+      ? "Completed"
+      : rental?.status === "active"
+        ? "Active"
+        : reservation.status === "ready"
+          ? "Ready"
+          : reservation.status === "preRental"
+            ? "Preparing"
+            : reservation.status === "cancelled"
+              ? "Cancelled"
+              : "Confirmed";
+
+    return {
+      reservationId: reservation._id,
+      rentalId: rental?._id ?? reservation._id,
+      status,
+      startDate: reservation.startDate,
+      endDate: reservation.endDate,
+      estimatedCost: reservation.estimatedCost,
+      currency: reservation.currency,
+      vehicleMake: vehicle?.make ?? "",
+      vehicleModel: vehicle?.model ?? "",
+      vehiclePlate: vehicle?.plateNumber ?? "",
+      rentalStarted: rental?.actualStart,
+      rentalEnded: rental?.actualEnd,
+      odometerStart: rental?.odometerStart,
+      odometerEnd: rental?.odometerEnd,
+      supportPhone: business?.phone ?? "",
+    };
+  },
+});

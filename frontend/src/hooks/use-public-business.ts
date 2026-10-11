@@ -13,7 +13,7 @@ export interface PublicBusiness {
 }
 
 export function usePublicBusiness(slug: string) {
-  const business = useQuery(api.businesses.getBySlug, slug ? { slug } : "skip");
+  const business = useQuery(api.public.businessBySlug, slug ? { slug } : "skip");
   return {
     data: business
       ? {

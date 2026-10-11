@@ -5,33 +5,38 @@ import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { ImagePlus, X } from "lucide-react"
+import { toast } from "sonner"
+import { useActiveBusiness } from "@/hooks/use-active-business"
 
 interface FileUploadProps {
   onUpload: (url: string) => void
-  referenceType?: string
   accept?: string
 }
 
 export function FileUpload({
   onUpload,
-  referenceType = "Inspection",
   accept = "image/*",
 }: FileUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
   const ref = useRef<HTMLInputElement>(null)
+  const { businessId } = useActiveBusiness()
   const generateUploadUrl = useMutation(api.files.generateUploadUrl)
+  const registerImage = useMutation(api.files.registerInspectionImage)
 
   const upload = async (file: File) => {
     setUploading(true)
     try {
-      const uploadUrl = await generateUploadUrl()
+      if (!businessId) throw new Error("Business session not found")
+      const uploadUrl = await generateUploadUrl({ businessId })
       const response = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": file.type }, body: file })
       if (!response.ok) throw new Error("Upload failed")
       const { storageId } = await response.json()
+      await registerImage({ businessId, storageId })
       onUpload(storageId)
       setPreview(URL.createObjectURL(file))
-    } catch {
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Upload failed")
     } finally {
       setUploading(false)
     }
