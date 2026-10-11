@@ -22,6 +22,7 @@ The exact local base/head chain is:
 | 06 | Append-only manual payment ledger, reports, receipts, CSV | `feat/manual-payment-ledger` | `fix/repeat-safe-rental-lifecycle` (`bda9f69c81e44688d675644ec661221bc902a33e`) | `8285afa9fb2293669edda80feb587dd147eb6219` | [Merged PR #10](https://github.com/ikbakk/rentalin/pull/10); hosted CI pass |
 | 07 | Staff invitations, operator workflow, inspection/handover, business time zone, public contact links | `feat/pilot-ux-staff-admin` | `feat/manual-payment-ledger` (`8285afa9fb2293669edda80feb587dd147eb6219`) | `5764c4ee3bf35587ce8f73ec02ffdfcc36012a27` | [Merged PR #11](https://github.com/ikbakk/rentalin/pull/11); hosted CI pass; browser/mobile staging gate blocked |
 | 08 | Pilot runbook and readiness evidence | `docs/pilot-release-runbook` | `feat/pilot-ux-staff-admin` (`5764c4ee3bf35587ce8f73ec02ffdfcc36012a27`) | Branch tip including this tracker update | [Merged PR #12](https://github.com/ikbakk/rentalin/pull/12); hosted CI pass |
+| 09 | Runtime environment examples, required public configuration, landing demo number validation | `chore/configure-runtime-environments` | `feat/release-env-preflight` (`5f040ac1b54ea8def53c621756bf9cc4a29878d9`) | Draft branch tip | Draft PR #15; hosted CI pending |
 
 PRs 01–08 were merged sequentially into `main`, preserving the dependency
 order. The table records the original stack bases and merged branch head SHAs.
@@ -37,14 +38,16 @@ Copy-ready descriptions remain in `docs/pr-drafts/` as implementation history.
 | Frontend TypeScript check | Pass | `cd frontend && npm run typecheck`; run after the production build to avoid concurrent `.next/types` regeneration |
 | Frontend lint | Pass with warnings | `cd frontend && npm run lint`: 36 warnings, zero errors; baseline was 49 |
 | Frontend production build | Pass | Local Webpack production build passed. Hosted CI run [#24](https://github.com/ikbakk/rentalin/actions/runs/38118813507) passed the configured default Turbopack production build using isolated placeholder origins. |
-| Release environment preflight | Pass | Five tests cover required HTTPS origins, missing values, local/HTTP origins, mismatched Convex deployments, paths, and credentials. `npm run preflight:release` rejects missing values. Hosted CI run [#24](https://github.com/ikbakk/rentalin/actions/runs/38118813507) passed for commit `932713bde5fa4aab25012b527804b1e675589261`. |
+| Release environment preflight | Pass locally | Frontend has five tests for required HTTPS origins and URL matching; landing has four tests for required digits-only international WhatsApp configuration; frontend and landing builds require their respective values. Hosted CI for the new validation is pending in draft PR #15. |
+| Public environment helper | Pass locally | Frontend helper tests cover trimming and missing values. The app no longer falls back to localhost for Convex or generated booking-link origins. |
+| Runtime environment templates | Added in draft PR #15 | `frontend/.env.example` and `landing/.env.example` document per-runtime public configuration. No provider API keys or credentials are included; real values remain to be supplied by the owner. |
 | Landing production build | Pass | `ASTRO_TELEMETRY_DISABLED=1 npm run build` in `landing/`, verified in PR 01; landing unchanged since |
 | Diff whitespace check | Pass | `git diff --check` before PR 07 commit |
 | Convex generation/deployment check | Blocked | No `CONVEX_DEPLOYMENT` configured. CLI offered project setup; stopped without linking/creating a deployment. |
 | GitHub Actions | Pass | PRs #5–#12 passed CI; post-merge `main` run [#21](https://github.com/ikbakk/rentalin/actions/runs/38118332729) also passed at `998ae19ba288aeef337f58ed1120594a718156b1`. The first PR #5 run exposed missing root Convex dependencies and a `main`-only PR trigger; both fixes are included. |
 | Full browser/mobile E2E | Blocked | No isolated staging deployment or browser test suite is configured. |
-| Current GitHub PR state | Follow-up drafts open | PRs #5–#12 are merged. Draft PR #13 refreshes post-merge readiness; draft PR #14 adds release environment validation. Both remain unmerged pending owner review. |
-| PR publication | Implementation merged; follow-ups drafted | PRs #5–#12 were merged into `main`. Readiness documentation and release environment preflight are tracked in draft PRs #13 and #14. |
+| Current GitHub PR state | Follow-up drafts open | PRs #5–#12 are merged. Draft PR #13 refreshes post-merge readiness; draft PR #14 adds release environment validation; draft PR #15 prepares per-runtime environment configuration. These remain unmerged pending owner review. |
+| PR publication | Implementation merged; follow-ups drafted | PRs #5–#12 were merged into `main`. Readiness documentation and release environment preflight are tracked in draft PRs #13 and #14; runtime configuration templates and validation are proposed in draft PR #15. |
 
 Install commands were run sequentially; root `npm ci` removes nested
 `node_modules`. The root and frontend emitted npm's existing
@@ -88,7 +91,10 @@ passes. Password recovery, verified tenant-bound uploads and storage cleanup,
 stronger public inquiry abuse protection, isolated staging/mobile validation,
 monitoring, backup/restore, and privacy/retention/deletion behavior remain
 open gates. The runbook in `docs/pilot-release-runbook.md` defines the staging
-and operational checks still to complete.
+and operational checks still to complete. Runtime configuration templates
+are now prepared, but real deployment URLs and the public demo number still
+need to be supplied by the owner; this does not configure integrations or
+authorize a deployment.
 
 ## Restart instructions
 
