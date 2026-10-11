@@ -4,28 +4,28 @@ Updated: 2026-10-11
 
 This tracker records evidence for a controlled pilot. Passing local builds does
 not mean the code is reviewed, deployed, or ready to collect customer data.
-The implementation is published as seven open draft pull requests, with the
-release runbook and this tracker prepared as PR 08. No change has been merged,
-and no production data or deployment has been touched.
+All eight implementation PRs (#5–#12) were merged into `main` in dependency
+order on 2026-10-11. Their hosted CI runs passed, and the post-merge `main`
+workflow also passed. No production data or deployment has been touched.
 
 ## Focused PR queue
 
 The exact local base/head chain is:
 
-| PR | Scope | Branch | Base branch (SHA) | Hosted head SHA | State |
+| PR | Scope | Branch | Base branch (SHA) | Merged head SHA | State |
 | --- | --- | --- | --- | --- | --- |
-| 01 | Reproducible checks, Convex test harness, CI | `chore/ci-release-readiness` | `main` (`58bd1471264886d351abfeedbe663b6f444162b1`) | `ac2836a137bb966b5f9944df97ef0922e8551b9e` | [Draft PR #5](https://github.com/ikbakk/rentalin/pull/5); hosted CI pass |
-| 02 | Tenant authorization, roles, ownership, revoked membership | `fix/tenant-authorization` | `chore/ci-release-readiness` (`ac2836a137bb966b5f9944df97ef0922e8551b9e`) | `f2c8d720cdead5a05257eed36d6f33609b821d19` | [Draft PR #6](https://github.com/ikbakk/rentalin/pull/6); hosted CI pass |
-| 03 | Public DTOs, tracking token controls, inquiry validation, scoped uploads | `fix/public-data-upload-controls` | `fix/tenant-authorization` (`f2c8d720cdead5a05257eed36d6f33609b821d19`) | `2c6a6f44e536e0ea66b50323d4251c478d6b17a9` | [Draft PR #7](https://github.com/ikbakk/rentalin/pull/7); hosted CI pass; security limitations below |
-| 04 | Canonical booking intervals and transactional availability rules | `fix/reservation-availability-rules` | `fix/public-data-upload-controls` (`2c6a6f44e536e0ea66b50323d4251c478d6b17a9`) | `0aa18c96e45d5d060fd6ae81f2513a58aab84cc8` | [Draft PR #8](https://github.com/ikbakk/rentalin/pull/8); hosted CI pass |
-| 05 | Repeat-safe rental lifecycle, odometers, and activity history | `fix/repeat-safe-rental-lifecycle` | `fix/reservation-availability-rules` (`0aa18c96e45d5d060fd6ae81f2513a58aab84cc8`) | `bda9f69c81e44688d675644ec661221bc902a33e` | [Draft PR #9](https://github.com/ikbakk/rentalin/pull/9); hosted CI pass |
-| 06 | Append-only manual payment ledger, reports, receipts, CSV | `feat/manual-payment-ledger` | `fix/repeat-safe-rental-lifecycle` (`bda9f69c81e44688d675644ec661221bc902a33e`) | `8285afa9fb2293669edda80feb587dd147eb6219` | [Draft PR #10](https://github.com/ikbakk/rentalin/pull/10); hosted CI pass |
-| 07 | Staff invitations, operator workflow, inspection/handover, business time zone, public contact links | `feat/pilot-ux-staff-admin` | `feat/manual-payment-ledger` (`8285afa9fb2293669edda80feb587dd147eb6219`) | `5764c4ee3bf35587ce8f73ec02ffdfcc36012a27` | [Draft PR #11](https://github.com/ikbakk/rentalin/pull/11); hosted CI pass; browser/mobile staging gate blocked |
-| 08 | Pilot runbook and readiness evidence | `docs/pilot-release-runbook` | `feat/pilot-ux-staff-admin` (`5764c4ee3bf35587ce8f73ec02ffdfcc36012a27`) | Branch tip including this tracker update | [Draft PR #12](https://github.com/ikbakk/rentalin/pull/12); hosted CI pass |
+| 01 | Reproducible checks, Convex test harness, CI | `chore/ci-release-readiness` | `main` (`58bd1471264886d351abfeedbe663b6f444162b1`) | `ac2836a137bb966b5f9944df97ef0922e8551b9e` | [Merged PR #5](https://github.com/ikbakk/rentalin/pull/5); hosted CI pass |
+| 02 | Tenant authorization, roles, ownership, revoked membership | `fix/tenant-authorization` | `chore/ci-release-readiness` (`ac2836a137bb966b5f9944df97ef0922e8551b9e`) | `f2c8d720cdead5a05257eed36d6f33609b821d19` | [Merged PR #6](https://github.com/ikbakk/rentalin/pull/6); hosted CI pass |
+| 03 | Public DTOs, tracking token controls, inquiry validation, scoped uploads | `fix/public-data-upload-controls` | `fix/tenant-authorization` (`f2c8d720cdead5a05257eed36d6f33609b821d19`) | `2c6a6f44e536e0ea66b50323d4251c478d6b17a9` | [Merged PR #7](https://github.com/ikbakk/rentalin/pull/7); hosted CI pass; security limitations below |
+| 04 | Canonical booking intervals and transactional availability rules | `fix/reservation-availability-rules` | `fix/public-data-upload-controls` (`2c6a6f44e536e0ea66b50323d4251c478d6b17a9`) | `0aa18c96e45d5d060fd6ae81f2513a58aab84cc8` | [Merged PR #8](https://github.com/ikbakk/rentalin/pull/8); hosted CI pass |
+| 05 | Repeat-safe rental lifecycle, odometers, and activity history | `fix/repeat-safe-rental-lifecycle` | `fix/reservation-availability-rules` (`0aa18c96e45d5d060fd6ae81f2513a58aab84cc8`) | `bda9f69c81e44688d675644ec661221bc902a33e` | [Merged PR #9](https://github.com/ikbakk/rentalin/pull/9); hosted CI pass |
+| 06 | Append-only manual payment ledger, reports, receipts, CSV | `feat/manual-payment-ledger` | `fix/repeat-safe-rental-lifecycle` (`bda9f69c81e44688d675644ec661221bc902a33e`) | `8285afa9fb2293669edda80feb587dd147eb6219` | [Merged PR #10](https://github.com/ikbakk/rentalin/pull/10); hosted CI pass |
+| 07 | Staff invitations, operator workflow, inspection/handover, business time zone, public contact links | `feat/pilot-ux-staff-admin` | `feat/manual-payment-ledger` (`8285afa9fb2293669edda80feb587dd147eb6219`) | `5764c4ee3bf35587ce8f73ec02ffdfcc36012a27` | [Merged PR #11](https://github.com/ikbakk/rentalin/pull/11); hosted CI pass; browser/mobile staging gate blocked |
+| 08 | Pilot runbook and readiness evidence | `docs/pilot-release-runbook` | `feat/pilot-ux-staff-admin` (`5764c4ee3bf35587ce8f73ec02ffdfcc36012a27`) | Branch tip including this tracker update | [Merged PR #12](https://github.com/ikbakk/rentalin/pull/12); hosted CI pass |
 
-PR 02–08 are deliberately stacked. PRs 01–08 are open as drafts in dependency
-order. Hosted GitHub Actions results have not yet been verified. Copy-ready
-titles and bodies are in `docs/pr-drafts/` and use the hosted head SHAs.
+PRs 01–08 were merged sequentially into `main`, preserving the dependency
+order. The table records the original stack bases and merged branch head SHAs.
+Copy-ready descriptions remain in `docs/pr-drafts/` as implementation history.
 
 ## Verification evidence
 
@@ -40,10 +40,10 @@ titles and bodies are in `docs/pr-drafts/` and use the hosted head SHAs.
 | Landing production build | Pass | `ASTRO_TELEMETRY_DISABLED=1 npm run build` in `landing/`, verified in PR 01; landing unchanged since |
 | Diff whitespace check | Pass | `git diff --check` before PR 07 commit |
 | Convex generation/deployment check | Blocked | No `CONVEX_DEPLOYMENT` configured. CLI offered project setup; stopped without linking/creating a deployment. |
-| GitHub Actions | Pass, 8/8 | PRs #5–#12 pass Convex typecheck/tests, frontend typecheck/lint/build, and landing build. Runs: [#5](https://github.com/ikbakk/rentalin/actions/runs/38116981901), [#6](https://github.com/ikbakk/rentalin/actions/runs/38117088605), [#7](https://github.com/ikbakk/rentalin/actions/runs/38117114594), [#8](https://github.com/ikbakk/rentalin/actions/runs/38117137618), [#9](https://github.com/ikbakk/rentalin/actions/runs/38117159879), [#10](https://github.com/ikbakk/rentalin/actions/runs/38117189167), [#11](https://github.com/ikbakk/rentalin/actions/runs/38117215620), [#12](https://github.com/ikbakk/rentalin/actions/runs/38117377401). The first PR #5 run exposed missing root Convex dependencies and a `main`-only PR trigger; the workflow now covers stacked PRs and its rerun passes. |
+| GitHub Actions | Pass | PRs #5–#12 passed CI; post-merge `main` run [#21](https://github.com/ikbakk/rentalin/actions/runs/38118332729) also passed at `998ae19ba288aeef337f58ed1120594a718156b1`. The first PR #5 run exposed missing root Convex dependencies and a `main`-only PR trigger; both fixes are included. |
 | Full browser/mobile E2E | Blocked | No isolated staging deployment or browser test suite is configured. |
-| Current GitHub PR state | 8 open drafts | PRs #5–#12 were created on 2026-10-11; none is merged. Hosted checks are pending verification. |
-| PR publication | Pass for PRs 01–08 | The GitHub integration created the stacked branches and draft PRs. |
+| Current GitHub PR state | Merged | PRs #5–#12 are closed as merged; no open PRs remain from this implementation stack. |
+| PR publication | Merged | All eight focused PRs were merged into `main` in dependency order. |
 
 Install commands were run sequentially; root `npm ci` removes nested
 `node_modules`. The root and frontend emitted npm's existing
@@ -82,24 +82,24 @@ Install commands were run sequentially; root `npm ci` removes nested
 
 ## Release decision
 
-**Not ready to launch or deploy.** The stacked draft PRs are open and require
-owner review. Hosted CI passes, but password
-recovery, fully verified tenant-bound uploads and storage cleanup, stronger
-public inquiry abuse protection, isolated staging/E2E validation, monitoring,
-backup/restore, and approved privacy/retention/deletion behavior remain open
-gates. The local runbook in `docs/pilot-release-runbook.md` describes the
-staging and operational checks to complete.
+**Not ready to launch or deploy.** The implementation is merged and hosted CI
+passes. Password recovery, verified tenant-bound uploads and storage cleanup,
+stronger public inquiry abuse protection, isolated staging/mobile validation,
+monitoring, backup/restore, and privacy/retention/deletion behavior remain
+open gates. The runbook in `docs/pilot-release-runbook.md` defines the staging
+and operational checks still to complete.
 
 ## Restart instructions
 
-1. Read `../rentalin-publish-ready-handoff.md` and applicable `AGENTS.md`
-   files. Preserve the eight-PR dependency chain above.
-2. Check the current GitHub branches, PRs, checks, and exact base/head SHAs.
-   PRs 01–08 are already open as drafts; do not merge or deploy.
-3. Verify hosted Actions for PRs #5–#12 and record the results. The hosted
-   branch heads and exact base SHAs are listed in the queue.
-4. Resolve code review and all security blockers before staging. Use disposable
-   accounts and data in a confirmed isolated environment.
-5. Record exact commands, outcomes, environment, and limitations. Do not
-   convert blocked gates into passes because local builds succeeded.
-6. Leave merges and production deployment for explicit owner approval.
+1. Verify the current `main` SHA and CI result before preparing a staging
+   environment.
+2. Configure a separate Convex development/staging deployment and isolated
+   frontend environment; do not reuse production data or credentials.
+3. Resolve password recovery, upload ownership/cleanup, and public inquiry
+   abuse controls before accepting real customer data.
+4. Run the documented desktop/mobile workflow with disposable accounts and
+   record each result in this tracker.
+5. Assign monitoring, backup/restore, privacy-retention, and account-deletion
+   owners and verify their procedures.
+6. Keep production deployment gated on passing staging checks and explicit
+   owner approval.
