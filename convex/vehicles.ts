@@ -1,13 +1,16 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireMembership } from "./tenancy";
 
 export const listByBusiness = query({
   args: { businessId: v.id("businesses") },
-  handler: async (ctx, { businessId }) =>
-    ctx.db
+  handler: async (ctx, { businessId }) => {
+    await requireMembership(ctx, businessId);
+    return ctx.db
       .query("vehicles")
       .withIndex("by_business", (q) => q.eq("businessId", businessId))
-      .collect(),
+      .collect();
+  },
 });
 
 export const listPublicByBusinessSlug = query({
