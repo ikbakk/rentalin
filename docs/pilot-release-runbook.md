@@ -32,7 +32,7 @@ included in client-visible output and must not contain secrets. No provider API
 keys are currently required by the codebase. Configure `CONVEX_SITE_URL` in
 the Convex deployment environment as well as the frontend build environment;
 keep actual values in the relevant local or hosting environment settings.
-CI uses isolated placeholders only to exercise the build.
+The Dockerfiles accept these public values as build arguments, and Compose requires them to be supplied by the environment before building. CI uses isolated placeholders only to exercise the build.
 
 ## Pre-deployment gates
 
