@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Car, Gauge, Calendar, DollarSign, User, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { format } from "date-fns"
+import { useBusiness } from "@/hooks/use-business"
+import { DEFAULT_BUSINESS_TIME_ZONE, formatBusinessDate } from "@/lib/business-time"
 
 export default function HandoverPage() {
   const params = useParams()
@@ -23,6 +24,7 @@ export default function HandoverPage() {
 
   const { data: reservation, isLoading: reservationLoading } = useReservationById(id)
   const { data: vehicle } = useVehicleById(reservation?.vehicleId ?? "")
+  const { data: business } = useBusiness()
   const startRental = useStartRental()
 
   const [odometer, setOdometer] = useState("")
@@ -48,8 +50,8 @@ export default function HandoverPage() {
 
   const handleStartRental = async () => {
     const odoValue = Number(odometer)
-    if (!odometer || isNaN(odoValue) || odoValue < 0) {
-      toast.error("Please enter a valid odometer reading")
+    if (!Number.isSafeInteger(odoValue) || odoValue < 0) {
+      toast.error("Enter a valid whole-number odometer reading")
       return
     }
     try {
@@ -59,8 +61,8 @@ export default function HandoverPage() {
       })
       toast.success("Rental started successfully")
       router.push("/operations")
-    } catch {
-      // Error toast already shown by the mutation's onError
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Rental could not be started")
     }
   }
 
@@ -115,9 +117,9 @@ export default function HandoverPage() {
               <div className="flex justify-between flex-1 text-sm">
                 <span className="text-muted-foreground">Rental Period</span>
                 <span className="font-medium">
-                  {format(new Date(reservation.startDate), "MMM d, yyyy")}
+                  {formatBusinessDate(reservation.startDate, business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE)}
                   {" – "}
-                  {format(new Date(reservation.endDate), "MMM d, yyyy")}
+                  {formatBusinessDate(reservation.endDate, business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE)}
                 </span>
               </div>
             </div>

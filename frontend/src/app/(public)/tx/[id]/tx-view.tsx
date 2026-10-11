@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { normalizeIndonesianWhatsAppNumber } from "@/lib/phone"
 
 const steps = [
   { key: "Confirmed", label: "Confirmed", icon: CheckCircle2 },
@@ -66,6 +67,7 @@ export function TxView({ rentalId }: { rentalId: string }) {
   const showSteps = currentStepIdx >= 0
 
   const statusInfo = statusConfig[rental.status] || statusConfig.Confirmed
+  const supportWhatsApp = normalizeIndonesianWhatsAppNumber(rental.supportPhone)
   const startDate = new Date(rental.startDate)
   const endDate = new Date(rental.endDate)
   const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
@@ -238,11 +240,12 @@ export function TxView({ rentalId }: { rentalId: string }) {
 
         <Button
           className="h-12 w-full gap-2 rounded-xl text-base font-semibold bg-[#25D366] text-white hover:bg-[#25D366]/90"
-          disabled={!rental.supportPhone}
+          disabled={!supportWhatsApp}
           onClick={() =>
-            window.open(
-              `https://wa.me/${rental.supportPhone.replace(/[^0-9]/g, "")}`,
-              "_blank"
+            supportWhatsApp && window.open(
+              `https://wa.me/${supportWhatsApp}?text=${encodeURIComponent(`Halo, saya ingin bertanya tentang pesanan ${rental.reservationId.slice(0, 8)}.`)}`,
+              "_blank",
+              "noopener,noreferrer",
             )
           }
         >

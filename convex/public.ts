@@ -14,6 +14,7 @@ export const businessBySlug = query({
       phone: business.phone ?? "",
       email: business.email ?? "",
       logoUrl: business.logoUrl ?? null,
+      timeZone: business.timeZone ?? "Asia/Jakarta",
     };
   },
 });
@@ -63,6 +64,7 @@ export const reservationByToken = query({
       odometerStart: rental?.odometerStart,
       odometerEnd: rental?.odometerEnd,
       supportPhone: business?.phone ?? "",
+      timeZone: business?.timeZone ?? "Asia/Jakarta",
     };
   },
 });

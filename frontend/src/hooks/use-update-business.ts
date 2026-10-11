@@ -20,6 +20,7 @@ export function useUpdateBusiness() {
         address: request.address,
         phone: request.phoneNumber,
         email: request.email,
+        timeZone: request.timeZone,
       });
       return business as unknown as BusinessResponse;
     } catch (error) {

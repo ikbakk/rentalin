@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { usePublicVehiclesBySlug } from "@/hooks/use-public-vehicles-by-slug"
 import { useCreatePublicInquiry } from "@/hooks/use-public-inquiry"
 import { usePublicBusiness } from "@/hooks/use-public-business"
+import { businessDateToIso, DEFAULT_BUSINESS_TIME_ZONE } from "@/lib/business-time"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -66,6 +67,7 @@ export function BookingContent({ slug }: { slug: string }) {
   const { data: vehicles, isLoading } = usePublicVehiclesBySlug(slug)
   const createInquiry = useCreatePublicInquiry(slug)
   const { data: business } = usePublicBusiness(slug)
+  const businessTimeZone = business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -98,13 +100,19 @@ export function BookingContent({ slug }: { slug: string }) {
       toast.error("Please fill in all fields")
       return
     }
+    const startDateIso = businessDateToIso(startDate, businessTimeZone)
+    const endDateIso = businessDateToIso(endDate, businessTimeZone)
+    if (!startDateIso || !endDateIso || Date.parse(endDateIso) <= Date.parse(startDateIso)) {
+      toast.error("Return date must be after pickup date")
+      return
+    }
     try {
       await createInquiry.mutateAsync({
         customerName: name,
         customerPhone: phone,
         vehicleId: selected,
-        startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString(),
+        startDate: startDateIso,
+        endDate: endDateIso,
       })
       const veh = available.find((v) => v.id === selected)
       setSubmittedData({
@@ -131,8 +139,8 @@ export function BookingContent({ slug }: { slug: string }) {
     setEndDate("")
   }
 
-  const waLink = (number: string) =>
-    `https://wa.me/${number.replace(/[^0-9]/g, "")}`
+  const waLink = (number: string, message?: string) =>
+    `https://wa.me/${number.replace(/[^0-9]/g, "")}${message ? `?text=${encodeURIComponent(message)}` : ""}`
 
   if (isLoading) {
     return (
@@ -200,16 +208,18 @@ export function BookingContent({ slug }: { slug: string }) {
 
           <div className="mt-4 flex items-center gap-3 rounded-xl bg-success/10 p-3.5 text-sm font-medium text-success ring-1 ring-success/20">
             <MessageCircle className="size-5 shrink-0" />
-            We&apos;ll contact you via WhatsApp
+            Your booking request has been recorded for the rental team to review.
           </div>
 
-          <Button
-            className="mt-4 h-12 w-full gap-2 rounded-xl bg-success text-base font-semibold text-success-foreground shadow-lg shadow-success/25 hover:bg-success/90"
-            onClick={() => window.open(waLink(submittedData.phone), "_blank")}
-          >
-            <MessageCircle className="size-5" />
-            Continue on WhatsApp
-          </Button>
+          {business?.phone && (
+            <Button
+              className="mt-4 h-12 w-full gap-2 rounded-xl bg-success text-base font-semibold text-success-foreground shadow-lg shadow-success/25 hover:bg-success/90"
+              onClick={() => window.open(waLink(business.phone, `Hello, I submitted a rental request for ${submittedData.vehicle} from ${submittedData.start} to ${submittedData.end}.`), "_blank", "noopener,noreferrer")}
+            >
+              <MessageCircle className="size-5" />
+              Message the rental team on WhatsApp
+            </Button>
+          )}
 
           <Button
             variant="outline"
@@ -238,7 +248,8 @@ export function BookingContent({ slug }: { slug: string }) {
           </p>
           <Button
             className="mt-6 h-11 gap-2 rounded-xl bg-success text-success-foreground hover:bg-success/90"
-            onClick={() => window.open(waLink(business?.phone ?? ""), "_blank")}
+            onClick={() => window.open(waLink(business?.phone ?? ""), "_blank", "noopener,noreferrer")}
+            disabled={!business?.phone}
           >
             <MessageCircle className="size-4" />
             Contact Us
@@ -446,6 +457,7 @@ export function BookingContent({ slug }: { slug: string }) {
                     id="book-end"
                     className="h-11 rounded-xl bg-background px-3.5"
                     type="date"
+                    min={startDate || undefined}
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                   />

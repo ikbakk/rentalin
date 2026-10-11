@@ -57,7 +57,21 @@ test("staff can read their tenant but cannot edit fleet or business settings", a
     address: "Street",
     phone: "0812",
     email: "owner@example.test",
+    timeZone: "Asia/Jakarta",
   })).rejects.toThrow("Forbidden");
+});
+
+test("owner business settings accept supported zones and reject unlisted zones", async () => {
+  const { asUser, businessId } = await seedTenant("owner");
+  const settings = {
+    businessId,
+    name: "Tenant A",
+    address: "Bandung",
+    phone: "+628123456789",
+    email: "owner@example.test",
+  };
+  await expect(asUser.mutation(api.businesses.updateSettings, { ...settings, timeZone: "Asia/Makassar" })).resolves.toMatchObject({ timeZone: "Asia/Makassar" });
+  await expect(asUser.mutation(api.businesses.updateSettings, { ...settings, timeZone: "Europe/London" })).rejects.toThrow("supported Indonesian time zone");
 });
 
 test("cross-tenant related IDs are rejected", async () => {

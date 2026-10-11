@@ -10,6 +10,7 @@ export const list = query({
     const inspections = await ctx.db.query("inspections").withIndex("by_business", q => q.eq("businessId", businessId)).collect();
     return Promise.all(inspections.map(async (inspection) => ({
       ...inspection,
+      photoStorageIds: inspection.photoUrls.filter((photo) => !/^https?:\/\//.test(photo)),
       photoUrls: await Promise.all(inspection.photoUrls.map(async (photo) => {
         if (/^https?:\/\//.test(photo)) return photo;
         return await ctx.storage.getUrl(photo as Id<"_storage">) ?? "";
@@ -36,8 +37,8 @@ export const create = mutation({
     if (inspectionType === "PostRental" && rental?.status !== "completed") {
       throw new Error("A post-rental inspection can be created after return");
     }
-    const existing = await ctx.db.query("inspections").withIndex("by_reservation", q => q.eq("reservationId", reservation._id)).filter(q => q.eq(q.field("inspectionType"), inspectionType)).first();
-    if (existing) return existing._id;
+    const existing = await ctx.db.query("inspections").withIndex("by_reservation", q => q.eq("reservationId", reservation._id)).filter(q => q.eq(q.field("inspectionType"), inspectionType)).order("desc").first();
+    if (existing && existing.status !== "Failed") return existing._id;
 
     return ctx.db.insert("inspections", {
       businessId,
@@ -69,7 +70,8 @@ export const complete = mutation({
 
     const priorPhotos = new Set(item.photoUrls);
     for (const photo of photoUrls) {
-      if (priorPhotos.has(photo) || /^https?:\/\//.test(photo)) continue;
+      if (priorPhotos.has(photo)) continue;
+      if (/^https?:\/\//.test(photo)) throw new Error("Inspection photos must be uploaded to this business first");
       const storageId = photo as Id<"_storage">;
       const claim = await ctx.db.query("uploadClaims").withIndex("by_storage", q => q.eq("storageId", storageId)).unique();
       if (!claim || claim.businessId !== item.businessId) throw new Error("Photo is not registered to this business");
@@ -90,6 +92,8 @@ export const fail = mutation({
     if (reason.trim().length < 1 || reason.length > 2000) throw new Error("Enter a valid inspection reason");
     if (item.status === "Failed" && item.notes === reason.trim()) return item;
     if (item.status !== "Pending") throw new Error("Only a pending inspection can be marked failed");
+    const vehicle = await ctx.db.get(item.vehicleId);
+    if (vehicle && vehicle.status !== "inactive") await ctx.db.patch(vehicle._id, { status: "maintenance" });
     await ctx.db.patch(id, { notes: reason.trim(), status: "Failed", inspectionDate: new Date().toISOString() });
     return ctx.db.get(id);
   },

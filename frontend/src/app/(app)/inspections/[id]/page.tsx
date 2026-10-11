@@ -13,7 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronLeft, Car, Camera, CheckCircle2, XCircle, Image, AlertTriangle } from "lucide-react"
+import { FileUpload } from "@/components/shared/file-upload"
+import { toast } from "sonner"
+import { ChevronLeft, Camera, CheckCircle2, XCircle, Image, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
@@ -22,6 +24,8 @@ export default function InspectionDetailPage({ params }: { params: Promise<{ id:
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false)
   const [failDialogOpen, setFailDialogOpen] = useState(false)
   const [failReason, setFailReason] = useState("")
+  const [inspectionNotes, setInspectionNotes] = useState("")
+  const [addedPhotoId, setAddedPhotoId] = useState<string | null>(null)
 
   const inspectionId = id
 
@@ -33,6 +37,10 @@ export default function InspectionDetailPage({ params }: { params: Promise<{ id:
     setFailDialogOpen={setFailDialogOpen}
     failReason={failReason}
     setFailReason={setFailReason}
+    inspectionNotes={inspectionNotes}
+    setInspectionNotes={setInspectionNotes}
+    addedPhotoId={addedPhotoId}
+    setAddedPhotoId={setAddedPhotoId}
   />
 }
 
@@ -44,6 +52,10 @@ interface InspectionDetailContentProps {
   setFailDialogOpen: (open: boolean) => void
   failReason: string
   setFailReason: (reason: string) => void
+  inspectionNotes: string
+  setInspectionNotes: (notes: string) => void
+  addedPhotoId: string | null
+  setAddedPhotoId: (id: string | null) => void
 }
 
 function InspectionDetailContent({
@@ -53,7 +65,11 @@ function InspectionDetailContent({
   failDialogOpen,
   setFailDialogOpen,
   failReason,
-  setFailReason
+  setFailReason,
+  inspectionNotes,
+  setInspectionNotes,
+  addedPhotoId,
+  setAddedPhotoId,
 }: InspectionDetailContentProps) {
   const { data: inspection, isLoading } = useInspectionById(inspectionId)
   const { data: vehicle } = useVehicleById(inspection?.vehicleId ?? "")
@@ -88,24 +104,31 @@ function InspectionDetailContent({
     PostRental: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
   }
 
-  const handleComplete = () => {
-    completeInspection.mutate({ id: inspectionId, photoUrls: inspection.photoUrls })
-    setCompleteDialogOpen(false)
+  const handleComplete = async () => {
+    try {
+      await completeInspection.mutateAsync({
+        id: inspectionId,
+        photoUrls: [...(inspection.photoStorageIds ?? []), ...(addedPhotoId ? [addedPhotoId] : [])],
+        notes: inspectionNotes,
+      })
+      toast.success("Inspection completed")
+      setCompleteDialogOpen(false)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Inspection could not be completed")
+    }
   }
 
-  const handleFail = () => {
+  const handleFail = async () => {
     if (!failReason.trim()) return
-    failInspection.mutate({ id: inspectionId, reason: failReason })
-    setFailDialogOpen(false)
-    setFailReason("")
+    try {
+      await failInspection.mutateAsync({ id: inspectionId, reason: failReason })
+      toast.success("Inspection failed; vehicle moved to maintenance")
+      setFailDialogOpen(false)
+      setFailReason("")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Inspection could not be failed")
+    }
   }
-
-  const zones = [
-    { key: "exterior", label: "Exterior", items: ["Body", "Paint", "Tires", "Lights"] },
-    { key: "interior", label: "Interior", items: ["Seats", "Dashboard", "Steering", "Controls"] },
-    { key: "mechanical", label: "Mechanical", items: ["Engine", "Brakes", "Suspension", "Transmission"] },
-    { key: "documents", label: "Documents", items: ["Registration", "Insurance", "License", "Tax"] },
-  ]
 
   return (
     <div className="pb-20 lg:pb-6">
@@ -177,29 +200,17 @@ function InspectionDetailContent({
           </Card>
         )}
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Inspection Checklist</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {zones.map(zone => (
-              <div key={zone.key}>
-                <h4 className="text-sm font-medium mb-2">{zone.label}</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {zone.items.map(item => (
-                    <div
-                      key={item}
-                      className="flex items-center gap-2 p-2 rounded-lg bg-muted/50 text-sm"
-                    >
-                      <div className="size-5 rounded-full border border-muted-foreground/30" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+        {inspection.status === "Pending" && (
+          <Card>
+            <CardHeader className="pb-3"><CardTitle className="text-base">Record inspection evidence</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">Add a vehicle photo and notes before recording the inspection result.</p>
+              <FileUpload onUpload={setAddedPhotoId} onRemove={() => setAddedPhotoId(null)} />
+              <p className="text-xs text-muted-foreground">Existing photos: {inspection.photoUrls.length}. One additional photo can be added here.</p>
+              <Textarea value={inspectionNotes} onChange={(event) => setInspectionNotes(event.target.value)} maxLength={2000} placeholder="Inspection notes or condition findings" />
+            </CardContent>
+          </Card>
+        )}
 
         {inspection.notes && (
           <Card>
@@ -249,7 +260,7 @@ function InspectionDetailContent({
               <Button
                 className="gap-2 bg-success hover:bg-success/90"
                 onClick={handleComplete}
-                disabled={completeInspection.isPending}
+                disabled={completeInspection.isPending || inspectionNotes.length > 2000}
               >
                 <CheckCircle2 className="size-4" />
                 Confirm Pass
@@ -268,8 +279,8 @@ function InspectionDetailContent({
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Report damage found during inspection. This will set the vehicle to Maintenance status.
+              <p className="text-sm text-muted-foreground">
+                Report damage found during inspection. The vehicle will be moved to Maintenance status.
             </p>
             <div className="space-y-2">
               <Label htmlFor="fail-reason">Reason for failure</Label>

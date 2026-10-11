@@ -48,9 +48,9 @@ export function ReservationCard({ reservation, onStart }: { reservation: Reserva
                 {reservation.currency} {reservation.estimatedCost.toLocaleString()}
               </span>
             </div>
-            {reservation.status === "Confirmed" && (
+            {["Confirmed", "PreRental", "Ready"].includes(reservation.status) && (
               <Button size="sm" onClick={onStart} className="gap-1.5">
-                Start Rental
+                {reservation.status === "Ready" ? "Open Handover" : reservation.status === "PreRental" ? "Continue Preparation" : "Prepare Vehicle"}
                 <ArrowRight className="size-3" />
               </Button>
             )}

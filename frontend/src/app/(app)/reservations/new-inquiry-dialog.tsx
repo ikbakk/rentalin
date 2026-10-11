@@ -9,6 +9,8 @@ import { useVehicles } from "@/hooks/use-vehicles"
 import { useCreateInquiry } from "@/hooks/use-inquiries"
 import { toast } from "sonner"
 import { ArrowRight, ArrowLeft, Check, MessageCircle, Calendar } from "lucide-react"
+import { useActiveBusiness } from "@/hooks/use-active-business"
+import { businessDateToIso } from "@/lib/business-time"
 
 type Step = "contact" | "details" | "done"
 
@@ -26,6 +28,8 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
 
   const { data: vehicles } = useVehicles()
   const createInquiry = useCreateInquiry()
+  const { business } = useActiveBusiness()
+  const businessTimeZone = business?.timeZone ?? "Asia/Jakarta"
 
   const reset = () => {
     setStep("contact")
@@ -44,12 +48,22 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
       return
     }
     try {
+      const startDate = form.startDate ? businessDateToIso(form.startDate, businessTimeZone) ?? "" : "";
+      const endDate = form.endDate ? businessDateToIso(form.endDate, businessTimeZone) ?? undefined : undefined;
+      if (form.startDate && !startDate) {
+        toast.error("Choose a valid pickup date")
+        return
+      }
+      if (form.endDate && (!endDate || !startDate || Date.parse(endDate) <= Date.parse(startDate))) {
+        toast.error("Return date must be after pickup date")
+        return
+      }
       await createInquiry.mutateAsync({
         customerPhone: form.customerPhone,
         customerName: form.customerName || undefined,
         vehicleId: form.vehicleId,
-        startDate: form.startDate ? new Date(form.startDate).toISOString() : "",
-        endDate: form.endDate ? new Date(form.endDate).toISOString() : undefined,
+        startDate,
+        endDate,
         notes: form.notes || undefined,
       })
       setStep("done")
@@ -71,7 +85,7 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
             </div>
             <div className="text-center">
               <p className="font-semibold">Inquiry Created</p>
-              <p className="text-sm text-muted-foreground">Customer notified via WhatsApp</p>
+              <p className="text-sm text-muted-foreground">Inquiry added to the operator queue</p>
             </div>
           </div>
         </DialogContent>
@@ -223,6 +237,7 @@ export function NewInquiryDialog({ open, onOpenChange }: { open: boolean; onOpen
                   </Label>
                   <Input
                     type="date"
+                    min={form.startDate || undefined}
                     value={form.endDate}
                     onChange={e => setForm({ ...form, endDate: e.target.value })}
                   />

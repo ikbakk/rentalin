@@ -2,7 +2,20 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireMembership } from "./tenancy";
 
-export const listInquiries = query({ args: { businessId: v.id("businesses") }, handler: async (ctx, { businessId }) => { await requireMembership(ctx, businessId); return ctx.db.query("inquiries").withIndex("by_business", q => q.eq("businessId", businessId)).collect(); } });
+export const listInquiries = query({ args: { businessId: v.id("businesses") }, handler: async (ctx, { businessId }) => {
+  await requireMembership(ctx, businessId);
+  const inquiries = await ctx.db.query("inquiries").withIndex("by_business", q => q.eq("businessId", businessId)).collect();
+  return Promise.all(inquiries.map(async (inquiry) => {
+    const vehicle = await ctx.db.get(inquiry.vehicleId);
+    const customer = inquiry.customerId ? await ctx.db.get(inquiry.customerId) : null;
+    return {
+      ...inquiry,
+      customerName: customer?.name ?? inquiry.customerName,
+      customerPhone: customer?.phoneNumber ?? inquiry.customerPhone,
+      vehicleSummary: vehicle ? `${vehicle.make} ${vehicle.model} (${vehicle.plateNumber})` : "Vehicle unavailable",
+    };
+  }));
+} });
 export const createInquiry = mutation({ args: { businessId: v.id("businesses"), customerId: v.optional(v.id("customers")), customerName: v.string(), customerPhone: v.optional(v.string()), vehicleId: v.id("vehicles"), startDate: v.string(), endDate: v.optional(v.string()), notes: v.optional(v.string()) }, handler: async (ctx, { businessId, customerPhone, endDate, ...data }) => {
   await requireMembership(ctx, businessId);
   const vehicle = await ctx.db.get(data.vehicleId);

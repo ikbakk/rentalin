@@ -3,7 +3,22 @@ import { v } from "convex/values";
 import { requireMembership, requirePermission } from "./tenancy";
 import { assertVehicleAvailable, parseBookingInterval } from "./bookingRules";
 const status = v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active"), v.literal("completed"));
-export const list = query({ args: { businessId: v.id("businesses") }, handler: async (ctx, { businessId }) => { await requireMembership(ctx, businessId); return ctx.db.query("reservations").withIndex("by_business", q => q.eq("businessId", businessId)).collect(); } });
+export const list = query({ args: { businessId: v.id("businesses") }, handler: async (ctx, { businessId }) => {
+  await requireMembership(ctx, businessId);
+  const reservations = await ctx.db.query("reservations").withIndex("by_business", q => q.eq("businessId", businessId)).collect();
+  return Promise.all(reservations.map(async (reservation) => {
+    const [vehicle, customer, inquiry] = await Promise.all([
+      ctx.db.get(reservation.vehicleId),
+      reservation.customerId ? ctx.db.get(reservation.customerId) : null,
+      reservation.inquiryId ? ctx.db.get(reservation.inquiryId) : null,
+    ]);
+    return {
+      ...reservation,
+      customerName: customer?.name ?? inquiry?.customerName ?? "",
+      vehicleSummary: vehicle ? `${vehicle.make} ${vehicle.model} (${vehicle.plateNumber})` : "Vehicle unavailable",
+    };
+  }));
+} });
 export const create = mutation({ args: { businessId: v.id("businesses"), inquiryId: v.optional(v.id("inquiries")), customerId: v.optional(v.id("customers")), vehicleId: v.id("vehicles"), startDate: v.string(), endDate: v.string(), estimatedCost: v.number(), currency: v.string() }, handler: async (ctx, { businessId, ...data }) => {
   await requireMembership(ctx, businessId);
   const interval = parseBookingInterval(data.startDate, data.endDate);
@@ -72,6 +87,12 @@ export const setStatus = mutation({ args: { id: v.id("reservations"), status }, 
     if (!vehicle || vehicle.businessId !== item.businessId) throw new Error("Vehicle not found");
     const interval = parseBookingInterval(item.startDate, item.endDate);
     await assertVehicleAvailable(ctx, vehicle, interval, item._id);
+  }
+  if (status === "ready") {
+    const inspections = await ctx.db.query("inspections").withIndex("by_reservation", q => q.eq("reservationId", item._id)).collect();
+    if (!inspections.some((inspection) => inspection.inspectionType === "PreRental" && inspection.status === "Completed")) {
+      throw new Error("Complete a pre-rental inspection before marking this reservation ready");
+    }
   }
   await ctx.db.patch(id, { status });
   return ctx.db.get(id);

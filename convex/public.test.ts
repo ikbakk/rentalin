@@ -19,6 +19,7 @@ test("public business lookup exposes only the published profile fields", async (
       phone: "+628123456789",
       email: "hello@example.test",
       address: "Jakarta",
+      timeZone: "Asia/Makassar",
     });
   });
 
@@ -30,6 +31,7 @@ test("public business lookup exposes only the published profile fields", async (
     phone: "+628123456789",
     email: "hello@example.test",
     logoUrl: null,
+    timeZone: "Asia/Makassar",
   });
 });
 

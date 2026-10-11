@@ -77,6 +77,8 @@ test("reservation status changes follow the allowed lifecycle", async () => {
   const reservationId = await asUser.mutation(api.reservations.create, request(businessId, vehicleId));
   await expect(asUser.mutation(api.reservations.setStatus, { id: reservationId, status: "ready" })).rejects.toThrow("Cannot change reservation");
   await expect(asUser.mutation(api.reservations.setStatus, { id: reservationId, status: "preRental" })).resolves.toBeTruthy();
+  const inspectionId = await asUser.mutation(api.inspections.create, { businessId, reservationId, inspectionType: "PreRental" });
+  await asUser.mutation(api.inspections.complete, { id: inspectionId, photoUrls: [], notes: "Vehicle checked" });
   await expect(asUser.mutation(api.reservations.setStatus, { id: reservationId, status: "ready" })).resolves.toBeTruthy();
   await expect(asUser.mutation(api.reservations.setStatus, { id: reservationId, status: "confirmed" })).rejects.toThrow("Cannot change reservation");
 });

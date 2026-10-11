@@ -18,6 +18,7 @@ export interface InquiryResponse {
   id: string;
   customerId: string;
   customerName: string;
+  customerPhone: string;
   vehicleId: string;
   vehicleSummary: string;
   startDate: string;
@@ -26,7 +27,7 @@ export interface InquiryResponse {
   notes?: string;
 }
 
-export type InquiryStatus = "New" | "Pending" | "Responded" | "Converted" | "Cancelled";
+export type InquiryStatus = "New" | "Contacted" | "Converted" | "Cancelled";
 
 export interface ReservationResponse {
   id: string;
@@ -42,7 +43,7 @@ export interface ReservationResponse {
   status: ReservationStatus;
 }
 
-export type ReservationStatus = "Confirmed" | "PreRental" | "Cancelled" | "Ready" | "Active";
+export type ReservationStatus = "Confirmed" | "PreRental" | "Cancelled" | "Ready" | "Active" | "Completed";
 
 export interface RentalResponse {
   id: string;
@@ -61,10 +62,12 @@ export interface RentalResponse {
 export interface InspectionResponse {
   id: string;
   rentalId: string;
+  reservationId?: string;
   vehicleId: string;
   inspectionType: "PreRental" | "PostRental";
   notes?: string;
   photoUrls: string[];
+  photoStorageIds?: string[];
   status: "Pending" | "Completed" | "Failed";
   inspectionDate?: string;
 }
@@ -116,6 +119,10 @@ export interface CreateInquiryRequest {
 
 export interface CreateReservationRequest {
   inquiryId: string;
+  customerId?: string;
+  vehicleId: string;
+  startDate: string;
+  endDate: string;
   estimatedCost: number;
   currency: string;
 }
@@ -176,6 +183,7 @@ export interface BusinessResponse {
   email: string;
   logoUrl?: string;
   slug: string;
+  timeZone: string;
 }
 
 export interface StaffResponse {
@@ -212,6 +220,7 @@ export interface UpdateBusinessRequest {
   address: string;
   phoneNumber: string;
   email: string;
+  timeZone: string;
 }
 
 export interface CreateStaffRequest {

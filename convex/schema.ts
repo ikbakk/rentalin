@@ -21,7 +21,17 @@ export default defineSchema({
     businessId: v.id("businesses"),
     role: v.union(v.literal("owner"), v.literal("admin"), v.literal("staff")),
     isActive: v.boolean(),
-  }).index("by_user", ["userId"]).index("by_user_and_business", ["userId", "businessId"]),
+  }).index("by_user", ["userId"]).index("by_user_and_business", ["userId", "businessId"]).index("by_business", ["businessId"]),
+
+  staffInvitations: defineTable({
+    businessId: v.id("businesses"),
+    email: v.string(),
+    role: v.union(v.literal("admin"), v.literal("staff")),
+    tokenHash: v.string(),
+    expiresAt: v.number(),
+    invitedBy: v.id("users"),
+    usedAt: v.optional(v.number()),
+  }).index("by_token_hash", ["tokenHash"]).index("by_business", ["businessId"]),
 
   userPreferences: defineTable({
     userId: v.id("users"),

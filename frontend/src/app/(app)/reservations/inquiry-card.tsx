@@ -5,11 +5,13 @@ import { Calendar, User, MessageSquare, ArrowRight, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { statusColor } from "@/lib/status-config"
 import type { InquiryResponse } from "@/lib/types"
+import { useBusiness } from "@/hooks/use-business"
+import { DEFAULT_BUSINESS_TIME_ZONE, durationInBusinessDays, formatBusinessDate } from "@/lib/business-time"
 
 export function InquiryCard({ inquiry, onConfirm }: { inquiry: InquiryResponse; onConfirm: () => void }) {
-  const startDate = new Date(inquiry.startDate)
-  const endDate = new Date(inquiry.endDate)
-  const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+  const { data: business } = useBusiness()
+  const timeZone = business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE
+  const days = durationInBusinessDays(inquiry.startDate, inquiry.endDate)
 
   return (
     <Card className="transition-all hover:shadow-md">
@@ -29,11 +31,11 @@ export function InquiryCard({ inquiry, onConfirm }: { inquiry: InquiryResponse; 
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <Calendar className="size-3.5" />
-                <span>{startDate.toLocaleDateString()} — {endDate.toLocaleDateString()}</span>
+                <span>{days === null ? "Dates not selected" : `${formatBusinessDate(inquiry.startDate, timeZone)} — ${formatBusinessDate(inquiry.endDate, timeZone)}`}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="size-3.5" />
-                <span>{days} day{days !== 1 ? "s" : ""}</span>
+                <span>{days === null ? "Duration TBD" : `${days} day${days !== 1 ? "s" : ""}`}</span>
               </div>
             </div>
 
@@ -49,9 +51,9 @@ export function InquiryCard({ inquiry, onConfirm }: { inquiry: InquiryResponse; 
             <Badge variant="outline" className={cn("font-medium", statusColor(inquiry.status))}>
               {inquiry.status}
             </Badge>
-            {inquiry.status === "New" && (
+            {(inquiry.status === "New" || inquiry.status === "Contacted") && (
               <Button size="sm" onClick={onConfirm} className="gap-1.5">
-                Confirm
+                Review
                 <ArrowRight className="size-3" />
               </Button>
             )}

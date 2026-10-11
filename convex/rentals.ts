@@ -9,7 +9,20 @@ export const list = query({
   args: { businessId: v.id("businesses") },
   handler: async (ctx, { businessId }) => {
     await requireMembership(ctx, businessId);
-    return ctx.db.query("rentals").withIndex("by_business", q => q.eq("businessId", businessId)).collect();
+    const rentals = await ctx.db.query("rentals").withIndex("by_business", q => q.eq("businessId", businessId)).collect();
+    return Promise.all(rentals.map(async (rental) => {
+      const [vehicle, customer, reservation] = await Promise.all([
+        ctx.db.get(rental.vehicleId),
+        rental.customerId ? ctx.db.get(rental.customerId) : null,
+        ctx.db.get(rental.reservationId),
+      ]);
+      const inquiry = reservation?.inquiryId ? await ctx.db.get(reservation.inquiryId) : null;
+      return {
+        ...rental,
+        customerName: customer?.name ?? inquiry?.customerName ?? "",
+        vehicleSummary: vehicle ? `${vehicle.make} ${vehicle.model} (${vehicle.plateNumber})` : "Vehicle unavailable",
+      };
+    }));
   },
 });
 
@@ -24,6 +37,10 @@ export const start = mutation({
     if (existing) return existing;
     if (reservation.status !== "ready") throw new Error("Only a ready reservation can be handed over");
     if (!Number.isSafeInteger(odometerStart) || odometerStart < 0) throw new Error("Enter a valid starting odometer reading");
+    const inspections = await ctx.db.query("inspections").withIndex("by_reservation", q => q.eq("reservationId", reservationId)).collect();
+    if (!inspections.some((inspection) => inspection.inspectionType === "PreRental" && inspection.status === "Completed")) {
+      throw new Error("Complete a pre-rental inspection before handover");
+    }
 
     const vehicle = await ctx.db.get(reservation.vehicleId);
     if (!vehicle || vehicle.businessId !== reservation.businessId) throw new Error("Vehicle not found");

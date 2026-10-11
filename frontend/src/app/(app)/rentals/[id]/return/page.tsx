@@ -13,15 +13,17 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { ChevronLeft } from "lucide-react"
-import { format } from "date-fns"
+import { useBusiness } from "@/hooks/use-business"
+import { DEFAULT_BUSINESS_TIME_ZONE, formatBusinessDateTime } from "@/lib/business-time"
 
 export default function ReturnRentalPage() {
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
 
-  const { data: rental, isLoading, isError } = useRentalById(id)
+  const { data: rental, isLoading } = useRentalById(id)
   const completeRental = useCompleteRental()
+  const { data: business } = useBusiness()
   const [odometerEnd, setOdometerEnd] = useState("")
   const [validationError, setValidationError] = useState("")
 
@@ -34,7 +36,7 @@ export default function ReturnRentalPage() {
     )
   }
 
-  if (isError || !rental) {
+  if (!rental) {
     return (
       <div className="p-4 lg:p-6">
         <EmptyState
@@ -52,6 +54,11 @@ export default function ReturnRentalPage() {
   const handleSubmit = async () => {
     const odoEnd = Number(odometerEnd)
 
+    if (!Number.isSafeInteger(odoEnd) || odoEnd < 0) {
+      setValidationError("Enter a valid whole-number odometer reading")
+      return
+    }
+
     if (rental.odometerStart != null && odoEnd < rental.odometerStart) {
       setValidationError(`Odometer end must be at least ${rental.odometerStart.toLocaleString()} km`)
       return
@@ -63,8 +70,8 @@ export default function ReturnRentalPage() {
       await completeRental.mutateAsync({ rentalId: id, odometerEnd: odoEnd })
       toast.success("Rental completed successfully")
       router.push("/operations")
-    } catch {
-      toast.error("Failed to complete rental")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to complete rental")
     }
   }
 
@@ -98,9 +105,7 @@ export default function ReturnRentalPage() {
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Start Date</span>
             <span className="font-medium">
-              {rental.actualStart
-                ? format(new Date(rental.actualStart), "MMM d, yyyy HH:mm")
-                : "—"}
+              {formatBusinessDateTime(rental.actualStart, business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE)}
             </span>
           </div>
           <div className="flex justify-between text-sm">
@@ -144,7 +149,7 @@ export default function ReturnRentalPage() {
           </div>
           <Button
             onClick={handleSubmit}
-            disabled={completeRental.isPending || !odometerEnd}
+            disabled={completeRental.isPending || !Number.isSafeInteger(Number(odometerEnd)) || Number(odometerEnd) < odometerMin}
             className="w-full"
           >
             {completeRental.isPending ? "Processing..." : "Complete Rental"}

@@ -2,6 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { resolveBusinessTimeZone } from "@/lib/business-time";
 
 export interface PublicBusiness {
   name: string;
@@ -10,6 +11,7 @@ export interface PublicBusiness {
   phone: string;
   email: string;
   logoUrl: string | null;
+  timeZone: string;
 }
 
 export function usePublicBusiness(slug: string) {
@@ -23,6 +25,7 @@ export function usePublicBusiness(slug: string) {
           phone: business.phone ?? "",
           email: business.email ?? "",
           logoUrl: business.logoUrl ?? null,
+          timeZone: resolveBusinessTimeZone(business.timeZone),
         }
       : undefined,
     isLoading: business === undefined,

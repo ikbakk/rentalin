@@ -9,7 +9,7 @@ export function InspectionsList() {
   const { data: inspections, isLoading } = useInspections()
 
   if (isLoading) return <ListSkeleton count={3} />
-  if (!inspections?.length) return <EmptyState title="No inspections" description="Inspections are created when rentals start and end" />
+  if (!inspections?.length) return <EmptyState title="No inspections" description="Create a pre-rental inspection from a reservation’s preparation page." />
 
   return <div className="flex flex-col gap-3 p-4">{inspections.map((i) => <InspectionCard key={i.id} inspection={i} />)}</div>
 }

@@ -1,18 +1,23 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { useInquiryById, useConfirmInquiry, useCancelInquiry } from "@/hooks/use-inquiries"
-import { useCustomerById } from "@/hooks/use-customer-by-id"
+import { useState } from "react"
+import { useInquiryById, useCancelInquiry } from "@/hooks/use-inquiries"
+import { useCreateReservation } from "@/hooks/use-reservations"
+import { useVehicleById } from "@/hooks/use-vehicle-by-id"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ListSkeleton } from "@/components/shared/loading-skeleton"
 import { StatusChip } from "@/components/shared/status-chip"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { User, Car, Calendar, MessageSquare, ArrowLeft, Phone, CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
-import { format } from "date-fns"
+import { useBusiness } from "@/hooks/use-business"
+import { businessDateToIso, DEFAULT_BUSINESS_TIME_ZONE, durationInBusinessDays, formatBusinessDate, isoToBusinessDate } from "@/lib/business-time"
 
 export default function ReviewInquiryPage() {
   const params = useParams()
@@ -20,9 +25,11 @@ export default function ReviewInquiryPage() {
   const id = params.id as string
 
   const { data: inquiry, isLoading } = useInquiryById(id)
-  const { data: customer } = useCustomerById(inquiry?.customerId ?? "")
-  const confirmInquiry = useConfirmInquiry()
+  const { data: business } = useBusiness()
+  const { data: vehicle } = useVehicleById(inquiry?.vehicleId ?? "")
+  const createReservation = useCreateReservation()
   const cancelInquiry = useCancelInquiry()
+  const [dateDraft, setDateDraft] = useState<{ inquiryId: string; start: string; end: string }>({ inquiryId: "", start: "", end: "" })
 
   if (isLoading) {
     return (
@@ -44,15 +51,35 @@ export default function ReviewInquiryPage() {
     )
   }
 
-  const isPending = inquiry.status === "Pending"
+  const isPending = inquiry.status === "New" || inquiry.status === "Contacted"
+  const businessTimeZone = business?.timeZone ?? DEFAULT_BUSINESS_TIME_ZONE
+  const startDate = dateDraft.inquiryId === id ? dateDraft.start : isoToBusinessDate(inquiry.startDate, businessTimeZone)
+  const endDate = dateDraft.inquiryId === id ? dateDraft.end : isoToBusinessDate(inquiry.endDate, businessTimeZone)
+  const validDates = !!startDate && !!endDate && endDate > startDate
 
   const handleConfirm = async () => {
     try {
-      await confirmInquiry.mutateAsync(id)
-      toast.success("Inquiry confirmed")
-      router.push("/reservations")
-    } catch {
-      // Error toast already shown by the mutation's onError
+      const startDateIso = businessDateToIso(startDate, businessTimeZone)
+      const endDateIso = businessDateToIso(endDate, businessTimeZone)
+      if (!startDateIso || !endDateIso || Date.parse(endDateIso) <= Date.parse(startDateIso)) {
+        throw new Error("Choose a pickup date and a later return date")
+      }
+      if (!vehicle?.dailyRateAmount) throw new Error("Set a daily rate for this vehicle before confirming the booking")
+      const duration = durationInBusinessDays(startDateIso, endDateIso)
+      if (duration === null) throw new Error("Choose a valid rental date range")
+      const reservationId = await createReservation.mutateAsync({
+        inquiryId: id,
+        customerId: inquiry.customerId || undefined,
+        vehicleId: inquiry.vehicleId,
+        startDate: startDateIso,
+        endDate: endDateIso,
+        estimatedCost: vehicle.dailyRateAmount * duration,
+        currency: vehicle.dailyRateCurrency,
+      })
+      toast.success("Reservation confirmed")
+      router.push(`/reservations/${reservationId}/preparation`)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Inquiry could not be confirmed")
     }
   }
 
@@ -62,8 +89,16 @@ export default function ReviewInquiryPage() {
       toast.success("Inquiry cancelled")
       router.push("/operations")
     } catch {
-      // Error toast already shown by the mutation's onError
+      toast.error("Inquiry could not be cancelled")
     }
+  }
+
+  const changeDate = (field: "start" | "end", value: string) => {
+    setDateDraft({
+      inquiryId: id,
+      start: field === "start" ? value : startDate,
+      end: field === "end" ? value : endDate,
+    })
   }
 
   return (
@@ -107,7 +142,7 @@ export default function ReviewInquiryPage() {
               <Phone className="size-4 text-muted-foreground shrink-0" />
               <div className="flex justify-between flex-1 text-sm">
                 <span className="text-muted-foreground">Phone</span>
-                <span className="font-medium">{customer?.phoneNumber || "—"}</span>
+                <span className="font-medium">{inquiry.customerPhone || "—"}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -122,14 +157,43 @@ export default function ReviewInquiryPage() {
               <div className="flex justify-between flex-1 text-sm">
                 <span className="text-muted-foreground">Rental Period</span>
                 <span className="font-medium">
-                  {format(new Date(inquiry.startDate), "MMM d, yyyy")}
-                  {" – "}
-                  {format(new Date(inquiry.endDate), "MMM d, yyyy")}
+                  {validDates
+                    ? `${formatBusinessDate(businessDateToIso(startDate, businessTimeZone)!, businessTimeZone)} – ${formatBusinessDate(businessDateToIso(endDate, businessTimeZone)!, businessTimeZone)}`
+                    : "Rental dates not selected"}
                 </span>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {isPending && (
+          <Card className="lg:col-span-2">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Rental Dates</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="inquiry-pickup-date">Pickup date ({businessTimeZone})</Label>
+                <Input
+                  id="inquiry-pickup-date"
+                  type="date"
+                  value={startDate}
+                  onChange={(event) => changeDate("start", event.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="inquiry-return-date">Return date ({businessTimeZone})</Label>
+                <Input
+                  id="inquiry-return-date"
+                  type="date"
+                  min={startDate || undefined}
+                  value={endDate}
+                  onChange={(event) => changeDate("end", event.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {inquiry.notes && (
           <>
@@ -159,10 +223,10 @@ export default function ReviewInquiryPage() {
                   size="lg"
                   className="flex-1 gap-2"
                   onClick={handleConfirm}
-                  disabled={confirmInquiry.isPending}
+                  disabled={createReservation.isPending || !validDates}
                 >
                   <CheckCircle className="size-4" />
-                  {confirmInquiry.isPending ? "Confirming..." : "Confirm"}
+                  {createReservation.isPending ? "Confirming..." : "Confirm & Create Reservation"}
                 </Button>
                 <Button
                   variant="outline"
