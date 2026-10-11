@@ -1,4 +1,4 @@
-**Base:** `chore/ci-release-readiness` (`67ae1ad5d9dfb63ffa02e0af4d24efa90a6c6e1f`) | **Head:** `fix/tenant-authorization` (`7e3c5a01fb1c302cc85ace1820bb2659c0d70784`)
+**Base:** `chore/ci-release-readiness` (`ac2836a137bb966b5f9944df97ef0922e8551b9e`) | **Head:** `fix/tenant-authorization` (`f2c8d720cdead5a05257eed36d6f33609b821d19`)
 
 ## Problem
 

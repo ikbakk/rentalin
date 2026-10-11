@@ -1,4 +1,4 @@
-**Base:** `fix/public-data-upload-controls` (`eb6911a0afbf25f41218edb7511c4a69946d0bf8`) | **Head:** `fix/reservation-availability-rules` (`4fa2c8f2b39f622e252bc99de1112e29bfa8b43f`)
+**Base:** `fix/public-data-upload-controls` (`2c6a6f44e536e0ea66b50323d4251c478d6b17a9`) | **Head:** `fix/reservation-availability-rules` (`0aa18c96e45d5d060fd6ae81f2513a58aab84cc8`)
 
 ## Problem
 

@@ -1,4 +1,4 @@
-**Base:** `fix/repeat-safe-rental-lifecycle` (`53225e58c1ed22a2202c18caf661995b529cc973`) | **Head:** `feat/manual-payment-ledger` (`35cda1587f4c2ee4ee56026199ddd7536de79aa4`)
+**Base:** `fix/repeat-safe-rental-lifecycle` (`bda9f69c81e44688d675644ec661221bc902a33e`) | **Head:** `feat/manual-payment-ledger` (`8285afa9fb2293669edda80feb587dd147eb6219`)
 
 ## Problem
 

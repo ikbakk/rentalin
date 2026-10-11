@@ -1,4 +1,4 @@
-**Base:** `fix/reservation-availability-rules` (`4fa2c8f2b39f622e252bc99de1112e29bfa8b43f`) | **Head:** `fix/repeat-safe-rental-lifecycle` (`53225e58c1ed22a2202c18caf661995b529cc973`)
+**Base:** `fix/reservation-availability-rules` (`0aa18c96e45d5d060fd6ae81f2513a58aab84cc8`) | **Head:** `fix/repeat-safe-rental-lifecycle` (`bda9f69c81e44688d675644ec661221bc902a33e`)
 
 ## Problem
 
