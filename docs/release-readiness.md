@@ -83,7 +83,7 @@ Install commands were run sequentially; root `npm ci` removes nested
 ## Release decision
 
 **Not ready to launch or deploy.** The stacked draft PRs are open and require
-review and hosted CI. Password
+owner review. Hosted CI passes, but password
 recovery, fully verified tenant-bound uploads and storage cleanup, stronger
 public inquiry abuse protection, isolated staging/E2E validation, monitoring,
 backup/restore, and approved privacy/retention/deletion behavior remain open
