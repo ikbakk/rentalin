@@ -36,8 +36,8 @@ Copy-ready descriptions remain in `docs/pr-drafts/` as implementation history.
 | Convex Auth JavaScript syntax | Pass | `node --check convex/auth.js`; signup requires 12 characters |
 | Frontend TypeScript check | Pass | `cd frontend && npm run typecheck`; run after the production build to avoid concurrent `.next/types` regeneration |
 | Frontend lint | Pass with warnings | `cd frontend && npm run lint`: 36 warnings, zero errors; baseline was 49 |
-| Frontend production build | Pass with sandbox workaround | `cd frontend && npm run build -- --webpack`; Next.js 16.2.12. Default Turbopack build cannot create a worker process in this sandbox (`Operation not permitted`); Webpack production build completed. CI must verify the configured default build outside this sandbox. |
-| Release environment preflight | Pass locally; hosted CI pending | Five tests cover required HTTPS origins, missing values, local/HTTP origins, mismatched Convex deployments, paths, and credentials. `npm run preflight:release` rejects missing values; Webpack production build passes with isolated placeholders. Default Turbopack build is blocked by this sandbox's worker-process restriction. |
+| Frontend production build | Pass | Local Webpack production build passed. Hosted CI run [#24](https://github.com/ikbakk/rentalin/actions/runs/38118813507) passed the configured default Turbopack production build using isolated placeholder origins. |
+| Release environment preflight | Pass | Five tests cover required HTTPS origins, missing values, local/HTTP origins, mismatched Convex deployments, paths, and credentials. `npm run preflight:release` rejects missing values. Hosted CI run [#24](https://github.com/ikbakk/rentalin/actions/runs/38118813507) passed for commit `932713bde5fa4aab25012b527804b1e675589261`. |
 | Landing production build | Pass | `ASTRO_TELEMETRY_DISABLED=1 npm run build` in `landing/`, verified in PR 01; landing unchanged since |
 | Diff whitespace check | Pass | `git diff --check` before PR 07 commit |
 | Convex generation/deployment check | Blocked | No `CONVEX_DEPLOYMENT` configured. CLI offered project setup; stopped without linking/creating a deployment. |
