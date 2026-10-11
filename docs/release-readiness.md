@@ -1,76 +1,105 @@
 # Rentalin release readiness
 
-Updated: 2026-10-10
+Updated: 2026-10-11
 
-This tracker records evidence for the controlled pilot release plan. A local
-build is not a production deployment or a security certification. Draft PRs
-must be reviewed and merged by the repository owner. Production deployment
-and publication remain owner-approved steps.
+This tracker records evidence for a controlled pilot. Passing local builds does
+not mean the code is reviewed, deployed, or ready to collect customer data.
+The implementation is published as seven open draft pull requests, with the
+release runbook and this tracker prepared as PR 08. No change has been merged,
+and no production data or deployment has been touched.
 
-## PR queue
+## Focused PR queue
 
-| PR | Scope | Status | Depends on | Gate |
-| --- | --- | --- | --- | --- |
-| PR 01 | Reproducible typechecks, Convex test harness, and CI for all packages | Ready to open as draft | None | Root checks, frontend checks, and both builds pass locally; hosted CI pending PR |
-| PR 02 | Backend authorization, role checks, and tenant isolation | Pending | PR 01 | Anonymous, cross-business, inactive-member, and role tests pass |
-| PR 03 | Public DTOs, upload access, inquiry abuse controls, and account access | Pending | PR 02 | Public data minimized; upload and public routes verified |
-| PR 04 | Reservation availability and date-conflict rules | Pending | PR 02, PR 03 | Boundary, overlap, cancellation, and concurrency tests pass |
-| PR 05 | Rental lifecycle, inspection, return, and history | Pending | PR 04 | End-to-end lifecycle and repeat-safe transitions pass |
-| PR 06 | Manual payment ledger, truthful reports, receipts, and CSV export | Pending | PR 05 | Ledger, refund, report, and export tests pass |
-| PR 07 | Staff administration and pilot UX | Pending | PRs 02–06 | Mobile operator and customer flows pass |
-| PR 08 | Release runbook and final evidence report | Pending | PRs 01–07 | All publish-ready gates pass or are explicitly blocked |
+The exact local base/head chain is:
 
-As PRs are opened, add their links, branch names, bases, and head SHAs here.
-If a PR depends on an unmerged PR, state whether it is stacked and its exact
-base branch. Never merge a prerequisite automatically.
+| PR | Scope | Branch | Base branch (SHA) | Hosted head SHA | State |
+| --- | --- | --- | --- | --- | --- |
+| 01 | Reproducible checks, Convex test harness, CI | `chore/ci-release-readiness` | `main` (`58bd1471264886d351abfeedbe663b6f444162b1`) | `67ae1ad5d9dfb63ffa02e0af4d24efa90a6c6e1f` | [Draft PR #5](https://github.com/ikbakk/rentalin/pull/5); hosted checks pending |
+| 02 | Tenant authorization, roles, ownership, revoked membership | `fix/tenant-authorization` | `chore/ci-release-readiness` (`67ae1ad5d9dfb63ffa02e0af4d24efa90a6c6e1f`) | `7e3c5a01fb1c302cc85ace1820bb2659c0d70784` | [Draft PR #6](https://github.com/ikbakk/rentalin/pull/6); hosted checks pending |
+| 03 | Public DTOs, tracking token controls, inquiry validation, scoped uploads | `fix/public-data-upload-controls` | `fix/tenant-authorization` (`7e3c5a01fb1c302cc85ace1820bb2659c0d70784`) | `eb6911a0afbf25f41218edb7511c4a69946d0bf8` | [Draft PR #7](https://github.com/ikbakk/rentalin/pull/7); security limitations below; hosted checks pending |
+| 04 | Canonical booking intervals and transactional availability rules | `fix/reservation-availability-rules` | `fix/public-data-upload-controls` (`eb6911a0afbf25f41218edb7511c4a69946d0bf8`) | `4fa2c8f2b39f622e252bc99de1112e29bfa8b43f` | [Draft PR #8](https://github.com/ikbakk/rentalin/pull/8); hosted checks pending |
+| 05 | Repeat-safe rental lifecycle, odometers, and activity history | `fix/repeat-safe-rental-lifecycle` | `fix/reservation-availability-rules` (`4fa2c8f2b39f622e252bc99de1112e29bfa8b43f`) | `53225e58c1ed22a2202c18caf661995b529cc973` | [Draft PR #9](https://github.com/ikbakk/rentalin/pull/9); hosted checks pending |
+| 06 | Append-only manual payment ledger, reports, receipts, CSV | `feat/manual-payment-ledger` | `fix/repeat-safe-rental-lifecycle` (`53225e58c1ed22a2202c18caf661995b529cc973`) | `35cda1587f4c2ee4ee56026199ddd7536de79aa4` | [Draft PR #10](https://github.com/ikbakk/rentalin/pull/10); hosted checks pending |
+| 07 | Staff invitations, operator workflow, inspection/handover, business time zone, public contact links | `feat/pilot-ux-staff-admin` | `feat/manual-payment-ledger` (`35cda1587f4c2ee4ee56026199ddd7536de79aa4`) | `0ce2e1799c974e410c1ab620eea88da2af17d4f6` | [Draft PR #11](https://github.com/ikbakk/rentalin/pull/11); browser/mobile staging gate blocked; hosted checks pending |
+| 08 | Pilot runbook and readiness evidence | `docs/pilot-release-runbook` | `feat/pilot-ux-staff-admin` (`0ce2e1799c974e410c1ab620eea88da2af17d4f6`) | Branch tip including this tracker update | [Draft PR #12](https://github.com/ikbakk/rentalin/pull/12); hosted checks pending |
 
-## Baseline evidence
+PR 02–08 are deliberately stacked. PRs 01–08 are open as drafts in dependency
+order. Hosted GitHub Actions results have not yet been verified. Copy-ready
+titles and bodies are in `docs/pr-drafts/` and use the hosted head SHAs.
 
-Repository was clean at `58bd1471264886d351abfeedbe663b6f444162b1` before
-starting this work. One `main` branch was present. This checkout had no
-frontend test suite or GitHub Actions workflow at baseline.
+## Verification evidence
 
-| Check | Result | Evidence / limitation |
+| Check | Latest result | Evidence / limitation |
 | --- | --- | --- |
-| Root `npm ci` | Pass | Completed using npm's explicit `/tmp/rentalin-npm-cache`; installs must be sequential because root cleanup overlaps nested node_modules. Repeated after adding test dependencies. |
-| Frontend `npm ci` | Pass | Completed. |
-| Landing `npm ci` | Pass | Completed. |
-| Frontend `npx tsc --noEmit` | Pass | Before adding the named typecheck script. |
-| Frontend `npm run lint` | Pass with warnings | 49 existing warnings, zero errors. |
-| Frontend `npm run build` | Pass | Next.js 16.2.12 production build completed. |
-| Landing `npm run build` | Pass with telemetry disabled | Astro 5 server build completed. Without disabling telemetry, the environment tried to write `/root/.config/astro`, which is outside the available workspace. CI disables telemetry. |
-| Convex strict TypeScript compile | Pass | A direct strict `tsc` invocation over Convex source and generated declarations passed. PR 01 makes this reproducible with a checked-in tsconfig and script. |
-| `npm run typecheck` (root) | Pass | Uses checked-in Convex tsconfig; passed after clean root `npm ci`. |
-| `npm test` | Pass | `convex-test`/Vitest harness; 2 public inquiry tests pass after clean root `npm ci`. |
-| `npx convex dev --once` / codegen | Blocked | No `CONVEX_DEPLOYMENT` is configured. The CLI offered to set up a new project; stopped before creating or linking one. |
-| GitHub Actions result | Pending | Workflow will run after PR 01 is pushed/opened. |
+| Root Convex TypeScript check | Pass | `npm run typecheck` on PR 07 |
+| Convex tests | Pass | `npm test -- --reporter=dot`: 9 files, 42 tests, including timezone, inspection/handover, upload cleanup, finance and authorization cases |
+| Convex Auth JavaScript syntax | Pass | `node --check convex/auth.js`; signup requires 12 characters |
+| Frontend TypeScript check | Pass | `cd frontend && npm run typecheck`; run after the production build to avoid concurrent `.next/types` regeneration |
+| Frontend lint | Pass with warnings | `cd frontend && npm run lint`: 36 warnings, zero errors; baseline was 49 |
+| Frontend production build | Pass with sandbox workaround | `cd frontend && npm run build -- --webpack`; Next.js 16.2.12. Default Turbopack build cannot create a worker process in this sandbox (`Operation not permitted`); Webpack production build completed. CI must verify the configured default build outside this sandbox. |
+| Landing production build | Pass | `ASTRO_TELEMETRY_DISABLED=1 npm run build` in `landing/`, verified in PR 01; landing unchanged since |
+| Diff whitespace check | Pass | `git diff --check` before PR 07 commit |
+| Convex generation/deployment check | Blocked | No `CONVEX_DEPLOYMENT` configured. CLI offered project setup; stopped without linking/creating a deployment. |
+| GitHub Actions | Pending | Draft PRs are open; workflow results must be checked on GitHub before review. |
+| Full browser/mobile E2E | Blocked | No isolated staging deployment or browser test suite is configured. |
+| Current GitHub PR state | 8 open drafts | PRs #5–#12 were created on 2026-10-11; none is merged. Hosted checks are pending verification. |
+| PR publication | Pass for PRs 01–08 | The GitHub integration created the stacked branches and draft PRs. |
 
-PR 01 adds isolated CI jobs for Convex strict typecheck/tests, frontend
-typecheck/lint/production build, and landing build. It does not attempt to deploy
-or push to a Convex deployment. Backend checking uses the checked-in Convex
-source and generated declarations, so it does not replace code generation
-against an authorized deployment.
+Install commands were run sequentially; root `npm ci` removes nested
+`node_modules`. The root and frontend emitted npm's existing
+`http-proxy` configuration warning; it did not affect exit status.
 
-## Publish blockers
+## Security and product limitations
 
-- No backend authorization test coverage yet; add with PR 02 using the new harness.
-- Unreviewed backend access-control and public-data findings listed in the implementation handoff.
-- No booking conflict protection or repeat-safe rental lifecycle verified.
-- Revenue is still a placeholder; no payment ledger, invoice, or finance export.
-- No automated end-to-end browser test suite.
-- No confirmed account-recovery provider, staging deployment, monitoring, backup,
-  or restore verification.
-- No pilot/customer validation evidence in this repository.
+- Upload issuance and attachment require authenticated tenant access, and
+  server-side type/size checks exist. Convex's standard upload response does not
+  cryptographically bind a storage ID to the caller/tenant. First-claim
+  ownership still needs validation against the supported storage flow. The UI
+  can delete explicitly removed pending photos, but abandoned/rejected uploads
+  may remain; add and verify a retention cleanup path before launch. Treat
+  upload ownership as a release blocker until verified tenant binding is proven.
+- Public inquiry validation includes bounded inputs, availability checks, and
+  a per-business phone-based throttle. It does not provide robust IP-based
+  abuse protection, CAPTCHA, or edge-level rate limiting. Treat this as a
+  pilot blocker until acceptable abuse controls are configured and tested.
+- Password sign-up and sign-in are configured; reset/recovery is not. There is
+  no email sender/provider or recovery UI. Do not claim account recovery works.
+- Staff invitations are owner-created, business-scoped, email-bound,
+  single-use, and expire after 24 hours. Rentalin shows a code for the owner to
+  share; it does not send email.
+- Public tracking is a bearer link. Responses are minimized and token rotation
+  is available, but anyone holding the active URL can access its allowed fields.
+- Payment records are manual operator entries. They do not verify bank
+  settlement or gateway transactions.
+- No privacy retention schedule, account/customer deletion workflow, automated
+  inspection storage cleanup, error reporting, uptime check, alert destination,
+  automated backup, or restore test exists yet.
+- No real customer/pilot validation has been run. Local tests are not a
+  penetration test or a staging smoke test. The full UI workflow is now wired
+  through reservation, inspection, handover and return, and the backend gates
+  inspection completion before handover; it has not been exercised in a real
+  browser on mobile or staging.
+
+## Release decision
+
+**Not ready to launch or deploy.** The stacked draft PRs are open and require
+review and hosted CI. Password
+recovery, fully verified tenant-bound uploads and storage cleanup, stronger
+public inquiry abuse protection, isolated staging/E2E validation, monitoring,
+backup/restore, and approved privacy/retention/deletion behavior remain open
+gates. The local runbook in `docs/pilot-release-runbook.md` describes the
+staging and operational checks to complete.
 
 ## Restart instructions
 
-1. Fetch current `main`, open PRs, branch heads, and workflow results before
-   changing branches. Update this tracker if external state has changed.
-2. Read the implementation handoff and applicable `AGENTS.md` files.
-3. Continue at the earliest unfinished PR; do not repeat passed checks unless
-   relevant files changed.
-4. Preserve unrelated work and never reset user changes. Use isolated branches
-   and draft PRs.
-5. Record exact commands and results. Mark unavailable credentials or services
-   as blocked and continue independent work.
-6. Leave all merges and production deployment for explicit owner approval.
+1. Read `../rentalin-publish-ready-handoff.md` and applicable `AGENTS.md`
+   files. Preserve the eight-PR dependency chain above.
+2. Check the current GitHub branches, PRs, checks, and exact base/head SHAs.
+   PRs 01–08 are already open as drafts; do not merge or deploy.
+3. Verify hosted Actions for PRs #5–#12 and record the results. The hosted
+   branch heads and exact base SHAs are listed in the queue.
+4. Resolve code review and all security blockers before staging. Use disposable
+   accounts and data in a confirmed isolated environment.
+5. Record exact commands, outcomes, environment, and limitations. Do not
+   convert blocked gates into passes because local builds succeeded.
+6. Leave merges and production deployment for explicit owner approval.
