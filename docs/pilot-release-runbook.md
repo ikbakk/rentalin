@@ -27,8 +27,8 @@ repository does not yet contain automated origin/environment validation.
 
 ## Pre-deployment gates
 
-1. Confirm all prerequisite PRs are reviewed and merged by the repository
-   owner. Confirm the target commit and its GitHub Actions results.
+1. The eight implementation PRs are merged. Confirm the current `main`
+   commit and its successful GitHub Actions result before staging.
 2. Provision a staging Convex deployment and isolated frontend/landing
    deployments. Record their origins in the release record; do not reuse
    production credentials or customer data.
@@ -140,12 +140,11 @@ verification before reopening pilot traffic.
 
 ## Release decision
 
-The local code gates currently pass with the Webpack production builder. The
-default Turbopack builder could not spawn a worker in the preparation sandbox;
-hosted CI must verify the configured default build. The pilot is **not ready for
-publication**. Required blockers are: publication/review of the prepared PRs,
-authorized staging deployment and end-to-end smoke test, working password
-recovery, fully verified upload ownership and cleanup, stronger public inquiry
-abuse controls, monitoring and alert ownership, backup/restore exercise, and
-approved privacy/retention/deletion behavior. Production deployment remains
-subject to the repository owner's explicit approval.
+All eight implementation PRs have been merged to `main` and their hosted CI
+runs pass, including the post-merge main workflow. The pilot is **not ready for
+launch**. Required blockers are: authorized staging deployment and desktop/mobile
+smoke testing, working password recovery, fully verified tenant-bound upload
+ownership and cleanup, stronger public inquiry abuse controls, monitoring and
+alert ownership, backup/restore exercise, and approved privacy/retention/
+deletion behavior. Production deployment remains subject to the repository
+owner's explicit approval.
