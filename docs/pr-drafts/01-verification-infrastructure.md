@@ -20,8 +20,8 @@ reproducible from a clean checkout.
 No database migration or runtime behavior change. Root, frontend, and landing
 dependencies install sequentially. Root typecheck/tests, frontend
 typecheck/lint/build, and the telemetry-disabled landing build pass locally.
-Frontend lint has 49 baseline warnings and no errors. Convex deployment
-codegen remains blocked until a development deployment is configured. The
-first hosted run found that frontend CI needed root Convex dependencies and
-needed to run for stacked PR bases; both workflow issues are fixed in the
-current hosted head, and rerun results are pending.
+Frontend lint has 49 baseline warnings and no errors. Hosted Actions run 2
+passes Convex typecheck/tests, frontend typecheck/lint/build, and the landing
+build. The first run found that frontend CI needed root Convex dependencies
+and needed to run for stacked PR bases; both workflow issues are fixed. Convex
+deployment codegen still needs a configured development deployment.
