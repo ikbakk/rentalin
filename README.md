@@ -51,6 +51,18 @@ npx convex env set CONVEX_SITE_URL
 
 Enter the URL shown by your Convex deployment when prompted. Convex deployment variables are separate from local Next.js `.env.local` values.
 
+For the containerized local stack, export values from both runtime files before building:
+
+```bash
+set -a
+. frontend/.env.local
+. landing/.env
+set +a
+docker compose up --build
+```
+
+Docker Compose passes these public values as build arguments because Next.js and Astro bake them into generated assets. These values are public configuration, not credentials.
+
 ## Verification
 
 ```bash
