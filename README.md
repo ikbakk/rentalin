@@ -69,7 +69,7 @@ Docker Compose passes these public values as build arguments because Next.js and
 npm ci
 npm run typecheck
 npm test
-cd frontend && npm ci && npm run typecheck && npm run lint && npm run build
+cd frontend && npm ci && npm run typecheck && npm run lint && npm run test:release-env && npm run build
 cd ../landing && npm ci && npm run test:release-env && ASTRO_TELEMETRY_DISABLED=1 npm run build
 ```
 
