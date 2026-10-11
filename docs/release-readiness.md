@@ -36,14 +36,15 @@ Copy-ready descriptions remain in `docs/pr-drafts/` as implementation history.
 | Convex Auth JavaScript syntax | Pass | `node --check convex/auth.js`; signup requires 12 characters |
 | Frontend TypeScript check | Pass | `cd frontend && npm run typecheck`; run after the production build to avoid concurrent `.next/types` regeneration |
 | Frontend lint | Pass with warnings | `cd frontend && npm run lint`: 36 warnings, zero errors; baseline was 49 |
-| Frontend production build | Pass with sandbox workaround | `cd frontend && npm run build -- --webpack`; Next.js 16.2.12. Default Turbopack build cannot create a worker process in this sandbox (`Operation not permitted`); Webpack production build completed. CI must verify the configured default build outside this sandbox. |
+| Frontend production build | Pass | Local Webpack production build passed. Hosted CI run [#24](https://github.com/ikbakk/rentalin/actions/runs/38118813507) passed the configured default Turbopack production build using isolated placeholder origins. |
+| Release environment preflight | Pass | Five tests cover required HTTPS origins, missing values, local/HTTP origins, mismatched Convex deployments, paths, and credentials. `npm run preflight:release` rejects missing values. Hosted CI run [#24](https://github.com/ikbakk/rentalin/actions/runs/38118813507) passed for commit `932713bde5fa4aab25012b527804b1e675589261`. |
 | Landing production build | Pass | `ASTRO_TELEMETRY_DISABLED=1 npm run build` in `landing/`, verified in PR 01; landing unchanged since |
 | Diff whitespace check | Pass | `git diff --check` before PR 07 commit |
 | Convex generation/deployment check | Blocked | No `CONVEX_DEPLOYMENT` configured. CLI offered project setup; stopped without linking/creating a deployment. |
 | GitHub Actions | Pass | PRs #5–#12 passed CI; post-merge `main` run [#21](https://github.com/ikbakk/rentalin/actions/runs/38118332729) also passed at `998ae19ba288aeef337f58ed1120594a718156b1`. The first PR #5 run exposed missing root Convex dependencies and a `main`-only PR trigger; both fixes are included. |
 | Full browser/mobile E2E | Blocked | No isolated staging deployment or browser test suite is configured. |
-| Current GitHub PR state | Merged | PRs #5–#12 are closed as merged; no open PRs remain from this implementation stack. |
-| PR publication | Merged | All eight focused PRs were merged into `main` in dependency order. |
+| Current GitHub PR state | Follow-up drafts open | PRs #5–#12 are merged. Draft PR #13 refreshes post-merge readiness; draft PR #14 adds release environment validation. Both remain unmerged pending owner review. |
+| PR publication | Implementation merged; follow-ups drafted | PRs #5–#12 were merged into `main`. Readiness documentation and release environment preflight are tracked in draft PRs #13 and #14. |
 
 Install commands were run sequentially; root `npm ci` removes nested
 `node_modules`. The root and frontend emitted npm's existing

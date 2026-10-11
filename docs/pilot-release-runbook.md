@@ -20,22 +20,25 @@ The checked-in code reads these values:
 | `CONVEX_SITE_URL` | Convex Auth provider configuration | The matching Convex site URL for the selected deployment. Verify against the deployment settings before signup testing. |
 | `NEXT_PUBLIC_FRONTEND_URL` | Settings-generated public links | The canonical app origin for the same environment; use a non-production origin in staging. |
 
-The frontend currently defaults the Convex client to localhost when its URL is
-missing. A hosted build must therefore fail its release preflight if
-`NEXT_PUBLIC_CONVEX_URL` is empty or points to the wrong environment. The
-repository does not yet contain automated origin/environment validation.
+The frontend retains a localhost fallback for local development, but release
+builds run `npm run preflight:release` and fail if any URL is missing, uses
+HTTP/local hosts, contains a path or credentials, or pairs mismatched Convex
+deployment URLs. Configure actual staging or production origins in that
+environment's secret/settings store; CI uses isolated placeholder origins only
+to exercise the build.
 
 ## Pre-deployment gates
 
-1. The eight implementation PRs are merged. Confirm the current `main`
-   commit and its successful GitHub Actions result before staging.
+1. The implementation PRs are merged. Confirm the current `main` commit and
+   its GitHub Actions result before staging.
 2. Provision a staging Convex deployment and isolated frontend/landing
    deployments. Record their origins in the release record; do not reuse
    production credentials or customer data.
-3. Set the environment variables above and verify the frontend's public URLs
-   resolve to staging. Configure the password provider and verify sign-up and
-   sign-in. Password reset is not implemented because no email provider or
-   recovery flow is configured.
+3. Set the environment variables above, run `npm run preflight:release` from
+   `frontend/`, and verify the frontend's public URLs resolve to staging.
+   Configure the password provider and verify sign-up and sign-in. Password
+   reset is not implemented because no email provider or recovery flow is
+   configured.
 4. Run the repository verification commands from the root README. Generate
    Convex code against the authorized staging deployment with
    `npx convex dev --once`. Review schema output and deployment diff before
@@ -140,11 +143,10 @@ verification before reopening pilot traffic.
 
 ## Release decision
 
-All eight implementation PRs have been merged to `main` and their hosted CI
-runs pass, including the post-merge main workflow. The pilot is **not ready for
-launch**. Required blockers are: authorized staging deployment and desktop/mobile
-smoke testing, working password recovery, fully verified tenant-bound upload
-ownership and cleanup, stronger public inquiry abuse controls, monitoring and
-alert ownership, backup/restore exercise, and approved privacy/retention/
-deletion behavior. Production deployment remains subject to the repository
-owner's explicit approval.
+All eight implementation PRs are merged to `main`, and their hosted CI runs
+pass. The pilot is **not ready for launch**. Required blockers are: authorized
+staging deployment and desktop/mobile smoke testing, working password recovery,
+fully verified tenant-bound upload ownership and cleanup, stronger public
+inquiry abuse controls, monitoring and alert ownership, backup/restore exercise,
+and approved privacy/retention/deletion behavior. Production deployment remains
+subject to the repository owner's explicit approval.

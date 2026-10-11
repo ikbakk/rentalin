@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run preflight:release && next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preflight:release": "node scripts/preflight-release-env.mjs",
+    "test:release-env": "node scripts/preflight-release-env.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
