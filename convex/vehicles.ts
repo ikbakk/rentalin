@@ -23,11 +23,21 @@ export const listPublicByBusinessSlug = query({
 
     if (!business) return [];
 
-    return ctx.db
+    const vehicles = await ctx.db
       .query("vehicles")
       .withIndex("by_business_and_status", (q) =>
         q.eq("businessId", business._id).eq("status", "available"),
       )
       .collect();
+    return vehicles.map((vehicle) => ({
+      _id: vehicle._id,
+      make: vehicle.make,
+      model: vehicle.model,
+      year: vehicle.year,
+      color: vehicle.color,
+      seatingCapacity: vehicle.seatingCapacity,
+      dailyRate: vehicle.dailyRate,
+      currency: vehicle.currency ?? "IDR",
+    }));
   },
 });

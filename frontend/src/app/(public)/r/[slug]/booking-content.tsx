@@ -39,7 +39,7 @@ const GRADIENTS = [
   "from-primary/20 via-secondary to-secondary/40",
 ] as const
 
-function VehiclePlaceholder({ index, plate }: { index: number; plate: string }) {
+function VehiclePlaceholder({ index }: { index: number }) {
   return (
     <div
       className={cn(
@@ -55,9 +55,8 @@ function VehiclePlaceholder({ index, plate }: { index: number; plate: string }) 
         aria-hidden
         className="relative size-12 text-foreground/30 transition-transform duration-300 group-hover:scale-110 group-hover:text-foreground/45"
       />
-      {/* Indonesian-style plate chip */}
-      <span className="absolute bottom-3 left-3 rounded-md border-2 border-red-600/60 bg-white px-2.5 py-1 font-mono text-[11px] font-bold tracking-[0.15em] text-black shadow-sm">
-        {plate}
+      <span className="absolute bottom-3 left-3 rounded-md bg-background/80 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
+        Rental vehicle
       </span>
     </div>
   )
@@ -110,7 +109,7 @@ export function BookingContent({ slug }: { slug: string }) {
       const veh = available.find((v) => v.id === selected)
       setSubmittedData({
         vehicle: veh
-          ? `${veh.make} ${veh.model} (${veh.licensePlate})`
+          ? `${veh.make} ${veh.model}`
           : "Selected",
         name,
         phone,
@@ -290,7 +289,7 @@ export function BookingContent({ slug }: { slug: string }) {
                 </span>
               )}
 
-              <VehiclePlaceholder index={index} plate={v.licensePlate} />
+              <VehiclePlaceholder index={index} />
 
               <div className="flex flex-1 flex-col gap-3 p-5">
                 <div className="flex items-start justify-between gap-3">
@@ -354,7 +353,7 @@ export function BookingContent({ slug }: { slug: string }) {
               </div>
               <div className="min-w-0">
                 <SheetTitle className="font-heading text-lg font-bold">
-                  Book {selectedVehicle?.licensePlate}
+                  Request {selectedVehicle?.make} {selectedVehicle?.model}
                 </SheetTitle>
                 <SheetDescription className="mt-0.5">
                   {selectedVehicle?.make} {selectedVehicle?.model} ·{" "}

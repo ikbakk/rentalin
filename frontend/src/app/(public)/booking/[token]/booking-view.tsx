@@ -9,26 +9,6 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
-interface RentalData {
-  reservationId: string
-  status: string
-  customerName: string
-  customerPhone: string
-  vehiclePlate: string
-  vehicleMake: string
-  vehicleModel: string
-  startDate: string
-  endDate: string
-  estimatedCost: number
-  currency: string
-  rentalStarted?: string
-  rentalEnded?: string
-  odometerStart?: number
-  odometerEnd?: number
-  inspectionStatus?: string
-  inspectionNotes?: string
-}
-
 const steps = [
   { key: "Inquiry", label: "Inquiry Received", icon: MessageCircle },
   { key: "Confirmed", label: "Confirmed", icon: CheckCircle2 },
@@ -119,14 +99,6 @@ export function BookingView({ reservationId }: { reservationId: string }) {
           </div>
           <CardContent className="p-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">Renter</p>
-                <p className="font-medium">{rental.customerName}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">Contact</p>
-                <p className="font-mono text-sm">{rental.customerPhone}</p>
-              </div>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground">Pickup</p>
                 <p className="font-medium">{startDate.toLocaleDateString()}</p>
@@ -254,37 +226,12 @@ export function BookingView({ reservationId }: { reservationId: string }) {
           </Card>
         )}
 
-        {rental.inspectionStatus && (
-          <Card
-            className={cn(
-              "mb-6",
-              rental.inspectionStatus === "Completed"
-                ? "border-success/30 bg-success/5"
-                : "border-warning/30 bg-warning/5"
-            )}
-          >
-            <CardContent className="flex items-center gap-4 p-4">
-              {rental.inspectionStatus === "Completed" ? (
-                <CheckCircle2 className="size-6 text-success" />
-              ) : (
-                <Clock className="size-6 text-warning" />
-              )}
-              <div>
-                <p className="font-semibold">Vehicle Inspection</p>
-                <p className="text-sm text-muted-foreground">{rental.inspectionStatus}</p>
-                {rental.inspectionNotes && (
-                  <p className="mt-1 text-xs text-muted-foreground">{rental.inspectionNotes}</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         <Button
           className="h-12 w-full gap-2 rounded-xl text-base font-semibold bg-[#25D366] text-white hover:bg-[#25D366]/90"
+          disabled={!rental.supportPhone}
           onClick={() =>
             window.open(
-              `https://wa.me/${rental.customerPhone.replace(/[^0-9]/g, "")}`,
+              `https://wa.me/${rental.supportPhone.replace(/[^0-9]/g, "")}`,
               "_blank"
             )
           }

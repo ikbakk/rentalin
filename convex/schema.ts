@@ -27,6 +27,15 @@ export default defineSchema({
     activeBusinessId: v.optional(v.id("businesses")),
   }).index("by_user", ["userId"]),
 
+  uploadClaims: defineTable({
+    businessId: v.id("businesses"),
+    storageId: v.id("_storage"),
+    uploadedBy: v.id("users"),
+    contentType: v.string(),
+    size: v.number(),
+    status: v.union(v.literal("pending"), v.literal("attached")),
+  }).index("by_storage", ["storageId"]).index("by_business", ["businessId"]),
+
   customers: defineTable({
     businessId: v.id("businesses"),
     externalId: v.optional(v.string()),
@@ -49,7 +58,8 @@ export default defineSchema({
     notes: v.optional(v.string()),
     status: v.union(v.literal("new"), v.literal("contacted"), v.literal("converted"), v.literal("cancelled")),
   })
-    .index("by_business", ["businessId"]),
+    .index("by_business", ["businessId"])
+    .index("by_business_and_phone", ["businessId", "customerPhone"]),
 
   reservations: defineTable({
     businessId: v.id("businesses"),
@@ -62,7 +72,7 @@ export default defineSchema({
     currency: v.string(),
     status: v.union(v.literal("confirmed"), v.literal("preRental"), v.literal("cancelled"), v.literal("ready"), v.literal("active")),
     publicToken: v.optional(v.string()),
-  }).index("by_business", ["businessId"]),
+  }).index("by_business", ["businessId"]).index("by_public_token", ["publicToken"]),
 
   timeline: defineTable({
     businessId: v.id("businesses"),
@@ -96,7 +106,7 @@ export default defineSchema({
     odometerStart: v.optional(v.number()),
     odometerEnd: v.optional(v.number()),
     publicToken: v.optional(v.string()),
-  }).index("by_business", ["businessId"]).index("by_status", ["status"]),
+  }).index("by_business", ["businessId"]).index("by_status", ["status"]).index("by_reservation", ["reservationId"]),
 
   vehicles: defineTable({
     businessId: v.id("businesses"),
