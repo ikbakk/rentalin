@@ -9,10 +9,14 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as activity from "../activity.js";
+import type * as bookingRules from "../bookingRules.js";
 import type * as businesses from "../businesses.js";
 import type * as customers from "../customers.js";
 import type * as dashboard from "../dashboard.js";
 import type * as files from "../files.js";
+import type * as finance from "../finance.js";
+import type * as financeRules from "../financeRules.js";
 import type * as fleet from "../fleet.js";
 import type * as http from "../http.js";
 import type * as inquiries from "../inquiries.js";
@@ -32,11 +36,15 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  activity: typeof activity;
   auth: typeof auth;
+  bookingRules: typeof bookingRules;
   businesses: typeof businesses;
   customers: typeof customers;
   dashboard: typeof dashboard;
   files: typeof files;
+  finance: typeof finance;
+  financeRules: typeof financeRules;
   fleet: typeof fleet;
   http: typeof http;
   inquiries: typeof inquiries;

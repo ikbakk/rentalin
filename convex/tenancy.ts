@@ -5,12 +5,13 @@ import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
 type AuthCtx = QueryCtx | MutationCtx;
-type Permission = "read" | "operate" | "manageFleet" | "manageBusiness";
+type Permission = "read" | "operate" | "manageFleet" | "managePayments" | "manageBusiness";
 
 const permissionRoles: Record<Permission, readonly ("owner" | "admin" | "staff")[]> = {
   read: ["owner", "admin", "staff"],
   operate: ["owner", "admin", "staff"],
   manageFleet: ["owner", "admin"],
+  managePayments: ["owner", "admin"],
   manageBusiness: ["owner"],
 };
 

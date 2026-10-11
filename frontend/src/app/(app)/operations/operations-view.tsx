@@ -185,7 +185,7 @@ export function OperationsView() {
     { icon: Car, label: "Available", value: summary.availableVehicles, trend: `${summary.availableVehicles} ready` },
     { icon: TrendingUp, label: "Rented", value: summary.rentedVehicles, trend: `${summary.activeRentals} active` },
     { icon: MessageSquare, label: "Inquiries", value: summary.activeInquiries, trend: "awaiting response" },
-    { icon: DollarSign, label: "Revenue", value: `${summary.revenueCurrency} ${summary.todayRevenue.toLocaleString()}`, trend: "today" },
+    { icon: DollarSign, label: "Payments received", value: `${summary.currency} ${summary.todayPayments.toLocaleString()}`, trend: "today" },
   ] : [], [summary])
 
   const counts = useMemo(() => ({
