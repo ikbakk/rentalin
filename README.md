@@ -43,11 +43,18 @@ NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 ## Verification
 
 ```bash
-npx convex dev --once
-cd frontend && npx tsc --noEmit && npm run lint && npm run build
+npm ci
+npm run typecheck
+npm test
+cd frontend && npm ci && npm run typecheck && npm run lint && npm run build
+cd ../landing && npm ci && ASTRO_TELEMETRY_DISABLED=1 npm run build
 ```
 
-The lint command currently reports non-blocking warnings; the typecheck and production build must pass.
+Run the package installs sequentially: root `npm ci` removes nested `node_modules`
+directories. Lint currently reports existing warnings but no errors. The frontend
+and Convex typechecks, Convex tests, and both production builds must pass. Convex
+deployment code generation remains available through `npx convex dev --once`
+when a development deployment is configured.
 
 ## Deployment
 

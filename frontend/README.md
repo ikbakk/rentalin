@@ -39,7 +39,7 @@ Public pages use business slugs and opaque reservation/rental tokens only; they 
 ## Checks
 
 ```bash
-npx tsc --noEmit
+npm run typecheck
 npm run lint
 npm run build
 ```
