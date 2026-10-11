@@ -22,8 +22,9 @@ import { useUpdateBusiness } from "@/hooks/use-update-business"
 import type { BusinessResponse, UpdateBusinessRequest } from "@/lib/types"
 import { FinanceExport, InvitationAccess, OwnerStaffAdministration } from "./staff-tools"
 import { BUSINESS_TIME_ZONES } from "@/lib/business-time"
+import { requirePublicEnv } from "@/lib/public-env.mjs"
 
-const frontendOrigin = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
+const frontendOrigin = requirePublicEnv(process.env.NEXT_PUBLIC_FRONTEND_URL, "NEXT_PUBLIC_FRONTEND_URL")
 
 type BusinessValues = Pick<UpdateBusinessRequest, "name" | "address" | "phoneNumber" | "email" | "timeZone">
 

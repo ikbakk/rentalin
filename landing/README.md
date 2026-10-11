@@ -12,6 +12,8 @@ This file is operational: how to run, build, and deploy the landing. The design 
 
 ```bash
 cd landing
+cp .env.example .env
+# Set PUBLIC_WHATSAPP_NUMBER to the demo contact in international digits-only format.
 npm install
 npm run dev
 # → http://localhost:4321
@@ -27,7 +29,9 @@ npm run start     # node dist/server/entry.mjs
 # → http://localhost:4321
 ```
 
-`npm run build` runs `astro build`, writing to `dist/`. The config sets `output: 'server'` with the `@astrojs/node` adapter in `standalone` mode, so `npm run start` boots a real Node server (`dist/server/entry.mjs`) that serves both the HTML and the hashed `/_astro/` bundles. No separate static file server is required.
+`npm run build` first validates `PUBLIC_WHATSAPP_NUMBER` and then runs `astro build`, writing to `dist/`. The config sets `output: 'server'` with the `@astrojs/node` adapter in `standalone` mode, so `npm run start` boots a real Node server (`dist/server/entry.mjs`) that serves both the HTML and the hashed `/_astro/` bundles. No separate static file server is required. The example file is a template; release builds require a real 8 to 15 digit international number with no `+` or local trunk prefix.
+
+Run `npm run test:release-env` to verify the contact-number validation without a configured number.
 
 The same thing inside Docker, from the repo root:
 

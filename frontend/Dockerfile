@@ -7,6 +7,9 @@ COPY package.json package-lock.json* ./
 RUN npm ci --only=production
 
 FROM base AS build
+ARG NEXT_PUBLIC_CONVEX_URL
+ARG CONVEX_SITE_URL
+ARG NEXT_PUBLIC_FRONTEND_URL
 COPY package.json package-lock.json* ./
 RUN npm ci
 COPY . .
