@@ -38,6 +38,19 @@ export default defineSchema({
     activeBusinessId: v.optional(v.id("businesses")),
   }).index("by_user", ["userId"]),
 
+  r2Uploads: defineTable({
+    businessId: v.id("businesses"),
+    uploadedBy: v.id("users"),
+    stagingKey: v.string(),
+    objectKey: v.string(),
+    contentType: v.string(),
+    size: v.number(),
+    status: v.union(v.literal("uploading"), v.literal("verifying"), v.literal("ready"), v.literal("attached"), v.literal("deleting")),
+    expiresAt: v.number(),
+    uploadDeadline: v.number(),
+    inspectionId: v.optional(v.id("inspections")),
+  }).index("by_uploader", ["uploadedBy"]).index("by_status_expiry", ["status", "expiresAt"]),
+
   uploadClaims: defineTable({
     businessId: v.id("businesses"),
     storageId: v.id("_storage"),
@@ -57,6 +70,10 @@ export default defineSchema({
   })
     .index("by_business", ["businessId"])
     .index("by_external_id", ["externalId"]),
+
+  inquiryLimits: defineTable({
+    businessId: v.id("businesses"), windowStart: v.number(), count: v.number(),
+  }).index("by_business_window", ["businessId", "windowStart"]).index("by_window", ["windowStart"]),
 
   inquiries: defineTable({
     businessId: v.id("businesses"),

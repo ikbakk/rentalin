@@ -12,7 +12,7 @@ export const list = query({
       ...inspection,
       photoStorageIds: inspection.photoUrls.filter((photo) => !/^https?:\/\//.test(photo)),
       photoUrls: await Promise.all(inspection.photoUrls.map(async (photo) => {
-        if (/^https?:\/\//.test(photo)) return photo;
+        if (/^https?:\/\//.test(photo) || photo.startsWith("r2:")) return photo;
         return await ctx.storage.getUrl(photo as Id<"_storage">) ?? "";
       })),
     })));
@@ -57,7 +57,7 @@ export const complete = mutation({
   handler: async (ctx, { id, photoUrls, notes }) => {
     const item = await ctx.db.get(id);
     if (!item) throw new Error("Inspection not found");
-    await requireMembership(ctx, item.businessId);
+    const membership = await requireMembership(ctx, item.businessId);
     if (photoUrls.length > 10 || new Set(photoUrls).size !== photoUrls.length) throw new Error("An inspection can include up to 10 unique photos");
     if (notes && notes.length > 2000) throw new Error("Inspection notes are too long");
     if (item.status === "Completed") {
@@ -72,9 +72,18 @@ export const complete = mutation({
     for (const photo of photoUrls) {
       if (priorPhotos.has(photo)) continue;
       if (/^https?:\/\//.test(photo)) throw new Error("Inspection photos must be uploaded to this business first");
+      if (photo.startsWith("r2:")) {
+        const uploadId = ctx.db.normalizeId("r2Uploads", photo.slice(3));
+        const file = uploadId ? await ctx.db.get(uploadId) : null;
+        if (!file || file.businessId !== item.businessId || file.uploadedBy !== membership.userId || file.status !== "ready" || file.expiresAt <= Date.now()) {
+          throw new Error("Photo is not ready or does not belong to this business");
+        }
+        await ctx.db.patch(file._id, { status: "attached", inspectionId: id });
+        continue;
+      }
       const storageId = photo as Id<"_storage">;
       const claim = await ctx.db.query("uploadClaims").withIndex("by_storage", q => q.eq("storageId", storageId)).unique();
-      if (!claim || claim.businessId !== item.businessId) throw new Error("Photo is not registered to this business");
+      if (!claim || claim.businessId !== item.businessId || claim.uploadedBy !== membership.userId || claim.status !== "pending") throw new Error("Photo is not registered to this business");
       if (claim.status === "pending") await ctx.db.patch(claim._id, { status: "attached" });
     }
 

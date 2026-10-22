@@ -1,19 +1,24 @@
 services:
   frontend:
     build:
-      context: ./frontend
+      context: .
+      dockerfile: frontend/Dockerfile
       args:
         NEXT_PUBLIC_CONVEX_URL: ${NEXT_PUBLIC_CONVEX_URL:?Set NEXT_PUBLIC_CONVEX_URL before building}
         CONVEX_SITE_URL: ${CONVEX_SITE_URL:?Set CONVEX_SITE_URL before building}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:?Set NEXT_PUBLIC_TURNSTILE_SITE_KEY before building}
         NEXT_PUBLIC_FRONTEND_URL: ${NEXT_PUBLIC_FRONTEND_URL:?Set NEXT_PUBLIC_FRONTEND_URL before building}
     ports:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_CONVEX_URL: ${NEXT_PUBLIC_CONVEX_URL}
+      SENTRY_DSN: ${SENTRY_DSN:-}
   landing:
     build:
       context: ./landing
       args:
+        PUBLIC_APP_URL: ${PUBLIC_APP_URL:?Set PUBLIC_APP_URL before building}
         PUBLIC_WHATSAPP_NUMBER: ${PUBLIC_WHATSAPP_NUMBER:?Set PUBLIC_WHATSAPP_NUMBER before building}
     ports:
       - "4321:4321"

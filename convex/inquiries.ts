@@ -1,9 +1,12 @@
-import { mutation } from "./_generated/server";
+import { action, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
-import { parseBookingInterval } from "./bookingRules";
+import { assertVehicleAvailable, parseBookingInterval } from "./bookingRules";
 
-export const createPublic = mutation({
-  args: {
+import { internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
+import { verifyTurnstile } from "./turnstile";
+
+const inquiryArgs = {
     slug: v.string(),
     customerName: v.string(),
     customerPhone: v.string(),
@@ -11,7 +14,19 @@ export const createPublic = mutation({
     startDate: v.string(),
     endDate: v.string(),
     notes: v.optional(v.string()),
+};
+
+// Keep the write path internal: there is no public mutation that bypasses Turnstile.
+export const createPublic = action({
+  args: { ...inquiryArgs, turnstileToken: v.string() },
+  handler: async (ctx, { turnstileToken, ...args }): Promise<Id<"inquiries">> => {
+    await verifyTurnstile(turnstileToken);
+    return ctx.runMutation(internal.inquiries.createVerified, args);
   },
+});
+
+export const createVerified = internalMutation({
+  args: inquiryArgs,
   handler: async (ctx, args) => {
     const customerName = args.customerName.trim();
     const customerPhone = args.customerPhone.replace(/\D/g, "");
@@ -31,6 +46,11 @@ export const createPublic = mutation({
       throw new Error("Vehicle not found");
     }
 
+    await assertVehicleAvailable(ctx, vehicle, interval);
+    const windowStart = Math.floor(Date.now() / 3600000) * 3600000;
+    const bucket = await ctx.db.query("inquiryLimits").withIndex("by_business_window", q => q.eq("businessId", business._id).eq("windowStart", windowStart)).unique();
+    if (bucket && bucket.count >= 60) throw new Error("Too many booking requests. Please contact the rental team.");
+
     const recentInquiries = await ctx.db
       .query("inquiries")
       .withIndex("by_business_and_phone", (q) => q.eq("businessId", business._id).eq("customerPhone", customerPhone))
@@ -41,6 +61,8 @@ export const createPublic = mutation({
       throw new Error("Too many booking requests. Please try again later.");
     }
 
+    if (bucket) await ctx.db.patch(bucket._id, { count: bucket.count + 1 });
+    else await ctx.db.insert("inquiryLimits", { businessId: business._id, windowStart, count: 1 });
     return ctx.db.insert("inquiries", {
       businessId: business._id,
       vehicleId: args.vehicleId,
@@ -53,3 +75,8 @@ export const createPublic = mutation({
     });
   },
 });
+
+export const cleanupLimits = internalMutation({ args: {}, handler: async ctx => {
+  const stale = await ctx.db.query("inquiryLimits").withIndex("by_window", q => q.lt("windowStart", Date.now() - 48 * 3600000)).take(500);
+  for (const bucket of stale) await ctx.db.delete(bucket._id);
+} });

@@ -9,7 +9,7 @@
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "preflight:release": "node scripts/preflight-release-env.mjs",
-    "test:release-env": "node scripts/preflight-release-env.test.mjs"
+    "test:release-env": "node scripts/preflight-release-env.test.mjs && node src/lib/app-origin.test.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^9",

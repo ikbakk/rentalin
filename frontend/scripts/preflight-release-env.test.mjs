@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { validateReleaseEnvironment } from "./preflight-release-env.mjs";
 
 const validEnvironment = {
-  NEXT_PUBLIC_CONVEX_URL: "https://rentalin-staging.convex.cloud",
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: "test-site-key", NEXT_PUBLIC_CONVEX_URL: "https://rentalin-staging.convex.cloud",
   CONVEX_SITE_URL: "https://rentalin-staging.convex.site",
   NEXT_PUBLIC_FRONTEND_URL: "https://staging.rentalin.example",
 };

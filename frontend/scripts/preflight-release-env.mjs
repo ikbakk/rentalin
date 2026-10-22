@@ -56,12 +56,16 @@ export function validateReleaseEnvironment(env) {
     }
   }
 
+  if (!env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim()) errors.push("NEXT_PUBLIC_TURNSTILE_SITE_KEY is required for public booking.");
+
   if (errors.length) throw new Error([...new Set(errors)].join("\n"));
   return true;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
+    const { default: nextEnv } = await import("@next/env");
+    nextEnv.loadEnvConfig(process.cwd());
     validateReleaseEnvironment(process.env);
     console.log("Release environment preflight passed.");
   } catch (error) {

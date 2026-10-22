@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { InspectionPhoto } from "@/components/shared/inspection-photo"
 import { FileUpload } from "@/components/shared/file-upload"
 import { toast } from "sonner"
 import { ChevronLeft, Camera, CheckCircle2, XCircle, Image, AlertTriangle } from "lucide-react"
@@ -73,6 +74,7 @@ function InspectionDetailContent({
 }: InspectionDetailContentProps) {
   const { data: inspection, isLoading } = useInspectionById(inspectionId)
   const { data: vehicle } = useVehicleById(inspection?.vehicleId ?? "")
+  const [uploading, setUploading] = useState(false)
   const completeInspection = useCompleteInspection()
   const failInspection = useFailInspection()
 
@@ -177,14 +179,7 @@ function InspectionDetailContent({
                     key={i}
                     className="aspect-square rounded-lg bg-muted overflow-hidden cursor-pointer hover:ring-2 ring-primary transition-all"
                   >
-                    <img
-                      src={url}
-                      alt={`Inspection photo ${i + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none'
-                      }}
-                    />
+                    <InspectionPhoto reference={url} alt={`Inspection photo ${i + 1}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
@@ -205,7 +200,7 @@ function InspectionDetailContent({
             <CardHeader className="pb-3"><CardTitle className="text-base">Record inspection evidence</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">Add a vehicle photo and notes before recording the inspection result.</p>
-              <FileUpload onUpload={setAddedPhotoId} onRemove={() => setAddedPhotoId(null)} />
+              <FileUpload onUploadingChange={setUploading} onUpload={setAddedPhotoId} onRemove={() => setAddedPhotoId(null)} />
               <p className="text-xs text-muted-foreground">Existing photos: {inspection.photoUrls.length}. One additional photo can be added here.</p>
               <Textarea value={inspectionNotes} onChange={(event) => setInspectionNotes(event.target.value)} maxLength={2000} placeholder="Inspection notes or condition findings" />
             </CardContent>
@@ -260,7 +255,7 @@ function InspectionDetailContent({
               <Button
                 className="gap-2 bg-success hover:bg-success/90"
                 onClick={handleComplete}
-                disabled={completeInspection.isPending || inspectionNotes.length > 2000}
+                disabled={uploading || completeInspection.isPending || inspectionNotes.length > 2000}
               >
                 <CheckCircle2 className="size-4" />
                 Confirm Pass
@@ -299,7 +294,7 @@ function InspectionDetailContent({
               <Button
                 variant="destructive"
                 onClick={handleFail}
-                disabled={!failReason.trim() || failInspection.isPending}
+                disabled={uploading || !failReason.trim() || failInspection.isPending}
               >
                 Create Damage Record
               </Button>

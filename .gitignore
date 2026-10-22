@@ -38,3 +38,7 @@ Thumbs.db
 # AI agent configs
 .omo/
 .opencode/
+
+# Operational snapshots / private local configuration
+backups/
+.env.ops

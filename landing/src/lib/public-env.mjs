@@ -15,3 +15,13 @@ export function validatePublicWhatsAppNumber(value) {
 
   return number;
 }
+
+/** Absolute app origin: landing and Next.js may be deployed independently. */
+export function validatePublicAppOrigin(value) {
+  if (!value?.trim()) throw new Error("PUBLIC_APP_URL is required.");
+  const url = new URL(value.trim());
+  if (url.protocol !== "https:" || url.username || url.password || url.pathname !== "/" || url.search || url.hash || ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) {
+    throw new Error("PUBLIC_APP_URL must be a public HTTPS origin without a path or credentials.");
+  }
+  return url.origin;
+}
