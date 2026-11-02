@@ -19,21 +19,29 @@ The checked-in code reads these values:
 | `NEXT_PUBLIC_CONVEX_URL` | Next.js frontend | The Convex URL for the same environment as the frontend. |
 | `CONVEX_SITE_URL` | Convex Auth provider configuration | The matching Convex site URL for the selected deployment. Verify against the deployment settings before signup testing. |
 | `NEXT_PUBLIC_FRONTEND_URL` | Settings-generated public links | The canonical app origin for the same environment; use a non-production origin in staging. |
+| `PUBLIC_WHATSAPP_NUMBER` | Astro landing demo CTA | Public demo contact in international digits-only format; configure it in `landing/.env`. |
 
-The frontend retains a localhost fallback for local development, but release
-builds run `npm run preflight:release` and fail if any URL is missing, uses
-HTTP/local hosts, contains a path or credentials, or pairs mismatched Convex
-deployment URLs. Configure actual staging or production origins in that
-environment's secret/settings store; CI uses isolated placeholder origins only
-to exercise the build.
+Copy `frontend/.env.example` to `frontend/.env.local` and `landing/.env.example`
+to `landing/.env`, then supply the correct values for each runtime. The frontend
+has no hidden localhost fallback for Convex connectivity or generated booking
+links. Its release preflight fails if required URLs are missing, use HTTP/local
+hosts, contain a path or credentials, or pair mismatched Convex deployment
+URLs. The landing release preflight requires an 8 to 15 digit international
+WhatsApp number without symbols. `NEXT_PUBLIC_*` and `PUBLIC_*` values are
+included in client-visible output and must not contain secrets. No provider API
+keys are currently required by the codebase. Configure `CONVEX_SITE_URL` in
+the Convex deployment environment as well as the frontend build environment;
+keep actual values in the relevant local or hosting environment settings.
+The Dockerfiles accept these public values as build arguments, and Compose requires them to be supplied by the environment before building. CI uses isolated placeholders only to exercise the build.
 
 ## Pre-deployment gates
 
 1. The implementation PRs are merged. Confirm the current `main` commit and
    its GitHub Actions result before staging.
 2. Provision a staging Convex deployment and isolated frontend/landing
-   deployments. Record their origins in the release record; do not reuse
-   production credentials or customer data.
+   deployments. Copy the environment templates, then seed staging URLs and a
+   non-production demo number. Record their origins in the release record; do
+   not reuse production credentials or customer data.
 3. Set the environment variables above, run `npm run preflight:release` from
    `frontend/`, and verify the frontend's public URLs resolve to staging.
    Configure the password provider and verify sign-up and sign-in. Password

@@ -1,13 +1,12 @@
+import { validatePublicWhatsAppNumber } from "./public-env.mjs";
+
 /**
  * Single source of truth for the landing page's contact/demo links.
- *
- * The landing is a standalone marketing site: the primary conversion path is
- * a WhatsApp demo request, not the app login. Swap `WHATSAPP_NUMBER` for the
- * real business number (international format, digits only) before launch.
+ * The public number is configured with PUBLIC_WHATSAPP_NUMBER at build time.
  */
 
-/** Business WhatsApp number in international format, digits only. TODO: replace before launch. */
-export const WHATSAPP_NUMBER = '6281234567890';
+/** Business WhatsApp number in international format, digits only. */
+export const WHATSAPP_NUMBER = validatePublicWhatsAppNumber(import.meta.env.PUBLIC_WHATSAPP_NUMBER);
 
 /** Pre-filled message sent when someone books a demo from the landing. */
 export const DEMO_MESSAGE = 'Halo, saya ingin melihat demo Rentalin untuk bisnis rental saya.';

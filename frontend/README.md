@@ -4,11 +4,17 @@ Next.js application for Rentalin's authenticated rental workspace and public boo
 
 ## Environment
 
-Create `frontend/.env.local` with the Convex deployment URL:
+Copy the example to `frontend/.env.local`, then replace the placeholders with the values for your environment:
 
-```env
-NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
+```bash
+cp frontend/.env.example frontend/.env.local
 ```
+
+Set `NEXT_PUBLIC_CONVEX_URL` to the deployment's public `.convex.cloud` URL, `CONVEX_SITE_URL` to its matching `.convex.site` URL, and `NEXT_PUBLIC_FRONTEND_URL` to the app origin used in generated booking links. `NEXT_PUBLIC_*` values are visible to browsers and must never contain secrets.
+
+Convex Auth reads `CONVEX_SITE_URL` from the Convex deployment environment too. Configure it there with `npx convex env set CONVEX_SITE_URL` and enter the matching `.convex.site` URL when prompted. This deployment setting is separate from `frontend/.env.local`.
+
+The frontend build runs `npm run preflight:release` automatically and fails clearly when required URLs are missing, local-only, or malformed. Run `npm run test:release-env` to check those rules without credentials.
 
 ## Development
 
@@ -41,6 +47,7 @@ Public pages use business slugs and opaque reservation/rental tokens only; they 
 ```bash
 npm run typecheck
 npm run lint
+npm run test:release-env
 npm run build
 ```
 

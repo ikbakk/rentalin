@@ -5,9 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run preflight:release && astro build",
     "start": "node ./dist/server/entry.mjs",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "preflight:release": "node scripts/preflight-release-env.mjs",
+    "test:release-env": "node scripts/preflight-release-env.test.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^9",

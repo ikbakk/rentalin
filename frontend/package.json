@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "preflight:release": "node scripts/preflight-release-env.mjs",
-    "test:release-env": "node scripts/preflight-release-env.test.mjs"
+    "test:release-env": "node scripts/preflight-release-env.test.mjs && node src/lib/public-env.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
