@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { BookingVerification } from "@/components/shared/booking-verification"
 import { usePublicVehiclesBySlug } from "@/hooks/use-public-vehicles-by-slug"
 import { useCreatePublicInquiry } from "@/hooks/use-public-inquiry"
 import { usePublicBusiness } from "@/hooks/use-public-business"
@@ -84,6 +85,8 @@ export function BookingContent({ slug }: { slug: string }) {
   const [phone, setPhone] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [turnstileToken, setTurnstileToken] = useState("")
+  const [verificationAttempt, setVerificationAttempt] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [submittedData, setSubmittedData] = useState<{
     vehicle: string
@@ -100,6 +103,7 @@ export function BookingContent({ slug }: { slug: string }) {
       toast.error("Please fill in all fields")
       return
     }
+    if (!turnstileToken) { toast.error("Complete the booking verification first"); return }
     const startDateIso = businessDateToIso(startDate, businessTimeZone)
     const endDateIso = businessDateToIso(endDate, businessTimeZone)
     if (!startDateIso || !endDateIso || Date.parse(endDateIso) <= Date.parse(startDateIso)) {
@@ -108,6 +112,7 @@ export function BookingContent({ slug }: { slug: string }) {
     }
     try {
       await createInquiry.mutateAsync({
+        turnstileToken,
         customerName: name,
         customerPhone: phone,
         vehicleId: selected,
@@ -125,8 +130,11 @@ export function BookingContent({ slug }: { slug: string }) {
         end: endDate,
       })
       setSubmitted(true)
-    } catch {
-      toast.error("Failed to submit. Please try again.")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to submit. Please try again.")
+    } finally {
+      setTurnstileToken("")
+      setVerificationAttempt(attempt => attempt + 1)
     }
   }
 
@@ -465,11 +473,12 @@ export function BookingContent({ slug }: { slug: string }) {
               </div>
 
               <Separator />
+              <BookingVerification key={verificationAttempt} onToken={setTurnstileToken} />
 
               <Button
                 type="submit"
                 className="h-12 w-full gap-2 rounded-xl text-base font-semibold shadow-lg shadow-primary/25"
-                disabled={createInquiry.isPending}
+                disabled={createInquiry.isPending || !turnstileToken}
               >
                 {createInquiry.isPending ? (
                   <span className="flex items-center gap-2">

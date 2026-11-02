@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { toast } from "sonner";
@@ -13,10 +13,11 @@ export interface CreatePublicInquiryRequest {
   startDate: string;
   endDate: string;
   notes?: string;
+  turnstileToken: string;
 }
 
 export function useCreatePublicInquiry(slug: string) {
-  const createInquiry = useMutation(api.inquiries.createPublic);
+  const createInquiry = useAction(api.inquiries.createPublic);
   const [isPending, setIsPending] = useState(false);
   const submit = (data: CreatePublicInquiryRequest) => {
     setIsPending(true);

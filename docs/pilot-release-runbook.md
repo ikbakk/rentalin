@@ -1,9 +1,9 @@
 # Rentalin controlled pilot release runbook
 
-This is a preparation checklist, not a deployment authorization. No staging or
-production deployment was performed while preparing it. Hosting providers,
-domains, monitoring destinations, backup policy, and the applicable data
-retention period have not been selected or verified.
+Updated 2026-10-23. Read [deployment setup](deployment.md) for current environment,
+R2, recovery, Turnstile, monitoring and backup configuration. Read
+[release readiness](release-readiness.md) for verified checks and remaining gates.
+The following operational procedure is retained; this is not deployment evidence.
 
 ## Environments and configuration
 
@@ -12,27 +12,10 @@ staging, and production. Never point a staging frontend at production data.
 Keep credentials in the hosting provider's secret manager and out of source
 control, build logs, screenshots, and test fixtures.
 
-The checked-in code reads these values:
-
-| Variable | Used by | Requirement |
-| --- | --- | --- |
-| `NEXT_PUBLIC_CONVEX_URL` | Next.js frontend | The Convex URL for the same environment as the frontend. |
-| `CONVEX_SITE_URL` | Convex Auth provider configuration | The matching Convex site URL for the selected deployment. Verify against the deployment settings before signup testing. |
-| `NEXT_PUBLIC_FRONTEND_URL` | Settings-generated public links | The canonical app origin for the same environment; use a non-production origin in staging. |
-| `PUBLIC_WHATSAPP_NUMBER` | Astro landing demo CTA | Public demo contact in international digits-only format; configure it in `landing/.env`. |
-
-Copy `frontend/.env.example` to `frontend/.env.local` and `landing/.env.example`
-to `landing/.env`, then supply the correct values for each runtime. The frontend
-has no hidden localhost fallback for Convex connectivity or generated booking
-links. Its release preflight fails if required URLs are missing, use HTTP/local
-hosts, contain a path or credentials, or pair mismatched Convex deployment
-URLs. The landing release preflight requires an 8 to 15 digit international
-WhatsApp number without symbols. `NEXT_PUBLIC_*` and `PUBLIC_*` values are
-included in client-visible output and must not contain secrets. No provider API
-keys are currently required by the codebase. Configure `CONVEX_SITE_URL` in
-the Convex deployment environment as well as the frontend build environment;
-keep actual values in the relevant local or hosting environment settings.
-The Dockerfiles accept these public values as build arguments, and Compose requires them to be supplied by the environment before building. CI uses isolated placeholders only to exercise the build.
+Use the root, frontend and landing `.env.example` files and the environment
+matrix in `deployment.md`. Server credentials belong in Convex, public values
+belong at each frontend's build time, and `SENTRY_DSN` is a Next.js runtime value.
+Run all three preflights after supplying values for the selected environment.
 
 ## Pre-deployment gates
 
@@ -44,9 +27,8 @@ The Dockerfiles accept these public values as build arguments, and Compose requi
    not reuse production credentials or customer data.
 3. Set the environment variables above, run `npm run preflight:release` from
    `frontend/`, and verify the frontend's public URLs resolve to staging.
-   Configure the password provider and verify sign-up and sign-in. Password
-   reset is not implemented because no email provider or recovery flow is
-   configured.
+   Configure the password provider and verify sign-up and sign-in. Password reset is implemented, but its Resend sender/key and actual
+   delivery must be configured and verified.
 4. Run the repository verification commands from the root README. Generate
    Convex code against the authorized staging deployment with
    `npx convex dev --once`. Review schema output and deployment diff before
@@ -89,9 +71,9 @@ real customer's personal data.
 7. Open the public tracking link in a signed-out session. Confirm the page
    reveals only the approved tracking fields, uses the business contact number
    for WhatsApp, and that token rotation invalidates the old link.
-8. Exercise password reset and account deletion requests. These currently have
-   no working user flow; record them as failed release gates until implemented
-   and verified.
+8. Exercise password reset and account deletion requests. Password recovery has a code-based flow that needs a live
+   delivery test; deletion requests follow the owner-reviewed contact procedure
+   in `deployment.md`. Self-service deletion is not implemented.
 
 Record date, commit SHA, environment, operator, command or route, outcome, and
 sanitized evidence for each step. Do not put invitation tokens, customer data,
@@ -101,8 +83,8 @@ or public bearer URLs in the release record.
 
 Before inviting pilot businesses, select an owner for monitoring and configure
 the hosting provider's application/build alerts and Convex deployment alerts.
-The repository does not currently include error reporting, uptime checks, or
-an alert destination. Check authentication failures, Convex function errors,
+The repository includes optional privacy-filtered Sentry error capture and a
+readiness endpoint. Configure an external uptime monitor and alert destination. Check authentication failures, Convex function errors,
 public inquiry volume, storage use, and unexpected payment/refund activity
 daily during the pilot. Do not treat manual payment entries as gateway
 settlement.
@@ -121,13 +103,12 @@ customer names and phone numbers, vehicle and reservation details, inspection
 images, and manual payment references/notes. Tracking URLs are bearer links and
 must be handled like credentials.
 
-No data-retention schedule, customer deletion request workflow, account
-deletion workflow, inspection-image cleanup job, automated backup, or verified
-restore procedure is present in the repository. Set retention periods and
-deletion responsibilities with the business/privacy owner before collecting
-pilot customer data. Do not promise deletion by manually removing a parent
-record: related payment history, activity events, inspection files, and storage
-objects need a documented, tenant-safe retention/deletion design.
+A cleanup cron and R2 staging lifecycle handle abandoned uploads. Attached
+evidence and customer/account records still need an owner-approved retention
+and deletion policy. Never delete a parent record alone: related ledger,
+activity, inspections and objects must be reviewed together. Backup tooling is
+in `scripts/backup.mjs`; no live restore test or recurring schedule has been
+configured by this change.
 
 Before a schema or application release, capture the host/provider-supported
 backup or export for the target environment and record its identifier. Test
@@ -151,10 +132,7 @@ verification before reopening pilot traffic.
 
 ## Release decision
 
-All eight implementation PRs are merged to `main`, and their hosted CI runs
-pass. The pilot is **not ready for launch**. Required blockers are: authorized
-staging deployment and desktop/mobile smoke testing, working password recovery,
-fully verified tenant-bound upload ownership and cleanup, stronger public
-inquiry abuse controls, monitoring and alert ownership, backup/restore exercise,
-and approved privacy/retention/deletion behavior. Production deployment remains
-subject to the repository owner's explicit approval.
+The application builds and its fixture checks pass. Deployment validation still
+requires real service configuration, isolated browser/mobile tests, actual reset
+email and R2 tests, monitoring delivery and backup/restore evidence. Keep public
+launch gated on these checks and approval of privacy/retention procedures.

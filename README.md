@@ -86,3 +86,20 @@ Deploy Convex first, then deploy the frontend and landing site independently:
 ```bash
 npm run convex:deploy
 ```
+
+## Deployment configuration and operational checks
+
+Start with [docs/deployment.md](docs/deployment.md) and the root,
+`frontend/`, and `landing/` `.env.example` files. New inspection photos use a
+private Cloudflare R2 bucket; Convex retains metadata and authorization.
+Password recovery uses Resend; public inquiries require Turnstile. Optional
+Sentry DSNs enable privacy-filtered Next.js error capture.
+
+```sh
+npm run test:ops
+RENTALIN_ENV_FILE=.env.local npm run preflight:backend
+```
+
+The preflight checks values only. Configure backend secrets in the actual
+Convex deployment, not just a local file. Live storage/email/Turnstile tests,
+monitoring alerts, and an isolated backup restore remain release gates.

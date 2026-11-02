@@ -7,6 +7,8 @@ WORKDIR /app
 
 # ---------- build: npm ci (full, incl. devDeps for astro build) + astro build ----------
 FROM base AS build
+ARG PUBLIC_APP_URL
+ENV PUBLIC_APP_URL=${PUBLIC_APP_URL}
 ARG PUBLIC_WHATSAPP_NUMBER
 COPY package.json package-lock.json* ./
 RUN npm ci

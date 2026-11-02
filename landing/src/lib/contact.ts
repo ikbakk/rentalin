@@ -1,4 +1,4 @@
-import { validatePublicWhatsAppNumber } from "./public-env.mjs";
+import { validatePublicWhatsAppNumber, validatePublicAppOrigin } from "./public-env.mjs";
 
 /**
  * Single source of truth for the landing page's contact/demo links.
@@ -12,3 +12,5 @@ export const WHATSAPP_NUMBER = validatePublicWhatsAppNumber(import.meta.env.PUBL
 export const DEMO_MESSAGE = 'Halo, saya ingin melihat demo Rentalin untuk bisnis rental saya.';
 
 export const DEMO_WA_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(DEMO_MESSAGE)}`;
+
+export const APP_LOGIN_URL = `${validatePublicAppOrigin(import.meta.env.PUBLIC_APP_URL)}/login`;

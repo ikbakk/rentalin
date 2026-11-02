@@ -3,12 +3,12 @@ import { MessageCircle } from 'lucide-react';
 import ClientAurora from '../components/ClientAurora.astro';
 import ClientSplitText from '../components/ClientSplitText.astro';
 import ClientBlurText from '../components/ClientBlurText.astro';
-import { DEMO_WA_LINK } from '../lib/contact';
+import { DEMO_WA_LINK, APP_LOGIN_URL } from '../lib/contact';
 
 const trustSignals = [
   'For rental businesses with 1\u201350 vehicles',
   'Indonesia-first design',
-  'Works offline, outdoors, one-handed'
+  'Access your operations from your phone'
 ];
 ---
 
@@ -48,7 +48,7 @@ const trustSignals = [
           Book a Demo
         </a>
         <a
-          href="/login"
+          href={APP_LOGIN_URL}
           class="inline-flex h-12 items-center rounded-lg border border-border px-8 font-semibold text-foreground transition-colors hover:border-primary"
         >
           Staff Login

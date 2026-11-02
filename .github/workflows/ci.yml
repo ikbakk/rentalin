@@ -26,6 +26,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npm test
+      - run: npm run test:ops
 
   frontend:
     name: Frontend checks
@@ -52,6 +53,7 @@ jobs:
           NEXT_PUBLIC_CONVEX_URL: https://ci-placeholder.convex.cloud
           CONVEX_SITE_URL: https://ci-placeholder.convex.site
           NEXT_PUBLIC_FRONTEND_URL: https://rentalin-ci.example.com
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
 
   landing:
     name: Landing site build
@@ -72,4 +74,5 @@ jobs:
       - run: npm run test:release-env
       - run: npm run build
         env:
+          PUBLIC_APP_URL: "https://app.example.test"
           PUBLIC_WHATSAPP_NUMBER: "6280000000000"

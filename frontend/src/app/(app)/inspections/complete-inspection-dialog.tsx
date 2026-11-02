@@ -1,11 +1,15 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { useAction } from "convex/react"
+import { api } from "../../../../../convex/_generated/api"
+import type { Id } from "../../../../../convex/_generated/dataModel"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useCompleteInspection } from "@/hooks/use-inspections"
+import { InspectionPhoto } from "@/components/shared/inspection-photo"
 import { FileUpload } from "@/components/shared/file-upload"
 import { toast } from "sonner"
 
@@ -18,8 +22,10 @@ export function CompleteInspectionDialog({
   inspectionId: string | null
   onClose: () => void
 }) {
+  const [uploading, setUploading] = useState(false)
   const [notes, setNotes] = useState("")
   const [photoUrls, setPhotoUrls] = useState<string[]>([])
+  const removeImage = useAction(api.r2.removeImage)
   const completeInspection = useCompleteInspection()
 
   const addPhoto = useCallback((url: string) => {
@@ -29,7 +35,7 @@ export function CompleteInspectionDialog({
   const submit = async () => {
     if (!inspectionId) return
     try {
-      await completeInspection.mutateAsync({ id: inspectionId, photoUrls })
+      await completeInspection.mutateAsync({ id: inspectionId, photoUrls, notes })
       toast.success("Inspection completed")
       onClose()
       setNotes("")
@@ -49,17 +55,21 @@ export function CompleteInspectionDialog({
             <div className="flex flex-wrap gap-2 mt-1">
               {photoUrls.map((url, i) => (
                 <div key={i} className="relative size-20 rounded-lg overflow-hidden">
-                  <img src={url} alt="" className="size-full object-cover" />
+                  <InspectionPhoto reference={url} alt="Inspection evidence" className="size-full object-cover" />
+                  <Button type="button" variant="destructive" size="icon" className="absolute right-0 top-0 size-6" aria-label="Remove photo" disabled={uploading || completeInspection.isPending} onClick={async () => {
+                    try { await removeImage({ id: url.slice(3) as Id<"r2Uploads"> }); setPhotoUrls(photos => photos.filter(photo => photo !== url)) }
+                    catch { toast.error("Photo could not be removed") }
+                  }}>×</Button>
                 </div>
               ))}
-              <FileUpload onUpload={addPhoto} />
+              {photoUrls.length < 10 && <FileUpload key={photoUrls.length} onUploadingChange={setUploading} onUpload={addPhoto} />}
             </div>
           </div>
           <div>
             <Label>Notes</Label>
             <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Inspection notes..." />
           </div>
-          <Button onClick={submit} disabled={completeInspection.isPending}>
+          <Button onClick={submit} disabled={uploading || completeInspection.isPending || photoUrls.length > 10}>
             Complete Inspection
           </Button>
         </div>

@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { useMutation } from "convex/react"
+import { useState, useRef, useEffect } from "react"
+import { useAction } from "convex/react"
 import type { Id } from "../../../../convex/_generated/dataModel"
 import { api } from "../../../../convex/_generated/api"
 import { Button } from "@/components/ui/button"
@@ -13,41 +13,50 @@ interface FileUploadProps {
   onUpload: (url: string) => void
   onRemove?: () => void
   accept?: string
+  onUploadingChange?: (uploading: boolean) => void
 }
 
 export function FileUpload({
   onUpload,
   onRemove,
   accept = "image/*",
+  onUploadingChange,
 }: FileUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
-  const [uploadedStorageId, setUploadedStorageId] = useState<Id<"_storage"> | null>(null)
+  const [uploadedStorageId, setUploadedStorageId] = useState<Id<"r2Uploads"> | null>(null)
   const ref = useRef<HTMLInputElement>(null)
+  const previewUrl = useRef<string | null>(null)
   const { businessId } = useActiveBusiness()
-  const generateUploadUrl = useMutation(api.files.generateUploadUrl)
-  const registerImage = useMutation(api.files.registerInspectionImage)
-  const removeImage = useMutation(api.files.removePendingInspectionImage)
+  const createUpload = useAction(api.r2.createUpload)
+  const finalizeUpload = useAction(api.r2.finalizeUpload)
+  const removeImage = useAction(api.r2.removeImage)
+  useEffect(() => () => { if (previewUrl.current) URL.revokeObjectURL(previewUrl.current) }, [])
 
   const upload = async (file: File) => {
     setUploading(true)
+    onUploadingChange?.(true)
+    let pendingId: Id<"r2Uploads"> | null = null
     try {
       if (!businessId) throw new Error("Business session not found")
       if (!new Set(["image/jpeg", "image/png", "image/webp"]).has(file.type) || file.size > 5 * 1024 * 1024) {
         throw new Error("Choose a JPEG, PNG, or WebP image no larger than 5 MB")
       }
-      const uploadUrl = await generateUploadUrl({ businessId })
-      const response = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": file.type }, body: file })
-      if (!response.ok) throw new Error("Upload failed")
-      const { storageId } = await response.json() as { storageId: Id<"_storage"> }
-      await registerImage({ businessId, storageId })
-      setUploadedStorageId(storageId)
-      onUpload(String(storageId))
-      setPreview(URL.createObjectURL(file))
+      const { id, uploadUrl } = await createUpload({ businessId, contentType: file.type, size: file.size })
+      pendingId = id
+      const response = await fetch(uploadUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file })
+      if (!response.ok) throw new Error("Upload failed; please try again")
+      const reference = await finalizeUpload({ id })
+      setUploadedStorageId(id)
+      previewUrl.current = URL.createObjectURL(file)
+      setPreview(previewUrl.current)
+      onUpload(reference)
     } catch (error) {
+      if (pendingId) { try { await removeImage({ id: pendingId }) } catch { /* scheduled cleanup retries */ } }
       toast.error(error instanceof Error ? error.message : "Upload failed")
     } finally {
       setUploading(false)
+      onUploadingChange?.(false)
     }
   }
 
@@ -66,18 +75,23 @@ export function FileUpload({
       {preview ? (
         <div className="relative size-20 rounded-lg overflow-hidden">
           <img src={preview} alt="" className="size-full object-cover" />
-          <button
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
             aria-label="Remove photo"
             className="absolute top-1 right-1 rounded-full bg-destructive p-0.5"
             onClick={async () => {
               if (businessId && uploadedStorageId) {
                 try {
-                  await removeImage({ businessId, storageId: uploadedStorageId })
+                  await removeImage({ id: uploadedStorageId })
                 } catch (error) {
                   toast.error(error instanceof Error ? error.message : "Photo could not be removed")
                   return
                 }
               }
+              if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
+              previewUrl.current = null
               setPreview(null)
               setUploadedStorageId(null)
               onRemove?.()
@@ -85,7 +99,7 @@ export function FileUpload({
             }}
           >
             <X className="size-3 text-destructive-foreground" />
-          </button>
+          </Button>
         </div>
       ) : (
         <Button
