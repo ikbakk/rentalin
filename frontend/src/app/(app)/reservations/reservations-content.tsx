@@ -47,8 +47,8 @@ export function ReservationsContent() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-6">
             <div className="flex items-center gap-2">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-amber-500/10">
-                <MessageSquare className="size-4 text-amber-600 dark:text-amber-400" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-warning/10">
+                <MessageSquare className="size-4 text-warning" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.inquiries}</p>
@@ -56,8 +56,8 @@ export function ReservationsContent() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-blue-500/10">
-                <Calendar className="size-4 text-blue-600 dark:text-blue-400" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
+                <Calendar className="size-4 text-primary" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.reservations}</p>
@@ -65,8 +65,8 @@ export function ReservationsContent() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10">
-                <Car className="size-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-accent/10">
+                <Car className="size-4 text-accent" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.rentals}</p>

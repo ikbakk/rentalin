@@ -214,8 +214,8 @@ export function SettingsView() {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/10">
-                <Building2 className="size-5 text-blue-600 dark:text-blue-400" />
+              <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+                <Building2 className="size-5 text-primary" />
               </div>
               <div>
                 <CardTitle className="text-base">Business</CardTitle>
@@ -256,8 +256,8 @@ export function SettingsView() {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-amber-500/10">
-                <Bell className="size-5 text-amber-600 dark:text-amber-400" />
+              <div className="flex size-10 items-center justify-center rounded-xl bg-warning/10">
+                <Bell className="size-5 text-warning" />
               </div>
               <div>
                 <CardTitle className="text-base">Notifications</CardTitle>

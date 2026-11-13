@@ -147,9 +147,9 @@ function CustomerDetailContent({ customerId }: { customerId: string }) {
         </div>
 
         {activeRentals.length > 0 && (
-          <Card className="border-emerald-500/30 bg-emerald-500/5">
+          <Card className="border-accent/30 bg-accent/5">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-emerald-600 dark:text-emerald-400">Active Rentals</CardTitle>
+              <CardTitle className="text-base text-accent">Active Rentals</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {activeRentals.map(r => (

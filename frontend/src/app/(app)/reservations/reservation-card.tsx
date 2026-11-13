@@ -17,8 +17,8 @@ export function ReservationCard({ reservation, onStart }: { reservation: Reserva
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10">
-                <User className="size-4 text-blue-600 dark:text-blue-400" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                <User className="size-4 text-primary" />
               </div>
               <div>
                 <h3 className="font-semibold">{reservation.customerName}</h3>

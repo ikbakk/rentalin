@@ -1,89 +1,25 @@
 ---
-import { Car, Camera, Activity } from 'lucide-react';
-import ClientTiltedCard from '../components/ClientTiltedCard.astro';
-import ClientBlurText from '../components/ClientBlurText.astro';
-import ClientSplitText from '../components/ClientSplitText.astro';
-
-// Copy adapted from the original Next.js landing (frontend/src/app/page.tsx:11-32).
-// Three of the four features — the fourth (Inquiries → Reservations → Rentals)
-// lives in the Operational Flow section. Claims kept true, no inventions.
+import { Car, Camera, History } from 'lucide-react';
 const features = [
-  {
-    icon: Car,
-    title: 'Fleet Management',
-    description:
-      'Track every vehicle in your fleet. Monitor status, schedule maintenance, keep complete vehicle history.',
-    image: '/features/fleet.svg',
-    alt: 'Neon amber vehicle icon above fleet status indicator dots',
-    iconClass: 'text-primary',
-    accentLine: 'border-primary/40',
-  },
-  {
-    icon: Camera,
-    title: 'Inspection Checklists',
-    description:
-      'Document vehicle condition with photo capture before and after every rental. Build a complete audit trail.',
-    image: '/features/inspection.svg',
-    alt: 'Electric green camera icon framed by viewfinder corner brackets',
-    iconClass: 'text-accent',
-    accentLine: 'border-accent/40',
-  },
-  {
-    icon: Activity,
-    title: 'Timeline Audit Trail',
-    description:
-      'Every event recorded with timestamp and actor. Complete visibility into your business operations.',
-    image: '/features/timeline.svg',
-    alt: 'Neutral activity pulse line above a timeline track with logged event nodes',
-    iconClass: 'text-muted-foreground',
-    accentLine: 'border-border',
-  },
+  { title: 'Know what is available', detail: 'Keep vehicles and their status in one working list, ready when a new inquiry comes in.', marker: 'Fleet management', Icon: Car },
+  { title: 'See the condition', detail: 'Capture inspection photos before and after a rental, linked to the vehicle and booking.', marker: 'Inspection checklists', Icon: Camera },
+  { title: 'Follow every change', detail: 'A timestamped timeline shows what happened and who recorded it.', marker: 'Timeline audit trail', Icon: History },
 ];
 ---
 
-<section class="relative py-24 lg:py-32">
-  <div class="mx-auto max-w-6xl px-4 lg:px-8">
-    <div class="mb-16 text-center">
-      <ClientSplitText
-        text="Everything your rental business needs."
-        tag="h2"
-        className="font-heading text-3xl font-bold tracking-tight lg:text-5xl"
-      />
-      <ClientBlurText
-        text="From first inquiry to final inspection — track every step, every vehicle, every rupiah."
-        className="mt-4 text-lg text-muted-foreground"
-      />
+<section id="features" class="py-20 lg:py-28">
+  <div class="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[.7fr_1.3fr] lg:gap-20 lg:px-12">
+    <div>
+      <h2 class="max-w-md text-4xl font-semibold leading-[1.06] tracking-[-.045em] text-balance sm:text-5xl">The details stay together.</h2>
+      <p class="mt-6 max-w-sm leading-relaxed text-muted-foreground">A busy rental day should still be easy to read. Fleet, condition and history share the same record.</p>
     </div>
-
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {features.map((feature, i) => (
-        <div class={`group animate-fade-up stagger-${i + 1}`}>
-          <div class="relative">
-            <ClientTiltedCard
-              imageSrc={feature.image}
-              altText={feature.alt}
-              containerHeight="300px"
-              containerWidth="100%"
-              imageHeight="300px"
-              imageWidth="100%"
-              scaleOnHover={1.02}
-              rotateAmplitude={12}
-            />
-            <!-- Description strip: solid card panel over the image, revealed on
-                 hover (always visible on touch where there is no hover). The
-                 Astro wrapper cannot pass ReactNode overlayContent, so the
-                 reveal is done with a CSS group-hover transition. -->
-            <div
-              class={`pointer-events-none absolute inset-x-0 bottom-0 z-[5] rounded-b-[15px] border-t-2 ${feature.accentLine} bg-card p-4 transition-all duration-300 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100`}
-            >
-              <p class="text-sm text-muted-foreground">{feature.description}</p>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center gap-2.5">
-            <feature.icon class={`size-5 ${feature.iconClass}`} />
-            <h3 class="font-heading text-xl font-semibold">{feature.title}</h3>
-          </div>
-        </div>
+    <div class="border-t-2 border-primary">
+      {features.map((feature) => (
+        <article class="grid gap-4 border-b border-border py-7 sm:grid-cols-[3rem_1fr_auto] sm:items-start sm:gap-6">
+          <span class="flex size-10 items-center justify-center border border-border bg-card text-primary"><feature.Icon class="size-5" strokeWidth={1.7} aria-hidden="true" /></span>
+          <div><h3 class="text-2xl font-semibold tracking-tight">{feature.title}</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">{feature.detail}</p></div>
+          <span class="sheet-number w-fit bg-muted px-3 py-1.5 text-xs text-primary">{feature.marker}</span>
+        </article>
       ))}
     </div>
   </div>

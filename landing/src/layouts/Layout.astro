@@ -1,16 +1,24 @@
 ---
 import '../styles/globals.css';
 import '../styles/fonts.css';
+import 'lenis/dist/lenis.css';
 ---
 
 <!doctype html>
-<html lang="id" class="dark">
+<html lang="id">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rentalin</title>
+    <meta name="theme-color" content="#f1efe5" />
+    <meta name="description" content="Rentalin keeps vehicle rental inquiries, reservations, handovers, and returns in one clear workflow." />
+    <title>Rentalin — From chat to keys back</title>
   </head>
-  <body class="bg-background text-foreground antialiased">
+  <body>
     <slot />
+    <script>
+      import Lenis from 'lenis';
+
+      new Lenis({ autoRaf: true, anchors: true, respectReducedMotion: true });
+    </script>
   </body>
 </html>

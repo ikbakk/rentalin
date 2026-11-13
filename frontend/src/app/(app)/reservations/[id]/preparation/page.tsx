@@ -116,8 +116,8 @@ export default function PreparationPage() {
         </Link>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center rounded-xl bg-amber-500/10">
-              <Wrench className="size-6 text-amber-600 dark:text-amber-400" />
+            <div className="flex size-12 items-center justify-center rounded-xl bg-warning/10">
+              <Wrench className="size-6 text-warning" />
             </div>
             <div>
               <h1 className="text-xl font-bold">{reservation.vehicleSummary}</h1>
@@ -229,8 +229,8 @@ export default function PreparationPage() {
 
               {reservation.status === "Ready" && (
                 <div className="flex flex-col items-center gap-3 py-4">
-                  <div className="flex size-12 items-center justify-center rounded-full bg-emerald-500/10">
-                    <CheckCircle className="size-6 text-emerald-600 dark:text-emerald-400" />
+                  <div className="flex size-12 items-center justify-center rounded-full bg-accent/10">
+                    <CheckCircle className="size-6 text-accent" />
                   </div>
                   <div className="text-center">
                     <p className="font-medium text-sm">Ready for Handover</p>

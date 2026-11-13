@@ -65,7 +65,7 @@ export function BookingPageClient({ slug }: { slug: string }) {
             {isLoading ? (
               <Skeleton className="size-28 rounded-3xl sm:size-36" />
             ) : (
-              <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/30 via-primary/10 to-secondary ring-1 ring-primary/20 sm:size-36">
+              <div className="flex size-28 items-center justify-center rounded-3xl bg-primary/10 ring-1 ring-primary/20 sm:size-36">
                 {business?.logoUrl ? (
                   <img
                     src={business.logoUrl}

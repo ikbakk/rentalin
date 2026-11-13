@@ -5,7 +5,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <footer className="border-t border-border/60">
         <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6">
           <p className="text-center text-xs text-muted-foreground">
-            Powered by <span className="font-semibold text-foreground">Rentalin</span> — vehicle
+            Powered by <span className="font-bold text-primary">rentalin<span className="text-accent">.</span></span> — vehicle
             rental, simplified
           </p>
         </div>

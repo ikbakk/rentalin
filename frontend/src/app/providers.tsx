@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { requirePublicEnv } from "@/lib/public-env.mjs";
 import { useState } from "react";
+import { SmoothScroll } from "@/components/shared/smooth-scroll";
 
 const convexUrl = requirePublicEnv(process.env.NEXT_PUBLIC_CONVEX_URL, "NEXT_PUBLIC_CONVEX_URL");
 const convex = new ConvexReactClient(convexUrl);
@@ -21,5 +22,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 
-  return <ConvexAuthProvider client={convex}>{content}</ConvexAuthProvider>;
+  return <ConvexAuthProvider client={convex}><SmoothScroll>{content}</SmoothScroll></ConvexAuthProvider>;
 }

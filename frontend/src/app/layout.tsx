@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Providers } from "./providers";
 import "./globals.css";
+import "lenis/dist/lenis.css";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#1a1c2e",
+  themeColor: "#f1efe5",
 };
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-dvh bg-background">
         <Providers>{children}</Providers>
       </body>

@@ -33,70 +33,83 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --font-sans: "SF Pro Display", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "SF Mono", "Cascadia Code", ui-monospace, monospace;
-  --font-heading: "SF Pro Display", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-heading: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: "Work Sans";
+  src: url("/fonts/work-sans-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Work Sans";
+  src: url("/fonts/work-sans-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Work Sans";
+  src: url("/fonts/work-sans-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
 }
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.985 0.002 280);
-  --foreground: oklch(0.145 0.005 280);
-  --card: oklch(1 0.002 280);
-  --card-foreground: oklch(0.145 0.005 280);
-  --popover: oklch(1 0.002 280);
-  --popover-foreground: oklch(0.145 0.005 280);
-  --primary: oklch(0.55 0.15 250);
-  --primary-foreground: oklch(0.985 0.002 280);
-  --secondary: oklch(0.96 0.002 280);
-  --secondary-foreground: oklch(0.25 0.005 280);
-  --muted: oklch(0.96 0.002 280);
-  --muted-foreground: oklch(0.55 0.008 280);
-  --accent: oklch(0.96 0.002 280);
-  --accent-foreground: oklch(0.25 0.005 280);
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.985 0.002 280);
-  --border: oklch(0.91 0.005 280);
-  --input: oklch(0.91 0.005 280);
-  --ring: oklch(0.55 0.15 250);
-  --success: oklch(0.55 0.15 145);
-  --success-foreground: oklch(0.985 0.002 280);
-  --warning: oklch(0.65 0.15 85);
-  --warning-foreground: oklch(0.25 0.005 280);
-  --ring-offset: oklch(0.985 0.002 280);
-}
-
-.dark {
-  --radius: 0.5rem;
-  --background: oklch(0.13 0.008 280);
-  --foreground: oklch(0.95 0.002 280);
-  --card: oklch(0.17 0.008 280);
-  --card-foreground: oklch(0.95 0.002 280);
-  --popover: oklch(0.17 0.008 280);
-  --popover-foreground: oklch(0.95 0.002 280);
-  --primary: oklch(0.65 0.14 250);
-  --primary-foreground: oklch(0.13 0.008 280);
-  --secondary: oklch(0.22 0.008 280);
-  --secondary-foreground: oklch(0.90 0.005 280);
-  --muted: oklch(0.22 0.008 280);
-  --muted-foreground: oklch(0.65 0.008 280);
-  --accent: oklch(0.22 0.008 280);
-  --accent-foreground: oklch(0.90 0.005 280);
-  --destructive: oklch(0.60 0.22 25);
-  --destructive-foreground: oklch(0.98 0.002 280);
-  --border: oklch(0.28 0.008 280);
-  --input: oklch(0.28 0.008 280);
-  --ring: oklch(0.65 0.14 250);
-  --success: oklch(0.60 0.18 145);
-  --success-foreground: oklch(0.13 0.008 280);
-  --warning: oklch(0.70 0.16 85);
-  --warning-foreground: oklch(0.25 0.008 280);
-  --ring-offset: oklch(0.13 0.008 280);
+  color-scheme: light;
+  --background: #f1efe5;
+  --foreground: #222a20;
+  --card: #fffdf6;
+  --card-foreground: #222a20;
+  --popover: #fffdf6;
+  --popover-foreground: #222a20;
+  --primary: #1d422e;
+  --primary-foreground: #f5f3e9;
+  --secondary: #e4e5d8;
+  --secondary-foreground: #222a20;
+  --muted: #e4e5d8;
+  --muted-foreground: #5d655a;
+  --accent: #8c5b0b;
+  --accent-foreground: #fffdf6;
+  --highlight: #edbd58;
+  --destructive: #a33a30;
+  --destructive-foreground: #fffdf6;
+  --border: #c8c8b9;
+  --input: #bfc1ae;
+  --ring: #1d422e;
+  --success: #2d6243;
+  --success-foreground: #fffdf6;
+  --warning: #8c5b0b;
+  --warning-foreground: #fffdf6;
+  --ring-offset: #f1efe5;
 }
 
 @layer base {
   * { @apply border-border outline-ring/50; }
-  body { @apply bg-background text-foreground antialiased; }
+  body { @apply bg-background font-sans text-foreground antialiased; }
+
+  h1, h2, h3 { font-family: var(--font-heading); }
+  ::selection { background: var(--primary); color: var(--primary-foreground); }
 
   :focus-visible {
     outline: 2px solid var(--ring);

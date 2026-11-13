@@ -78,8 +78,8 @@ export function InspectionsView() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-amber-500/10">
-                <Clock className="size-4 text-amber-600 dark:text-amber-400" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-warning/10">
+                <Clock className="size-4 text-warning" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.pending}</p>
@@ -87,8 +87,8 @@ export function InspectionsView() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-500/10">
-                <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-accent/10">
+                <CheckCircle2 className="size-4 text-accent" />
               </div>
               <div>
                 <p className="font-mono text-lg font-bold">{stats.completed}</p>
@@ -150,8 +150,8 @@ export function InspectionsView() {
           if (!items?.length) return null
 
           const statusConfig = {
-            Pending: { label: "Pending", color: "text-amber-600 dark:text-amber-400" },
-            Completed: { label: "Passed", color: "text-emerald-600 dark:text-emerald-400" },
+            Pending: { label: "Pending", color: "text-warning" },
+            Completed: { label: "Passed", color: "text-accent" },
             Failed: { label: "Failed", color: "text-destructive" },
           }
 
@@ -189,8 +189,8 @@ function InspectionListItem({ inspection }: { inspection: InspectionResponse }) 
   const isPreRental = inspection.inspectionType === "PreRental"
 
   const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
-    Pending: { bg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", label: "Pending" },
-    Completed: { bg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", label: "Passed" },
+    Pending: { bg: "bg-warning/10", text: "text-warning", label: "Pending" },
+    Completed: { bg: "bg-accent/10", text: "text-accent", label: "Passed" },
     Failed: { bg: "bg-destructive/10", text: "text-destructive", label: "Failed" },
   }
 

@@ -32,14 +32,14 @@ export function Sidebar() {
     >
       <div className={cn("flex h-14 items-center border-b border-border px-4", collapsed && "justify-center px-2")}>
         {!collapsed && (
-          <span className="font-mono text-lg font-bold tracking-tight">Rentalin</span>
+          <span className="text-lg font-bold tracking-tight">rentalin<span className="text-accent">.</span></span>
         )}
         {collapsed && (
-          <span className="font-mono text-lg font-bold tracking-tight">R</span>
+          <span className="text-lg font-bold tracking-tight text-primary">R</span>
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-3">
+      <nav className="flex-1 overflow-y-auto p-3" data-lenis-prevent>
         <div className="space-y-1">
           {!collapsed && (
             <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -117,7 +117,7 @@ export function NavRail() {
   return (
     <nav className="fixed left-0 top-0 z-40 hidden h-dvh w-[72px] flex-col items-center border-r border-border bg-card md:flex lg:hidden">
       <div className="flex h-14 items-center justify-center border-b border-border">
-        <span className="font-mono text-lg font-bold tracking-tight">R</span>
+        <span className="text-lg font-bold tracking-tight text-primary">R</span>
       </div>
 
       <div className="flex flex-1 flex-col items-center gap-2 py-4">

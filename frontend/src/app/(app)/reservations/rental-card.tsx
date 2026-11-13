@@ -16,8 +16,8 @@ export function RentalCard({ rental, onComplete }: { rental: RentalResponse; onC
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                <User className="size-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-accent/10">
+                <User className="size-4 text-accent" />
               </div>
               <div>
                 <h3 className="font-semibold">{rental.customerName}</h3>

@@ -19,10 +19,10 @@ const steps = [
 ]
 
 const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
-  Confirmed: { bg: "bg-blue-500/10", text: "text-blue-500", label: "Confirmed" },
-  Preparing: { bg: "bg-orange-500/10", text: "text-orange-500", label: "Preparing" },
-  Ready: { bg: "bg-purple-500/10", text: "text-purple-500", label: "Ready" },
-  Active: { bg: "bg-emerald-500/10", text: "text-emerald-500", label: "On Rent" },
+  Confirmed: { bg: "bg-primary/10", text: "text-primary", label: "Confirmed" },
+  Preparing: { bg: "bg-warning/10", text: "text-warning", label: "Preparing" },
+  Ready: { bg: "bg-accent/10", text: "text-accent", label: "Ready" },
+  Active: { bg: "bg-accent/10", text: "text-accent", label: "On Rent" },
   Completed: { bg: "bg-muted", text: "text-muted-foreground", label: "Completed" },
 }
 
@@ -73,7 +73,7 @@ export function TxView({ rentalId }: { rentalId: string }) {
   const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
 
   return (
-    <div className="min-h-dvh bg-gradient-to-b from-background to-background/80">
+    <div className="min-h-dvh bg-background">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -right-20 size-60 rounded-full bg-primary/5 blur-3xl" />
       </div>
@@ -92,7 +92,7 @@ export function TxView({ rentalId }: { rentalId: string }) {
         </header>
 
         <Card className="mb-6 overflow-hidden">
-          <div className="bg-gradient-to-r from-primary/20 to-primary/5 p-4">
+          <div className="bg-primary/10 p-4">
             <div className="flex items-center gap-4">
               <div className="flex size-14 items-center justify-center rounded-xl bg-background/80">
                 <Car className="size-7 text-primary" />

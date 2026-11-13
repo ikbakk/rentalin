@@ -1,68 +1,58 @@
 ---
-import { MessageCircle } from 'lucide-react';
-import ClientAurora from '../components/ClientAurora.astro';
-import ClientSplitText from '../components/ClientSplitText.astro';
-import ClientBlurText from '../components/ClientBlurText.astro';
+import { ArrowRight, ArrowUpRight, MessageCircle, CalendarCheck, KeyRound, ClipboardCheck } from 'lucide-react';
 import { DEMO_WA_LINK, APP_LOGIN_URL } from '../lib/contact';
 
-const trustSignals = [
-  'For rental businesses with 1\u201350 vehicles',
-  'Indonesia-first design',
-  'Access your operations from your phone'
+const steps = [
+  { number: '01', label: 'Inquiry received', state: 'Check availability', Icon: MessageCircle },
+  { number: '02', label: 'Reservation confirmed', state: 'Deposit logged', Icon: CalendarCheck },
+  { number: '03', label: 'Vehicle handover', state: 'Inspection saved', Icon: KeyRound },
+  { number: '04', label: 'Return recorded', state: 'Close rental', Icon: ClipboardCheck },
 ];
 ---
 
-<section class="relative min-h-dvh overflow-hidden">
-  <!-- Layer 1: Aurora haze + readability gradient -->
-  <div class="absolute inset-0 z-0">
-    <ClientAurora colorStops={['#5227FF', '#e6a817', '#22c55e']} />
-    <div class="absolute inset-0 bg-gradient-to-b from-background/70 via-transparent to-background" />
+<header class="border-b border-border">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-5 sm:px-8 lg:px-12" aria-label="Main navigation">
+    <a href="/" class="text-2xl font-semibold tracking-[-0.06em]">rentalin<span class="text-accent">.</span></a>
+    <div class="hidden items-center gap-9 text-sm font-medium sm:flex">
+      <a href="#workflow" class="hover:text-accent">The workflow</a>
+      <a href="#features" class="hover:text-accent">For your team</a>
+      <a href={APP_LOGIN_URL} class="hover:text-accent">Staff login</a>
+    </div>
+    <a href={DEMO_WA_LINK} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-foreground">Book a demo <ArrowUpRight class="size-4" /></a>
+  </nav>
+</header>
+
+<section class="mx-auto grid max-w-7xl gap-14 px-5 pb-20 pt-16 sm:px-8 lg:min-h-[760px] lg:grid-cols-[1.03fr_.97fr] lg:items-center lg:gap-16 lg:px-12 lg:pb-28 lg:pt-20">
+  <div>
+    <h1 class="max-w-3xl text-[clamp(3.5rem,6.6vw,6.7rem)] font-semibold leading-[.98] tracking-[-.055em] text-balance">From chat<br />to <span class="sheet-highlight">keys back.</span></h1>
+    <p class="mt-7 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl">One place for inquiries, reservations, handovers and returns. Built for the pace of Indonesian rental shops.</p>
+    <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
+      <a href={DEMO_WA_LINK} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center gap-3 bg-primary px-6 font-semibold text-primary-foreground transition-colors hover:bg-foreground">Book a demo <ArrowUpRight class="size-5" /></a>
+      <a href="#workflow" class="inline-flex items-center gap-2 font-semibold underline decoration-border underline-offset-8 hover:decoration-accent">See how it works <ArrowRight class="size-4" /></a>
+    </div>
+    <p class="mt-12 max-w-lg border-t border-border pt-5 text-sm text-muted-foreground">For rental businesses with 1–50 vehicles · Designed for staff on the move</p>
   </div>
 
-  <!-- Layer 2: content -->
-  <div class="relative z-10 flex min-h-dvh items-center justify-center px-4 py-24 sm:px-6">
-    <div class="mx-auto max-w-4xl text-center">
-      <div class="mb-8 inline-flex items-center rounded-full border border-primary/40 bg-background/40 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-primary">
-        Operational tool — not a marketplace
+  <div class="relative">
+    <div class="absolute -bottom-4 -right-4 top-4 w-full bg-muted" aria-hidden="true"></div>
+    <div class="relative border border-border bg-card p-5 shadow-[0_20px_38px_-30px_rgba(34,42,32,.45)] sm:p-8">
+      <div class="flex items-end justify-between gap-4 border-b-2 border-primary pb-5">
+        <div>
+          <p class="sheet-number text-xs uppercase tracking-widest text-muted-foreground">Rentalin / Operations</p>
+          <h2 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Rental dispatch</h2>
+        </div>
+        <span class="sheet-number text-xs text-muted-foreground">Sample workflow</span>
       </div>
-
-      <ClientSplitText
-        text="The engine behind every rental."
-        tag="h1"
-        className="text-4xl font-bold tracking-tight text-foreground font-heading sm:text-6xl lg:text-7xl max-w-4xl"
-      />
-
-      <ClientBlurText
-        text="Manage your fleet, track inspections, monitor rentals — all from one place. Built for rental businesses across Indonesia."
-        className="mt-6 text-lg text-muted-foreground lg:text-xl max-w-2xl mx-auto"
-      />
-
-      <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <a
-          href={DEMO_WA_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-8 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          <MessageCircle class="size-5" />
-          Book a Demo
-        </a>
-        <a
-          href={APP_LOGIN_URL}
-          class="inline-flex h-12 items-center rounded-lg border border-border px-8 font-semibold text-foreground transition-colors hover:border-primary"
-        >
-          Staff Login
-        </a>
-      </div>
-
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-        {trustSignals.map((label) => (
-          <span class="inline-flex items-center gap-1.5">
-            <span class="size-1.5 rounded-full bg-primary" />
-            {label}
-          </span>
+      <ol class="divide-y divide-border">
+        {steps.map((step) => (
+          <li class="grid grid-cols-[2.5rem_1fr] items-center gap-x-4 gap-y-2 py-5 sm:grid-cols-[2.5rem_1fr_auto]">
+            <span class="sheet-number text-sm text-accent">{step.number}</span>
+            <span class="flex items-center gap-2.5 font-semibold"><step.Icon class="size-4 shrink-0 text-primary" strokeWidth={1.8} aria-hidden="true" />{step.label}</span>
+            <span class="col-start-2 w-fit bg-muted px-2.5 py-1 text-xs font-semibold text-primary sm:col-start-3">{step.state}</span>
+          </li>
         ))}
-      </div>
+      </ol>
+      <div class="sheet-number flex justify-between gap-4 border-t border-border pt-5 text-xs text-muted-foreground"><span>Every step documented</span><span>Inquiry → return</span></div>
     </div>
   </div>
 </section>

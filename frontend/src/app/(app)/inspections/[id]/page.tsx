@@ -102,8 +102,8 @@ function InspectionDetailContent({
   }
 
   const typeColors: Record<string, string> = {
-    PreRental: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-    PostRental: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
+    PreRental: "bg-primary/10 text-primary",
+    PostRental: "bg-accent/10 text-accent",
   }
 
   const handleComplete = async () => {

@@ -245,7 +245,7 @@ export function BookingContent({ slug }: { slug: string }) {
     return (
       <section className="flex min-h-[50vh] items-center justify-center py-12">
         <div className="w-full max-w-md animate-fade-up rounded-2xl bg-card p-8 text-center ring-1 ring-foreground/10">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/30 via-primary/10 to-secondary ring-1 ring-primary/20">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
             <Car className="size-8 text-primary" />
           </div>
           <h2 className="mt-4 font-heading text-xl font-bold tracking-tight">
@@ -367,7 +367,7 @@ export function BookingContent({ slug }: { slug: string }) {
         >
           <SheetHeader className="gap-4 p-5">
             <div className="flex items-center gap-4 pr-10">
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/30 via-primary/10 to-secondary ring-1 ring-primary/20">
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
                 <Car className="size-6 text-primary" />
               </div>
               <div className="min-w-0">

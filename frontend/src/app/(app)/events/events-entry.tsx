@@ -12,23 +12,23 @@ import { cn } from "@/lib/utils"
 import { statusColor } from "@/lib/status-config"
 
 const iconMap: Record<string, { icon: typeof MessageSquare; bg: string; color: string }> = {
-  InquiryCreated: { icon: MessageSquare, bg: "bg-amber-500/10", color: "text-amber-600 dark:text-amber-400" },
-  InquiryConfirmed: { icon: CheckCircle2, bg: "bg-emerald-500/10", color: "text-emerald-600 dark:text-emerald-400" },
+  InquiryCreated: { icon: MessageSquare, bg: "bg-warning/10", color: "text-warning" },
+  InquiryConfirmed: { icon: CheckCircle2, bg: "bg-accent/10", color: "text-accent" },
   InquiryCancelled: { icon: XCircle, bg: "bg-destructive/10", color: "text-destructive" },
-  ReservationCreated: { icon: Calendar, bg: "bg-blue-500/10", color: "text-blue-600 dark:text-blue-400" },
+  ReservationCreated: { icon: Calendar, bg: "bg-primary/10", color: "text-primary" },
   ReservationCancelled: { icon: XCircle, bg: "bg-destructive/10", color: "text-destructive" },
-  PreparationStarted: { icon: Wrench, bg: "bg-orange-500/10", color: "text-orange-600 dark:text-orange-400" },
-  ReadyForHandover: { icon: Key, bg: "bg-purple-500/10", color: "text-purple-600 dark:text-purple-400" },
-  RentalStarted: { icon: Car, bg: "bg-blue-500/10", color: "text-blue-600 dark:text-blue-400" },
-  RentalExtended: { icon: Clock, bg: "bg-blue-500/10", color: "text-blue-600 dark:text-blue-400" },
-  RentalOverdue: { icon: Clock, bg: "bg-amber-500/10", color: "text-amber-600 dark:text-amber-400" },
+  PreparationStarted: { icon: Wrench, bg: "bg-warning/10", color: "text-warning" },
+  ReadyForHandover: { icon: Key, bg: "bg-accent/10", color: "text-accent" },
+  RentalStarted: { icon: Car, bg: "bg-primary/10", color: "text-primary" },
+  RentalExtended: { icon: Clock, bg: "bg-primary/10", color: "text-primary" },
+  RentalOverdue: { icon: Clock, bg: "bg-warning/10", color: "text-warning" },
   RentalRejected: { icon: XCircle, bg: "bg-destructive/10", color: "text-destructive" },
-  RentalCompleted: { icon: CheckCircle2, bg: "bg-emerald-500/10", color: "text-emerald-600 dark:text-emerald-400" },
-  InspectionCreated: { icon: Search, bg: "bg-amber-500/10", color: "text-amber-600 dark:text-amber-400" },
-  InspectionCompleted: { icon: ClipboardCheck, bg: "bg-emerald-500/10", color: "text-emerald-600 dark:text-emerald-400" },
+  RentalCompleted: { icon: CheckCircle2, bg: "bg-accent/10", color: "text-accent" },
+  InspectionCreated: { icon: Search, bg: "bg-warning/10", color: "text-warning" },
+  InspectionCompleted: { icon: ClipboardCheck, bg: "bg-accent/10", color: "text-accent" },
   InspectionFailed: { icon: XCircle, bg: "bg-destructive/10", color: "text-destructive" },
   VehicleCreated: { icon: Car, bg: "bg-primary/10", color: "text-primary" },
-  MaintenanceCompleted: { icon: Wrench, bg: "bg-amber-500/10", color: "text-amber-600 dark:text-amber-400" },
+  MaintenanceCompleted: { icon: Wrench, bg: "bg-warning/10", color: "text-warning" },
 }
 
 const typeColors: Record<string, string> = {

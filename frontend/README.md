@@ -2,6 +2,8 @@
 
 Next.js application for Rentalin's authenticated rental workspace and public booking/tracking pages.
 
+The app uses the landing page's Dispatch Sheet design system: warm paper surfaces, forest actions, amber markers, Work Sans and JetBrains Mono. Its tokens live in `src/app/globals.css` and are documented in `../landing/DESIGN.md`. A root `ReactLenis` provider smooths document scrolling on every route while respecting reduced motion and nested scroll areas.
+
 ## Environment
 
 Copy the example to `frontend/.env.local`, then replace the placeholders with the values for your environment:

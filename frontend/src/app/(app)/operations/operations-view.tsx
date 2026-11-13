@@ -138,12 +138,12 @@ function getTimeBucket(item: ExtendedOperationItem, now: Date): TimeFilter {
 }
 
 const typeConfig: Record<string, { icon: typeof Car; bg: string; text: string; label: string }> = {
-  pickup: { icon: Clock, bg: "bg-blue-500/10", text: "text-blue-600 dark:text-blue-400", label: "Pickup" },
-  return: { icon: ArrowRight, bg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", label: "Return" },
-  preparation: { icon: Car, bg: "bg-purple-500/10", text: "text-purple-600 dark:text-purple-400", label: "Prep" },
+  pickup: { icon: Clock, bg: "bg-primary/10", text: "text-primary", label: "Pickup" },
+  return: { icon: ArrowRight, bg: "bg-warning/10", text: "text-warning", label: "Return" },
+  preparation: { icon: Car, bg: "bg-accent/10", text: "text-accent", label: "Prep" },
   late: { icon: AlertTriangle, bg: "bg-destructive/10", text: "text-destructive", label: "Late" },
   inquiry: { icon: MessageSquare, bg: "bg-primary/10", text: "text-primary", label: "Inquiry" },
-  inspection: { icon: CheckCircle2, bg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", label: "Inspection" },
+  inspection: { icon: CheckCircle2, bg: "bg-accent/10", text: "text-accent", label: "Inspection" },
 }
 
 const timeBucketOrder: TimeFilter[] = ["overdue", "today", "tomorrow", "week"]
@@ -218,8 +218,8 @@ export function OperationsView() {
             <Card key={s.label} className={cn("animate-fade-in overflow-hidden", `stagger-${i + 1}`)}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
-                  <div className={cn("flex size-10 items-center justify-center rounded-lg", s.icon === Car ? "bg-emerald-500/10" : s.icon === TrendingUp ? "bg-blue-500/10" : s.icon === MessageSquare ? "bg-amber-500/10" : "bg-primary/10")}>
-                    <s.icon className={cn("size-5", s.icon === Car ? "text-emerald-600 dark:text-emerald-400" : s.icon === TrendingUp ? "text-blue-600 dark:text-blue-400" : s.icon === MessageSquare ? "text-amber-600 dark:text-amber-400" : "text-primary")} />
+                  <div className={cn("flex size-10 items-center justify-center rounded-lg", s.icon === Car ? "bg-accent/10" : s.icon === TrendingUp ? "bg-primary/10" : s.icon === MessageSquare ? "bg-warning/10" : "bg-primary/10")}>
+                    <s.icon className={cn("size-5", s.icon === Car ? "text-accent" : s.icon === TrendingUp ? "text-primary" : s.icon === MessageSquare ? "text-warning" : "text-primary")} />
                   </div>
                 </div>
                 <div className="mt-3">

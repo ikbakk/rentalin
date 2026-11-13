@@ -5,10 +5,10 @@ export const metadata: Metadata = { title: "Login — Rentalin" }
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-gradient-to-b from-background to-background/80 p-4">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background p-4">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 size-80 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 size-80 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -top-40 -right-40 size-80 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 size-80 rounded-full bg-accent/10 blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-sm">
@@ -20,13 +20,13 @@ export default function LoginPage() {
               <circle cx="17" cy="17" r="2" />
             </svg>
           </div>
-          <h1 className="font-mono text-3xl font-bold tracking-tight">Rentalin</h1>
+          <h1 className="text-3xl font-bold tracking-tight">rentalin<span className="text-accent">.</span></h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Fleet management made simple
+            From first inquiry to final return.
           </p>
         </div>
 
-        <div className="mt-8 rounded-2xl border bg-card p-6 shadow-xl shadow-foreground/5">
+        <div className="mt-8 rounded-xl border border-border bg-card p-6">
           <LoginForm />
         </div>
 

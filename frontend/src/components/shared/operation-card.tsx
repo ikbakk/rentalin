@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 import { StatusChip } from "./status-chip"
-import { ChevronRight, Car, User, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { ChevronRight, Car, User, AlertTriangle } from "lucide-react"
 
 export interface OperationItem {
   id: string
@@ -23,10 +23,10 @@ const typeIcons = {
 const priorityConfig: Record<string, { label: string; class: string }> = {
   return: { label: "Action Required", class: "bg-destructive/10 text-destructive border-destructive/30" },
   late: { label: "Action Required", class: "bg-destructive/10 text-destructive border-destructive/30" },
-  pickup: { label: "Needs Attention", class: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-500" },
-  preparation: { label: "Needs Attention", class: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-500" },
-  inspection: { label: "Pending", class: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-500" },
-  inquiry: { label: "Informational", class: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-500" },
+  pickup: { label: "Needs Attention", class: "bg-warning/10 text-warning" },
+  preparation: { label: "Needs Attention", class: "bg-warning/10 text-warning" },
+  inspection: { label: "Pending", class: "bg-warning/10 text-warning" },
+  inquiry: { label: "Informational", class: "bg-primary/10 text-primary" },
 }
 
 export function OperationCard({ item, onClick }: { item: OperationItem; onClick?: () => void }) {

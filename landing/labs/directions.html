@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rentalin — landing direction lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { font-family: 'DM Sans',sans-serif; background:#e5e9e8; color:#242521; }
+    * { box-sizing:border-box; }
+    body { margin:0; }
+    .lab { max-width:1500px; margin:auto; padding:40px 22px 70px; }
+    .intro { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:42px; }
+    .intro h1 { font:800 clamp(2rem,5vw,4.2rem)/.98 'Archivo',sans-serif; letter-spacing:-.035em; margin:0; max-width:760px; }
+    .intro p { max-width:340px; line-height:1.5; color:#60625a; margin:0; }
+    .entry { margin-top:38px; }
+    .meta { display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin:0 0 12px; }
+    .meta h2 { font:700 1.25rem 'Archivo',sans-serif; margin:0; }
+    .meta p { margin:0; color:#60625a; font-size:.92rem; text-align:right; }
+    .frame { overflow:hidden; min-height:510px; box-shadow:0 18px 45px rgba(25,28,25,.10); }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:25px 36px; font-size:.82rem; }
+    .brand { font:800 1.35rem 'Archivo',sans-serif; letter-spacing:-.04em; }
+    .navlinks { display:flex; align-items:center; gap:24px; }
+    .nav a,.cta { color:inherit; text-decoration:none; }
+    .nav a:focus-visible,.cta:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
+    .cta { display:inline-flex; align-items:center; justify-content:center; padding:13px 20px; font-weight:700; font-size:.86rem; white-space:nowrap; }
+    .hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:34px; align-items:center; padding:38px 36px 54px; }
+    .copy h3 { font:800 clamp(2.8rem,5.8vw,5.5rem)/.98 'Archivo',sans-serif; letter-spacing:-.035em; margin:0 0 22px; max-width:690px; }
+    .copy p { font-size:1.05rem; line-height:1.55; max-width:500px; margin:0 0 30px; }
+    .actions { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+    .textlink { font-weight:700; font-size:.88rem; text-underline-offset:4px; }
+    .board { min-height:330px; }
+    .tiny { font:500 .75rem 'IBM Plex Mono',monospace; letter-spacing:.04em; }
+    .lab-note { display:flex; flex-wrap:wrap; gap:6px 24px; color:#5c5f57; font-size:.86rem; line-height:1.5; padding:12px 2px 0; }
+    .lab-note strong { color:#292b25; }
+
+    /* A: current dark world, given an operational centerpiece. */
+    .a { background:#10131a; color:#f2f0e9; }
+    .a .nav { border-bottom:1px solid #30333b; }
+    .a .nav .cta,.a .actions .cta { background:#e9b746; color:#151619; }
+    .a .copy h3 em { font-style:normal; color:#e9b746; }
+    .a .copy p { color:#aeb4b5; }
+    .a .board { background:#191e26; border:1px solid #343943; padding:18px; transform:rotate(-2deg); }
+    .a .boardhead { display:flex; justify-content:space-between; border-bottom:1px solid #363c45; padding-bottom:14px; color:#dfe2dc; }
+    .a .live { color:#9fdf9d; }
+    .a .lanes { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:16px; }
+    .a .lane { min-height:208px; background:#222832; padding:11px; }
+    .a .lane b { display:block; color:#e9b746; font:600 .72rem 'IBM Plex Mono',monospace; margin-bottom:12px; }
+    .a .lane:nth-child(n+3) b { color:#a5d9a1; }
+    .a .ticket { padding:11px 8px; background:#303743; margin:8px 0; font-size:.76rem; line-height:1.4; }
+    .a .ticket small { display:block; color:#adb7b9; margin-top:5px; }
+    .a .caption { color:#879099; padding-top:16px; }
+
+    /* B: sunlight-first field sheet. */
+    .b { background:#f1efe5; color:#222a20; }
+    .b .nav { border-bottom:1px solid #c8c8b9; }
+    .b .nav .cta,.b .actions .cta { background:#1d422e; color:#f5f3e9; }
+    .b .copy p { color:#5d655a; }
+    .b .copy h3 { font-size:clamp(2.8rem,5.5vw,5.1rem); }
+    .b .copy h3 em { font-style:normal; text-decoration:underline; text-decoration-color:#edbd58; text-decoration-thickness:5px; text-underline-offset:5px; }
+    .b .board { background:#fffdf6; border:1px solid #bfc1ae; box-shadow:12px 15px 0 #d7d6c9; padding:22px; }
+    .b .sheethead { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #233527; padding-bottom:16px; }
+    .b .sheethead strong { font:700 1.15rem 'Archivo',sans-serif; }
+    .b .sheetrow { display:grid; grid-template-columns:28px 1fr auto; align-items:center; gap:14px; padding:18px 0; border-bottom:1px solid #d4d6c8; font-size:.87rem; }
+    .b .sheetrow b { font:600 .7rem 'IBM Plex Mono',monospace; color:#566b53; }
+    .b .sheetrow span:last-child { background:#dce7d5; padding:6px 8px; font-size:.75rem; font-weight:700; white-space:nowrap; }
+    .b .sheetfoot { display:flex; justify-content:space-between; margin-top:16px; color:#59645a; }
+
+    /* C: the rental lifecycle as a route, not a card grid. */
+    .c { background:#112c3a; color:#f5f2df; }
+    .c .nav { border-bottom:1px solid #54707a; }
+    .c .nav .cta,.c .actions .cta { background:#ff784d; color:#142832; }
+    .c .copy h3 { font-size:clamp(3rem,6.1vw,5.8rem); }
+    .c .copy h3 em { color:#ffbd77; font-style:normal; }
+    .c .copy p { color:#e0e9df; }
+    .c .board { position:relative; display:flex; flex-direction:column; justify-content:center; padding:30px 24px 30px 54px; }
+    .c .route { position:absolute; left:37px; top:44px; bottom:44px; width:3px; background:#ffbd77; }
+    .c .stop { position:relative; display:flex; justify-content:space-between; gap:16px; padding:15px 17px; margin:5px 0; background:#1d3c49; border:1px solid #57707b; font-size:.84rem; }
+    .c .stop:before { content:''; position:absolute; left:-27px; top:25px; width:11px; height:11px; border-radius:50%; background:#ffbd77; box-shadow:0 0 0 5px #112c3a; }
+    .c .stop strong { font:700 1rem 'Archivo',sans-serif; }
+    .c .stop span { color:#ffbd77; font:500 .75rem 'IBM Plex Mono',monospace; text-align:right; }
+    .c .stop:nth-child(3) { transform:translateX(18px); background:#264c57; }
+    .c .stop:nth-child(4) { transform:translateX(36px); }
+    .c .stop:nth-child(5) { transform:translateX(18px); background:#264c57; }
+    @media (max-width:780px) {
+      .lab { padding:26px 14px 50px; }
+      .intro,.meta { display:block; }
+      .intro p { margin-top:14px; }
+      .meta p { text-align:left; margin-top:4px; }
+      .nav { padding:18px 20px; }
+      .navlinks a:not(.cta) { display:none; }
+      .hero { grid-template-columns:1fr; padding:36px 20px 45px; }
+      .frame { min-height:0; }
+      .board { min-height:260px; }
+      .a .board { transform:none; }
+      .a .lanes { grid-template-columns:repeat(2,1fr); }
+      .a .lane { min-height:0; }
+      .a .lane:nth-child(n+3) { display:none; }
+      .c .stop:nth-child(n) { transform:none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="lab">
+    <header class="intro"><h1>Rentalin landing<br>direction lab</h1><p>Three first-viewport studies for the same product. All UI details are illustrative; the rental workflow and feature claims follow the current project.</p></header>
+    <section class="entry" aria-labelledby="a-title"><div class="meta"><h2 id="a-title">A · Control tower</h2><p>Keep the current dark industrial identity; make the operations board the hero.</p></div>
+      <div class="frame a"><nav class="nav" aria-label="Concept A navigation"><span class="brand">rentalin.</span><div class="navlinks"><a href="#a-title">How it works</a><a href="#a-title">Features</a><a class="cta" href="#a-title">Book a demo ↗</a></div></nav>
+        <div class="hero"><div class="copy"><h3>Every rental.<br><em>Under control.</em></h3><p>From the first WhatsApp inquiry to the return inspection, keep your team and fleet in one clear flow.</p><div class="actions"><a class="cta" href="#a-title">Book a demo ↗</a><a class="textlink" href="#a-title">See the workflow →</a></div></div>
+          <div class="board" aria-label="Illustrative four-stage rental board"><div class="boardhead"><strong>Today's rental flow</strong><span class="tiny live">● Live view</span></div><div class="lanes"><div class="lane"><b>Inquiry</b><div class="ticket">New request<small>Availability check</small></div></div><div class="lane"><b>Reserved</b><div class="ticket">Deposit logged<small>Handover next</small></div></div><div class="lane"><b>On road</b><div class="ticket">Vehicle out<small>Return pending</small></div></div><div class="lane"><b>Returned</b><div class="ticket">Inspection saved<small>Rental closed</small></div></div></div><div class="caption tiny">Illustrative product view · Inquiry → reservation → handover → return</div></div></div></div><div class="lab-note"><span><strong>Design language:</strong> ink, amber, green, mono data labels</span><span><strong>Best fit:</strong> incremental redesign with strong product proof</span></div>
+    </section>
+    <section class="entry" aria-labelledby="b-title"><div class="meta"><h2 id="b-title">B · Dispatch sheet</h2><p>Warm daylight palette with the feel of a clear, practical field document.</p></div>
+      <div class="frame b"><nav class="nav" aria-label="Concept B navigation"><span class="brand">rentalin.</span><div class="navlinks"><a href="#b-title">The workflow</a><a href="#b-title">For your team</a><a class="cta" href="#b-title">Book a demo ↗</a></div></nav>
+        <div class="hero"><div class="copy"><h3>From chat<br>to <em>keys back.</em></h3><p>One place for inquiries, reservations, handovers and returns. Built for the pace of Indonesian rental shops.</p><div class="actions"><a class="cta" href="#b-title">Book a demo ↗</a><a class="textlink" href="#b-title">See how it works →</a></div></div>
+          <div class="board" aria-label="Illustrative dispatch sheet"><div class="sheethead"><strong>Rental dispatch</strong><span class="tiny">Sample workflow</span></div><div class="sheetrow"><b>01</b><span>Inquiry received</span><span>CHECK AVAILABILITY</span></div><div class="sheetrow"><b>02</b><span>Reservation confirmed</span><span>DEPOSIT LOGGED</span></div><div class="sheetrow"><b>03</b><span>Vehicle handover</span><span>INSPECTION</span></div><div class="sheetrow"><b>04</b><span>Return recorded</span><span>CLOSE RENTAL</span></div><div class="sheetfoot tiny"><span>Every step documented</span><span>Rentalin / Operations</span></div></div></div></div><div class="lab-note"><span><strong>Design language:</strong> paper, forest ink, warm amber, strong daylight contrast</span><span><strong>Best fit:</strong> approachable and practical positioning</span></div>
+    </section>
+    <section class="entry" aria-labelledby="c-title"><div class="meta"><h2 id="c-title">C · Rental route</h2><p>A more expressive identity built around the movement from request to return.</p></div>
+      <div class="frame c"><nav class="nav" aria-label="Concept C navigation"><span class="brand">rentalin.</span><div class="navlinks"><a href="#c-title">The route</a><a href="#c-title">Why Rentalin</a><a class="cta" href="#c-title">Book a demo ↗</a></div></nav>
+        <div class="hero"><div class="copy"><h3>Keep every<br>rental <em>moving.</em></h3><p>Turn scattered chats and handovers into one visible journey, from inquiry through return.</p><div class="actions"><a class="cta" href="#c-title">Book a demo ↗</a><a class="textlink" href="#c-title">Follow the route →</a></div></div>
+          <div class="board" aria-label="Illustrative rental route"><div class="route" aria-hidden="true"></div><div class="stop"><strong>Inquiry</strong><span>REQUEST RECEIVED</span></div><div class="stop"><strong>Reservation</strong><span>BOOKING CONFIRMED</span></div><div class="stop"><strong>Handover</strong><span>VEHICLE OUT</span></div><div class="stop"><strong>Return</strong><span>INSPECTION SAVED</span></div></div></div></div><div class="lab-note"><span><strong>Design language:</strong> deep petrol, signal orange, route geometry</span><span><strong>Best fit:</strong> distinctive campaign-style storytelling</span></div>
+    </section>
+  </main>
+</body>
+</html>
