@@ -1,8 +1,9 @@
 import { pathToFileURL } from "node:url";
 export function validateBackendEnvironment(env) {
-  const required = ["SITE_URL", "JWT_PRIVATE_KEY", "JWKS", "R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME", "AUTH_RESEND_KEY", "AUTH_EMAIL_FROM", "TURNSTILE_SECRET_KEY", "TURNSTILE_EXPECTED_HOSTNAME"];
+  const required = ["SITE_URL", "JWT_PRIVATE_KEY", "JWKS", "R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME", "TURNSTILE_SECRET_KEY", "TURNSTILE_EXPECTED_HOSTNAME"];
   const missing = required.filter(name => !env[name]?.trim());
   if (missing.length) throw new Error(`Missing backend environment variables: ${missing.join(", ")}`);
+  if (Boolean(env.AUTH_RESEND_KEY?.trim()) !== Boolean(env.AUTH_EMAIL_FROM?.trim())) throw new Error("AUTH_RESEND_KEY and AUTH_EMAIL_FROM must be configured together");
   const url = new URL(env.SITE_URL);
   if (url.protocol !== "https:" || url.username || url.password || url.pathname !== "/" || url.search || url.hash) throw new Error("SITE_URL must be an HTTPS origin");
   if (url.hostname !== env.TURNSTILE_EXPECTED_HOSTNAME.trim()) throw new Error("Turnstile hostname must match SITE_URL");

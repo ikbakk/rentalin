@@ -8,6 +8,11 @@ const env = {
   AUTH_RESEND_KEY: "test", AUTH_EMAIL_FROM: "accounts@example.test", TURNSTILE_SECRET_KEY: "test", TURNSTILE_EXPECTED_HOSTNAME: "app.example.test",
 };
 assert.equal(validateBackendEnvironment(env), true);
+const emailDisabled = { ...env };
+delete emailDisabled.AUTH_RESEND_KEY;
+delete emailDisabled.AUTH_EMAIL_FROM;
+assert.equal(validateBackendEnvironment(emailDisabled), true);
+assert.throws(() => validateBackendEnvironment({ ...emailDisabled, AUTH_RESEND_KEY: "test" }), /must be configured together/);
 assert.throws(() => validateBackendEnvironment({ ...env, TURNSTILE_EXPECTED_HOSTNAME: "wrong.test" }));
 assert.throws(() => validateBackendEnvironment({ ...env, JWKS: '{}' }));
 console.log("Backend environment validation tests passed.");

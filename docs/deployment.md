@@ -104,7 +104,9 @@ Container execution still needs to be tested on a Docker-enabled host.
 
 - `/api/health` returns HTTP 200 only when Next can reach the Convex readiness
   query and the required backend env values are present. Otherwise it returns
-  503 without exposing configuration values. This checks connectivity and
+  503 without exposing configuration values. `emailReady` is reported separately;
+  it is false when Resend and its sender are not configured, so password recovery
+  remains unavailable while the core app can still be checked. This checks connectivity and
   configuration presence, not R2 authentication or email delivery.
 - Optional `NEXT_PUBLIC_SENTRY_DSN` and server runtime `SENTRY_DSN` enable Sentry
   error capture. Requests, bodies, users, breadcrumbs, arbitrary messages and

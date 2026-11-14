@@ -7,7 +7,7 @@ export async function GET() {
     if (!url) throw new Error("Missing backend URL");
     const client = new ConvexHttpClient(url, { fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(5000) }) });
     const backend = await client.query(api.health.ping, {});
-    return Response.json({ ok: backend.ok }, { status: backend.ok ? 200 : 503, headers: { "Cache-Control": "no-store" } });
+    return Response.json({ ok: backend.ok, emailReady: backend.emailReady }, { status: backend.ok ? 200 : 503, headers: { "Cache-Control": "no-store" } });
   } catch {
     return Response.json({ ok: false }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
