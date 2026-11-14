@@ -5,9 +5,13 @@ import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
+// Keep the Node adapter for the container deployment; Vercel serves this
+// showcase page as static output and does not need a server runtime.
+const vercelStaticOutput = process.env.VERCEL === '1';
+
 export default defineConfig({
-  output: 'server',
-  adapter: node({ mode: 'standalone' }),
+  output: vercelStaticOutput ? 'static' : 'server',
+  ...(vercelStaticOutput ? {} : { adapter: node({ mode: 'standalone' }) }),
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],

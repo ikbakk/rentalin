@@ -24,6 +24,8 @@ npm run start
 
 `npm run build` validates `PUBLIC_APP_URL` and `PUBLIC_WHATSAPP_NUMBER`, then writes the standalone server to `dist/`. Docker Compose runs the `landing` service on port 4321 behind nginx. nginx routes `/` and `/_astro/` to this service and sends other paths to the Next.js app.
 
+On Vercel, the automatically exposed `VERCEL=1` variable makes Astro emit a static site. Local and Docker builds keep the standalone Node server.
+
 ## Page composition
 
 `src/pages/index.astro` assembles Hero, OperationalFlow, Features, IndonesiaProof and CTASection. The hero shows an illustrative dispatch sheet; the following sections explain the real four-stage workflow, fleet and inspection tools, field use, and the demo action. Styles and tokens live in `src/styles/globals.css`.
