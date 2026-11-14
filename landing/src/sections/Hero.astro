@@ -1,6 +1,6 @@
 ---
 import { ArrowRight, ArrowUpRight, MessageCircle, CalendarCheck, KeyRound, ClipboardCheck } from 'lucide-react';
-import { DEMO_WA_LINK, APP_LOGIN_URL } from '../lib/contact';
+import { APP_DEMO_URL, APP_LOGIN_URL } from '../lib/contact';
 
 const steps = [
   { number: '01', label: 'Inquiry received', state: 'Check availability', Icon: MessageCircle },
@@ -18,7 +18,7 @@ const steps = [
       <a href="#features" class="hover:text-accent">For your team</a>
       <a href={APP_LOGIN_URL} class="hover:text-accent">Staff login</a>
     </div>
-    <a href={DEMO_WA_LINK} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-foreground">Book a demo <ArrowUpRight class="size-4" /></a>
+      <a href={APP_DEMO_URL} class="inline-flex min-h-11 items-center gap-2 bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-foreground">Try the demo <ArrowUpRight class="size-4" /></a>
   </nav>
 </header>
 
@@ -27,7 +27,7 @@ const steps = [
     <h1 class="max-w-3xl text-[clamp(3.5rem,6.6vw,6.7rem)] font-semibold leading-[.98] tracking-[-.055em] text-balance">From chat<br />to <span class="sheet-highlight">keys back.</span></h1>
     <p class="mt-7 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl">One place for inquiries, reservations, handovers and returns. Built for the pace of Indonesian rental shops.</p>
     <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
-      <a href={DEMO_WA_LINK} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center gap-3 bg-primary px-6 font-semibold text-primary-foreground transition-colors hover:bg-foreground">Book a demo <ArrowUpRight class="size-5" /></a>
+      <a href={APP_DEMO_URL} class="inline-flex min-h-12 items-center gap-3 bg-primary px-6 font-semibold text-primary-foreground transition-colors hover:bg-foreground">Try the demo <ArrowUpRight class="size-5" /></a>
       <a href="#workflow" class="inline-flex items-center gap-2 font-semibold underline decoration-border underline-offset-8 hover:decoration-accent">See how it works <ArrowRight class="size-4" /></a>
     </div>
     <p class="mt-12 max-w-lg border-t border-border pt-5 text-sm text-muted-foreground">For rental businesses with 1–50 vehicles · Designed for staff on the move</p>
