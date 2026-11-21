@@ -49,6 +49,20 @@ stop all three. The landing dev server points its demo and login links to the
 local app and uses a sample WhatsApp number. These development values do not
 change the landing site's production environment.
 
+### Development demo account
+
+The configured Convex development deployment has a populated demo workspace for
+trying the authenticated app. Start the local app with `bun run dev`, then sign
+in at [http://localhost:3000/login](http://localhost:3000/login):
+
+- Email: `demo@rentalin.app`
+- Password: `RentalinDemo2026`
+- Business: Bali Motorent (sample fleet and operations data)
+
+This account and its sample records belong to the Rentalin development
+Convex deployment; they are not available on production unless separately
+created there.
+
 For release or standalone package builds, copy each runtime's example file and
 fill in the public URLs or contact number:
 
