@@ -6,31 +6,62 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
   --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 :root {
+  --radius: 0.5rem;
   color-scheme: light;
   --background: #f1efe5;
   --foreground: #222a20;
   --card: #fffdf6;
   --card-foreground: #222a20;
+  --popover: #fffdf6;
+  --popover-foreground: #222a20;
   --primary: #1d422e;
   --primary-foreground: #f5f3e9;
+  --secondary: #e4e5d8;
+  --secondary-foreground: #222a20;
   --accent: #8c5b0b;
   --accent-foreground: #fffdf6;
   --highlight: #edbd58;
   --muted: #e4e5d8;
   --muted-foreground: #5d655a;
   --border: #c8c8b9;
+  --input: #bfc1ae;
+  --ring: #1d422e;
+  --ring-offset: #f1efe5;
+  --success: #2d6243;
+  --success-foreground: #fffdf6;
+  --warning: #8c5b0b;
+  --warning-foreground: #fffdf6;
+  --destructive: #a33a30;
+  --destructive-foreground: #fffdf6;
 }
 
 @layer base {
@@ -39,7 +70,7 @@
   body { @apply bg-background font-sans text-foreground antialiased; }
   h1, h2, h3 { font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif; }
   ::selection { background: var(--highlight); color: var(--foreground); }
-  :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 }
 
 .sheet-rule { border-color: var(--border); }

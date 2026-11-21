@@ -16,9 +16,9 @@ const features = [
     <div class="border-t-2 border-primary">
       {features.map((feature) => (
         <article class="grid gap-4 border-b border-border py-7 sm:grid-cols-[3rem_1fr_auto] sm:items-start sm:gap-6">
-          <span class="flex size-10 items-center justify-center border border-border bg-card text-primary"><feature.Icon class="size-5" strokeWidth={1.7} aria-hidden="true" /></span>
+          <span class="flex size-10 items-center justify-center rounded-lg border border-border bg-card text-primary"><feature.Icon class="size-5" strokeWidth={1.7} aria-hidden="true" /></span>
           <div><h3 class="text-2xl font-semibold tracking-tight">{feature.title}</h3><p class="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">{feature.detail}</p></div>
-          <span class="sheet-number w-fit bg-muted px-3 py-1.5 text-xs text-primary">{feature.marker}</span>
+          <span class="sheet-number w-fit rounded-md bg-muted px-3 py-1.5 text-xs text-primary">{feature.marker}</span>
         </article>
       ))}
     </div>

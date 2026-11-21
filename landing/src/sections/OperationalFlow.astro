@@ -1,10 +1,10 @@
 ---
 import { MessageCircle, CalendarCheck, KeyRound, ClipboardCheck } from 'lucide-react';
 const stages = [
-  { number: '01', title: 'Inquiry', detail: 'A customer asks about a vehicle. Staff checks availability and sends a quote.', Icon: MessageCircle },
-  { number: '02', title: 'Reservation', detail: 'Confirm the booking and record the deposit in the same flow.', Icon: CalendarCheck },
-  { number: '03', title: 'Handover', detail: 'Record the ID check, signature, odometer and vehicle condition.', Icon: KeyRound },
-  { number: '04', title: 'Return', detail: 'Capture the final odometer, fuel and inspection before closing the rental.', Icon: ClipboardCheck },
+  { title: 'Inquiry', detail: 'A customer asks about a vehicle. Staff checks availability and sends a quote.', Icon: MessageCircle },
+  { title: 'Reservation', detail: 'Confirm the booking and record the deposit in the same flow.', Icon: CalendarCheck },
+  { title: 'Handover', detail: 'Record the ID check, signature, odometer and vehicle condition.', Icon: KeyRound },
+  { title: 'Return', detail: 'Capture the final odometer, fuel and inspection before closing the rental.', Icon: ClipboardCheck },
 ];
 ---
 
@@ -17,7 +17,7 @@ const stages = [
     <ol class="mt-14 grid border-t-2 border-primary md:grid-cols-4">
       {stages.map((stage) => (
         <li class="border-b border-border py-7 pr-7 md:min-h-64 md:border-b-0 md:border-r md:px-5 md:first:pl-0 md:last:border-r-0">
-          <div class="flex items-center justify-between gap-3"><span class="sheet-number text-sm text-accent">{stage.number} / 04</span><stage.Icon class="size-6 text-primary" strokeWidth={1.6} aria-hidden="true" /></div>
+          <div class="flex items-center justify-end gap-3"><stage.Icon class="size-6 text-primary" strokeWidth={1.6} aria-hidden="true" /></div>
           <h3 class="mt-7 text-2xl font-semibold tracking-tight">{stage.title}</h3>
           <p class="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{stage.detail}</p>
         </li>
