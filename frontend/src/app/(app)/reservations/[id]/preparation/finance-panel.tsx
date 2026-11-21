@@ -61,7 +61,7 @@ export function ReservationFinancePanel({ reservationId }: { reservationId: stri
         <CardDescription>Manual IDR records. Deposits count toward the estimate. Entries are permanent; fix mistakes with a refund and a corrected entry.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-3 gap-3 text-sm">
+        <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
           <div><p className="text-muted-foreground">Estimate</p><p className="font-medium">IDR {summary.estimatedCost.toLocaleString()}</p></div>
           <div><p className="text-muted-foreground">Received</p><p className="font-medium">IDR {summary.received.toLocaleString()}</p></div>
           <div><p className="text-muted-foreground">Outstanding</p><p className="font-medium">IDR {summary.outstanding.toLocaleString()}</p></div>

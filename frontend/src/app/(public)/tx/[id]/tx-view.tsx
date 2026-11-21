@@ -53,7 +53,7 @@ export function TxView({ rentalId }: { rentalId: string }) {
           </p>
         </div>
         <Button
-          className="mt-4 gap-2 bg-[#25D366] hover:bg-[#25D366]/90"
+          className="mt-4 gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => window.open("https://wa.me/", "_blank")}
         >
           <MessageCircle className="size-4" />
@@ -73,13 +73,9 @@ export function TxView({ rentalId }: { rentalId: string }) {
   const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
 
   return (
-    <div className="min-h-dvh bg-background">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 size-60 rounded-full bg-primary/5 blur-3xl" />
-      </div>
-
+    <div className="workspace min-h-dvh bg-background">
       <div className="relative mx-auto max-w-lg px-4 pb-8">
-        <header className="pt-8 pb-6">
+        <header className="border-b border-border py-5 mb-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Rental ID</p>
@@ -91,7 +87,7 @@ export function TxView({ rentalId }: { rentalId: string }) {
           </div>
         </header>
 
-        <Card className="mb-6 overflow-hidden">
+        <Card className="mb-4 overflow-hidden">
           <div className="bg-primary/10 p-4">
             <div className="flex items-center gap-4">
               <div className="flex size-14 items-center justify-center rounded-xl bg-background/80">

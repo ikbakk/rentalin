@@ -10,12 +10,12 @@ export function BusinessSwitcher() {
   if (!businesses?.length) return null
 
   return (
-    <label className="fixed right-4 top-4 z-40 flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm shadow-sm">
-      <span className="text-muted-foreground">Business</span>
+    <label className="flex min-w-0 max-w-[72%] items-center gap-1.5 rounded-md border border-transparent bg-transparent px-2.5 py-1.5 text-xs transition-colors hover:bg-muted focus-within:border-ring sm:gap-2 sm:px-3 sm:py-2 sm:text-sm">
+      <span className="hidden shrink-0 text-muted-foreground min-[360px]:inline">Business</span>
       <select
         value={businessId ?? ""}
         onChange={(event) => void selectBusiness({ businessId: event.target.value as never })}
-        className="bg-transparent font-medium outline-none"
+        className="min-w-0 max-w-[min(12rem,58vw)] truncate bg-transparent font-medium outline-none"
         aria-label="Active business"
       >
         {businesses.map((business) => (

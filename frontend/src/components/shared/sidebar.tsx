@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { useSidebar } from "@/components/shared/sidebar-context"
 
 const workLinks = [
-  { href: "/operations", label: "Operations", icon: LayoutList },
+  { href: "/operations", label: "Today’s work", icon: LayoutList },
   { href: "/fleet", label: "Fleet", icon: Car },
   { href: "/reservations", label: "Reservations", icon: ClipboardList },
   { href: "/inspections", label: "Inspections", icon: ClipboardList },
@@ -43,7 +43,7 @@ export function Sidebar() {
         <div className="space-y-1">
           {!collapsed && (
             <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Work
+              Daily workflow
             </p>
           )}
           {workLinks.map(({ href, label, icon: Icon }) => {
@@ -70,7 +70,7 @@ export function Sidebar() {
         <div className="mt-6 space-y-1">
           {!collapsed && (
             <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Management
+              Business records
             </p>
           )}
           {managementLinks.map(({ href, label, icon: Icon }) => {

@@ -14,13 +14,7 @@ export function BookingPageClient({ slug }: { slug: string }) {
   return (
     <div className="animate-fade-in">
       <section className="relative overflow-hidden border-b border-border/60">
-        {/* decorative glow */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-32 right-[-8%] size-80 rounded-full bg-primary/10 blur-3xl" />
-          <div className="absolute -bottom-24 left-[-6%] size-64 rounded-full bg-success/10 blur-3xl" />
-        </div>
-
-        <div className="relative flex flex-col gap-8 py-12 sm:py-16 md:flex-row md:items-center md:justify-between md:gap-12 lg:py-20">
+        <div className="relative flex flex-col gap-4 py-6 sm:py-8 md:flex-row md:items-center md:justify-between md:gap-6 lg:py-8">
           <div className="max-w-2xl">
             {isLoading ? (
               <div className="space-y-3">
@@ -34,15 +28,15 @@ export function BookingPageClient({ slug }: { slug: string }) {
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
                   Book a vehicle
                 </p>
-                <h1 className="mt-3 font-heading text-4xl font-bold tracking-tight text-balance sm:text-5xl">
+                <h1 className="mt-3 font-heading text-2xl font-bold tracking-tight text-balance sm:text-3xl">
                   Book at {business?.name ?? "Us"}
                 </h1>
-                <p className="mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
+                <p className="mt-2 max-w-xl text-sm text-muted-foreground">
                   Choose from our available fleet and send a booking request — we&apos;ll
                   confirm on WhatsApp.
                 </p>
                 {business && (
-                  <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                  <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
                     {business.address && (
                       <span className="flex items-center gap-1.5">
                         <MapPin className="size-4 text-primary" />
@@ -63,17 +57,17 @@ export function BookingPageClient({ slug }: { slug: string }) {
 
           <div className="md:shrink-0">
             {isLoading ? (
-              <Skeleton className="size-28 rounded-3xl sm:size-36" />
+              <Skeleton className="size-16 rounded-xl sm:size-20" />
             ) : (
-              <div className="flex size-28 items-center justify-center rounded-3xl bg-primary/10 ring-1 ring-primary/20 sm:size-36">
+              <div className="flex size-16 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20 sm:size-20">
                 {business?.logoUrl ? (
                   <img
                     src={business.logoUrl}
                     alt={business.name}
-                    className="size-16 rounded-2xl object-cover sm:size-20"
+                    className="size-12 rounded-lg object-cover sm:size-14"
                   />
                 ) : (
-                  <span className="font-heading text-5xl font-bold text-primary sm:text-6xl">
+                  <span className="font-heading text-2xl font-bold text-primary sm:text-3xl">
                     {business?.name?.charAt(0) ?? "R"}
                   </span>
                 )}

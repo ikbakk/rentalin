@@ -6,7 +6,7 @@ import { ListSkeleton } from "@/components/shared/loading-skeleton"
 export default function OperationsPage() {
   return (
     <>
-      <PageHeader title="Today" subtitle={new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} />
+      <PageHeader title="Today’s work" subtitle={new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} />
       <Suspense fallback={<ListSkeleton count={6} />}>
         <OperationsView />
       </Suspense>

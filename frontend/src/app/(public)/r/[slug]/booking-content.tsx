@@ -9,7 +9,7 @@ import { businessDateToIso, DEFAULT_BUSINESS_TIME_ZONE } from "@/lib/business-ti
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { VehicleBrowser } from "./vehicle-browser"
 import {
   Sheet,
   SheetContent,
@@ -26,43 +26,10 @@ import {
   CheckCircle2,
   MessageCircle,
   Calendar,
-  Check,
-  ArrowRight,
   Send,
   Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-/** Token-based gradient per vehicle (cycled by index) — no raw palette colors. */
-const GRADIENTS = [
-  "from-primary/30 via-primary/10 to-secondary",
-  "from-success/25 via-success/10 to-secondary",
-  "from-warning/25 via-warning/10 to-secondary",
-  "from-primary/20 via-secondary to-secondary/40",
-] as const
-
-function VehiclePlaceholder({ index }: { index: number }) {
-  return (
-    <div
-      className={cn(
-        "relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br",
-        GRADIENTS[index % GRADIENTS.length]
-      )}
-    >
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-30 [background-image:repeating-linear-gradient(135deg,var(--foreground)_0,var(--foreground)_1px,transparent_1px,transparent_16px)]"
-      />
-      <Car
-        aria-hidden
-        className="relative size-12 text-foreground/30 transition-transform duration-300 group-hover:scale-110 group-hover:text-foreground/45"
-      />
-      <span className="absolute bottom-3 left-3 rounded-md bg-background/80 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm">
-        Rental vehicle
-      </span>
-    </div>
-  )
-}
 
 export function BookingContent({ slug }: { slug: string }) {
   const { data: vehicles, isLoading } = usePublicVehiclesBySlug(slug)
@@ -152,26 +119,28 @@ export function BookingContent({ slug }: { slug: string }) {
 
   if (isLoading) {
     return (
-      <section className="py-10 sm:py-14">
+      <section className="py-6 sm:py-8">
         <div className="mb-6 space-y-2">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-4 w-64 max-w-full" />
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="overflow-hidden rounded-2xl ring-1 ring-border/60">
-              <Skeleton className="h-40 rounded-none" />
-              <div className="space-y-3 p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-5 w-20" />
-                </div>
-                <Skeleton className="h-3 w-40" />
-                <Skeleton className="h-px w-full" />
-                <Skeleton className="h-3 w-24" />
+        <div className="mb-8 flex gap-2">
+          {[1, 2, 3].map(i => <Skeleton key={i} className="h-11 w-24" />)}
+        </div>
+        <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+          <div className="space-y-4">
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+          </div>
+          <div className="divide-y divide-border">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="space-y-3 py-5">
+                <Skeleton className="h-6 w-48 max-w-full" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-11 w-36" />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     )
@@ -180,7 +149,7 @@ export function BookingContent({ slug }: { slug: string }) {
   if (submitted && submittedData) {
     return (
       <section className="flex min-h-[60vh] items-center justify-center py-12">
-        <div className="w-full max-w-lg animate-fade-up rounded-2xl bg-card p-8 text-center ring-1 ring-foreground/10">
+        <div className="w-full max-w-lg animate-fade-up rounded-xl bg-card p-5 sm:p-6 text-center ring-1 ring-foreground/10">
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-success/15 ring-1 ring-success/30">
             <CheckCircle2 className="size-8 text-success" />
           </div>
@@ -191,7 +160,7 @@ export function BookingContent({ slug }: { slug: string }) {
             {submittedData.vehicle} · {business?.name ?? "our team"} will confirm shortly.
           </p>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 text-left">
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 text-left">
             <div className="rounded-xl bg-muted/50 p-4">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Calendar className="size-3.5" />
@@ -221,7 +190,7 @@ export function BookingContent({ slug }: { slug: string }) {
 
           {business?.phone && (
             <Button
-              className="mt-4 h-12 w-full gap-2 rounded-xl bg-success text-base font-semibold text-success-foreground shadow-lg shadow-success/25 hover:bg-success/90"
+              className="mt-4 h-12 w-full gap-2 rounded-xl bg-success text-base font-semibold text-success-foreground  hover:bg-success/90"
               onClick={() => window.open(waLink(business.phone, `Hello, I submitted a rental request for ${submittedData.vehicle} from ${submittedData.start} to ${submittedData.end}.`), "_blank", "noopener,noreferrer")}
             >
               <MessageCircle className="size-5" />
@@ -244,8 +213,8 @@ export function BookingContent({ slug }: { slug: string }) {
   if (available.length === 0) {
     return (
       <section className="flex min-h-[50vh] items-center justify-center py-12">
-        <div className="w-full max-w-md animate-fade-up rounded-2xl bg-card p-8 text-center ring-1 ring-foreground/10">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
+        <div className="w-full max-w-md animate-fade-up rounded-xl bg-card p-5 sm:p-6 text-center ring-1 ring-foreground/10">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
             <Car className="size-8 text-primary" />
           </div>
           <h2 className="mt-4 font-heading text-xl font-bold tracking-tight">
@@ -268,90 +237,13 @@ export function BookingContent({ slug }: { slug: string }) {
   }
 
   return (
-    <section className="py-10 sm:py-14">
-      <div className="mb-6 flex items-end justify-between gap-4">
-        <div>
-          <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
-            Available fleet
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Tap a vehicle to start your booking.
-          </p>
-        </div>
-        <Badge variant="secondary" className="mb-1 hidden sm:inline-flex">
-          {available.length} vehicle{available.length === 1 ? "" : "s"}
-        </Badge>
+    <section className="py-6 sm:py-8">
+      <div className="mb-6">
+        <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">Find your next ride</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Compare the fleet and choose a vehicle for your trip.</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-        {available.map((v, index) => {
-          const isSelected = selected === v.id
-
-          return (
-            <button
-              key={v.id}
-              type="button"
-              aria-pressed={isSelected}
-              onClick={() => setSelected(v.id)}
-              className={cn(
-                "group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-card text-left ring-1 ring-border/80 transition-all duration-200 animate-fade-up",
-                `stagger-${(index % 6) + 1}`,
-                isSelected
-                  ? "ring-2 ring-primary shadow-lg shadow-primary/10"
-                  : "hover:-translate-y-1 hover:ring-2 hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-ring"
-              )}
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              {isSelected && (
-                <span className="absolute top-3 right-3 z-10 flex size-7 animate-scale-in items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
-                  <Check className="size-4" strokeWidth={3} />
-                </span>
-              )}
-
-              <VehiclePlaceholder index={index} />
-
-              <div className="flex flex-1 flex-col gap-3 p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h3 className="truncate font-heading text-lg font-bold leading-tight">
-                      {v.make} {v.model}
-                    </h3>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{v.year}</p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="font-heading text-xl font-bold tracking-tight text-primary tabular-nums">
-                      {v.dailyRateCurrency} {v.dailyRateAmount.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground">/ day</p>
-                  </div>
-                </div>
-
-                <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-3">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1.5">
-                      <Users className="size-3.5" />
-                      {v.seatingCapacity}
-                    </span>
-                    <span aria-hidden>·</span>
-                    <span className="capitalize">{v.color}</span>
-                  </div>
-                  <span
-                    className={cn(
-                      "flex items-center gap-1 text-xs font-semibold transition-colors",
-                      isSelected
-                        ? "text-primary"
-                        : "text-muted-foreground group-hover:text-primary"
-                    )}
-                  >
-                    {isSelected ? "Selected" : "Select"}
-                    <ArrowRight className="size-3.5" />
-                  </span>
-                </div>
-              </div>
-            </button>
-          )
-        })}
-      </div>
+      <VehicleBrowser vehicles={available} onSelect={setSelected} />
 
       <Sheet
         open={!!selectedVehicle}
@@ -361,13 +253,13 @@ export function BookingContent({ slug }: { slug: string }) {
           side={isMobile ? "bottom" : "right"}
           className={cn(
             isMobile
-              ? "rounded-t-3xl p-0 data-[side=bottom]:max-h-[92dvh] data-[side=bottom]:overflow-y-auto"
-              : "rounded-l-3xl p-0 sm:max-w-lg!"
+              ? "rounded-t-xl p-0 data-[side=bottom]:max-h-[92dvh] data-[side=bottom]:overflow-y-auto"
+              : "rounded-l-xl p-0 sm:max-w-lg!"
           )}
         >
           <SheetHeader className="gap-4 p-5">
             <div className="flex items-center gap-4 pr-10">
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
                 <Car className="size-6 text-primary" />
               </div>
               <div className="min-w-0">
@@ -438,7 +330,7 @@ export function BookingContent({ slug }: { slug: string }) {
                   type="tel"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="book-start"
@@ -477,7 +369,7 @@ export function BookingContent({ slug }: { slug: string }) {
 
               <Button
                 type="submit"
-                className="h-12 w-full gap-2 rounded-xl text-base font-semibold shadow-lg shadow-primary/25"
+                className="h-12 w-full gap-2 rounded-xl text-base font-semibold "
                 disabled={createInquiry.isPending || !turnstileToken}
               >
                 {createInquiry.isPending ? (

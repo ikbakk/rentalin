@@ -43,7 +43,7 @@ export default function ReturnRentalPage() {
           title="Rental not found"
           description="This rental may have been completed or does not exist."
           action={{
-            label: "Back to Operations",
+            label: "Back to Today",
             onClick: () => router.push("/operations"),
           }}
         />
@@ -84,7 +84,7 @@ export default function ReturnRentalPage() {
         className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ChevronLeft className="size-4" />
-        Back to Operations
+        Back to Today
       </Link>
 
       <h1 className="text-xl font-bold mb-6">Return Vehicle</h1>
