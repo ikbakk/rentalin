@@ -7,8 +7,8 @@ Convex is Rentalin's only product backend. It owns the database schema, Convex A
 From the repository root:
 
 ```bash
-npm install
-npx convex dev
+bun install
+bunx convex dev
 ```
 
 Copy the printed deployment URL to `frontend/.env.local`:
@@ -20,7 +20,7 @@ NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 Generate functions and validate them once without keeping the dev process running:
 
 ```bash
-npx convex dev --once
+bunx convex dev --once
 ```
 
 ## Tenancy and authorization
@@ -37,5 +37,5 @@ Anonymous booking pages resolve a business through its slug. Reservation and ren
 ## Deploy
 
 ```bash
-npm run convex:deploy
+bun run convex:deploy
 ```

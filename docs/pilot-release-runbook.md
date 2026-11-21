@@ -25,13 +25,13 @@ Run all three preflights after supplying values for the selected environment.
    deployments. Copy the environment templates, then seed staging URLs and a
    non-production demo number. Record their origins in the release record; do
    not reuse production credentials or customer data.
-3. Set the environment variables above, run `npm run preflight:release` from
+3. Set the environment variables above, run `bun run preflight:release` from
    `frontend/`, and verify the frontend's public URLs resolve to staging.
    Configure the password provider and verify sign-up and sign-in. Password reset is implemented, but its Resend sender/key and actual
    delivery must be configured and verified.
 4. Run the repository verification commands from the root README. Generate
    Convex code against the authorized staging deployment with
-   `npx convex dev --once`. Review schema output and deployment diff before
+   `bunx convex dev --once`. Review schema output and deployment diff before
    any migration or function deployment.
 5. Verify the selected host's TLS, domain routing, build command, runtime
    compatibility, environment separation, and rollback mechanism. The repository

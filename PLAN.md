@@ -53,5 +53,5 @@ Completed on the current branch. Convex generation, frontend typecheck, producti
 - Confirm cross-business records are inaccessible from queries and mutations for every role.
 - Validate public slug booking and opaque-token tracking without authentication or document-ID leakage.
 - Confirm uploads return usable Convex storage IDs/URLs.
-- `npx convex dev --once`
-- `cd frontend && npx tsc --noEmit && npm run lint && npm run build`
+- `bunx convex dev --once`
+- `cd frontend && bunx tsc --noEmit && bun run lint && bun run build`

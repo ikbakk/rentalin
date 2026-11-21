@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState, type FormEvent } from "react"
+import Link from "next/link"
 import { Activity, ArrowDownRight, ArrowUpRight, BadgeCheck, Bike, BookOpen, CalendarDays, CarFront, Check, ChevronDown, CircleHelp, ClipboardCheck, Clock3, Crown, LayoutDashboard, Plus, RotateCcw, Search, Settings2, ShieldCheck, Sparkles, Users, X } from "lucide-react"
 
 type Vehicle = { id: number; name: string; plate: string; status: "Available" | "Rented" | "Service"; rate: number }
@@ -59,6 +60,7 @@ export function DemoWorkspace() {
   const [bookingSuccess, setBookingSuccess] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     try { const saved = localStorage.getItem("rentalin-demo-v1"); if (saved) setData(JSON.parse(saved) as DemoData) } catch { /* Start with sample data if storage is unavailable. */ }
     try { const savedTeam = localStorage.getItem("rentalin-demo-team"); if (savedTeam) setTeam(JSON.parse(savedTeam) as TeamMember[]) } catch { /* Keep sample team. */ }
     try { const savedBranches = localStorage.getItem("rentalin-demo-branches"); if (savedBranches) setBranches(JSON.parse(savedBranches) as string[]); const savedBranch = localStorage.getItem("rentalin-demo-branch"); if (savedBranch) setBranch(savedBranch) } catch { /* Keep sample branches. */ }
@@ -70,6 +72,12 @@ export function DemoWorkspace() {
   const filteredBookings = useMemo(() => data.bookings.filter((b) => `${b.customer} ${b.vehicle} ${b.status}`.toLowerCase().includes(query.toLowerCase())), [data.bookings, query])
   const available = data.vehicles.filter((v) => v.status === "Available").length
   const active = data.bookings.filter((b) => b.status === "Active").length
+  const overviewCards: [string, number, string, typeof CarFront][] = [
+    ["Fleet vehicles", data.vehicles.length, `${available} available`, CarFront],
+    ["Available today", available, "Ready to rent", Check],
+    ["Open inquiries", data.bookings.filter((b) => b.status === "Inquiry").length, "Need a response", ArrowDownRight],
+    ["Active rentals", active, "Currently on rent", ArrowUpRight],
+  ]
   const confirmInquiry = (id: number) => setData((d) => ({ ...d, bookings: d.bookings.map((b) => b.id === id ? { ...b, status: "Confirmed" } : b), activities: ["Inquiry confirmed · " + (d.bookings.find((b) => b.id === id)?.customer ?? "Customer"), ...d.activities] }))
   const addVehicle = () => {
     if (!newName.trim() || !newPlate.trim()) return
@@ -99,7 +107,7 @@ export function DemoWorkspace() {
 
   return <div className="min-h-screen bg-[#f6f7f5] text-[#202820]">
     <header className="sticky top-0 z-20 flex h-[68px] items-center justify-between border-b border-[#e5e9e3] bg-white px-4 sm:px-7">
-      <div className="flex items-center gap-3"><a href="/" className="text-[22px] font-bold tracking-[-1.5px]">rentalin<span className="text-[#e1a64b]">.</span></a><span className="hidden border-l border-[#e5e9e3] pl-3 text-sm text-[#7c867b] sm:block">Demo workspace</span></div>
+      <div className="flex items-center gap-3"><Link href="/" className="text-[22px] font-bold tracking-[-1.5px]">rentalin<span className="text-[#e1a64b]">.</span></Link><span className="hidden border-l border-[#e5e9e3] pl-3 text-sm text-[#7c867b] sm:block">Demo workspace</span></div>
       <div className="flex items-center gap-2 sm:gap-3"><span className="hidden items-center gap-1.5 rounded-full bg-[#eef5eb] px-3 py-1.5 text-xs font-semibold text-[#477344] sm:flex"><span className="size-1.5 rounded-full bg-[#5c9a56]" />Demo data · saved on this device</span><button onClick={() => setShowFeatures(true)} className="flex min-h-10 items-center gap-2 rounded-md border border-[#dce2d9] px-3 text-sm font-semibold hover:bg-[#f6f7f5]"><Sparkles className="size-4" />Plans & features</button><a href="/login" className="hidden min-h-10 items-center rounded-md bg-[#263e2b] px-4 text-sm font-semibold text-white sm:flex">Staff login</a></div>
     </header>
     <div className="mx-auto flex max-w-[1440px]">
@@ -115,7 +123,7 @@ export function DemoWorkspace() {
       <main className="min-w-0 flex-1 px-4 py-6 pb-20 sm:px-7 sm:py-8 md:pb-8 lg:px-10">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><div className="mb-2 flex items-center gap-2 text-xs text-[#7e887c]"><span>Workspace</span><span>/</span><span className="text-[#354735]">{tab}</span></div><h1 className="text-[27px] font-semibold tracking-[-.7px]">{tab === "Overview" ? "Good morning, team" : tab}</h1><p className="mt-1 text-sm text-[#798278]">Here’s what’s happening at your rental today.</p></div><button onClick={() => setShowAdd(true)} className="flex min-h-10 items-center gap-2 rounded-md bg-[#29452e] px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#203a25]"><Plus className="size-4" />Add vehicle</button></div>
         {tab === "Overview" && <><div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {[["Fleet vehicles", data.vehicles.length, `${available} available`, CarFront], ["Available today", available, "Ready to rent", Check], ["Open inquiries", data.bookings.filter(b => b.status === "Inquiry").length, "Need a response", ArrowDownRight], ["Active rentals", active, "Currently on rent", ArrowUpRight]].map(([label, value, sub, Icon]: any) => <section key={label} className="rounded-lg border border-[#e5e9e3] bg-white p-4 sm:p-5"><div className="flex items-center justify-between"><span className="text-[13px] font-medium text-[#758073]">{label}</span><Icon className="size-4 text-[#718b6c]" /></div><div className="mt-3 flex items-end justify-between"><span className="text-[27px] font-semibold leading-none tabular-nums">{value}</span><span className="text-[11px] text-[#8a9488]">{sub}</span></div></section>)}
+          {overviewCards.map(([label, value, sub, Icon]) => <section key={label} className="rounded-lg border border-[#e5e9e3] bg-white p-4 sm:p-5"><div className="flex items-center justify-between"><span className="text-[13px] font-medium text-[#758073]">{label}</span><Icon className="size-4 text-[#718b6c]" /></div><div className="mt-3 flex items-end justify-between"><span className="text-[27px] font-semibold leading-none tabular-nums">{value}</span><span className="text-[11px] text-[#8a9488]">{sub}</span></div></section>)}
         </div>
         <div className="grid gap-5 xl:grid-cols-[1.55fr_1fr]">
           <section className="overflow-hidden rounded-lg border border-[#e5e9e3] bg-white"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0eb] px-4 py-4 sm:px-5"><div><h2 className="font-semibold">Latest reservations</h2><p className="mt-1 text-xs text-[#879084]">Manage requests and confirmed rentals</p></div><label className="flex h-9 items-center gap-2 rounded-md border border-[#e5e9e3] px-2.5"><Search className="size-4 text-[#9aa398]" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search" className="w-28 bg-transparent text-sm outline-none placeholder:text-[#a0a89e] sm:w-36" /></label></div>

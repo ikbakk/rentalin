@@ -14,24 +14,24 @@ cp frontend/.env.example frontend/.env.local
 
 Set `NEXT_PUBLIC_CONVEX_URL` to the deployment's public `.convex.cloud` URL, `CONVEX_SITE_URL` to its matching `.convex.site` URL, and `NEXT_PUBLIC_FRONTEND_URL` to the app origin used in generated booking links. `NEXT_PUBLIC_*` values are visible to browsers and must never contain secrets.
 
-Convex Auth reads `CONVEX_SITE_URL` from the Convex deployment environment too. Configure it there with `npx convex env set CONVEX_SITE_URL` and enter the matching `.convex.site` URL when prompted. This deployment setting is separate from `frontend/.env.local`.
+Convex Auth reads `CONVEX_SITE_URL` from the Convex deployment environment too. Configure it there with `bunx convex env set CONVEX_SITE_URL` and enter the matching `.convex.site` URL when prompted. This deployment setting is separate from `frontend/.env.local`.
 
-The frontend build runs `npm run preflight:release` automatically and fails clearly when required URLs are missing, local-only, or malformed. Run `npm run test:release-env` to check those rules without credentials.
+The frontend build runs `bun run preflight:release` automatically and fails clearly when required URLs are missing, local-only, or malformed. Run `bun run test:release-env` to check those rules without credentials.
 
 ## Development
 
 Start Convex from the repository root first:
 
 ```bash
-npm run convex:dev
+bun run convex:dev
 ```
 
 Then run the frontend:
 
 ```bash
 cd frontend
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -47,10 +47,10 @@ Public pages use business slugs and opaque reservation/rental tokens only; they 
 ## Checks
 
 ```bash
-npm run typecheck
-npm run lint
-npm run test:release-env
-npm run build
+bun run typecheck
+bun run lint
+bun run test:release-env
+bun run build
 ```
 
-`npm run lint` may report existing warnings, but it must complete without errors before deployment.
+`bun run lint` may report existing warnings, but it must complete without errors before deployment.
