@@ -4,7 +4,7 @@
  *
  * THIS CODE IS AUTOMATICALLY GENERATED.
  *
- * To regenerate, run `bunx convex dev`.
+ * To regenerate, run `npx convex dev`.
  * @module
  */
 
@@ -16,6 +16,7 @@ import type * as businesses from "../businesses.js";
 import type * as crons from "../crons.js";
 import type * as customers from "../customers.js";
 import type * as dashboard from "../dashboard.js";
+import type * as demoSeed from "../demoSeed.js";
 import type * as fileRecords from "../fileRecords.js";
 import type * as files from "../files.js";
 import type * as finance from "../finance.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   customers: typeof customers;
   dashboard: typeof dashboard;
+  demoSeed: typeof demoSeed;
   fileRecords: typeof fileRecords;
   files: typeof files;
   finance: typeof finance;
