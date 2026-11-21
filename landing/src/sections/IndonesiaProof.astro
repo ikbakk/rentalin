@@ -1,9 +1,9 @@
 ---
 import { WifiOff, Hand, Sun } from 'lucide-react';
 const proofs = [
-  { number: '01', title: 'Works offline', detail: 'Critical work remains available when the signal drops.', Icon: WifiOff },
-  { number: '02', title: 'One-handed use', detail: 'Designed for staff on their feet, with short paths through common actions.', Icon: Hand },
-  { number: '03', title: 'Sunlight-readable', detail: 'High-contrast screens stay legible in bright outdoor light.', Icon: Sun },
+  { title: 'Works offline', detail: 'Critical work remains available when the signal drops.', Icon: WifiOff },
+  { title: 'One-handed use', detail: 'Designed for staff on their feet, with short paths through common actions.', Icon: Hand },
+  { title: 'Sunlight-readable', detail: 'High-contrast screens stay legible in bright outdoor light.', Icon: Sun },
 ];
 ---
 
@@ -16,7 +16,7 @@ const proofs = [
     <div class="mt-14 grid border-t border-primary-foreground/35 md:grid-cols-3">
       {proofs.map((proof) => (
         <article class="border-b border-primary-foreground/35 py-7 md:border-b-0 md:border-r md:px-7 md:first:pl-0 md:last:border-r-0">
-          <div class="flex items-center justify-between gap-3"><span class="sheet-number text-sm text-[#edbd58]">{proof.number} / 03</span><proof.Icon class="size-6 text-[#edbd58]" strokeWidth={1.6} aria-hidden="true" /></div>
+          <div class="flex items-center justify-end gap-3"><proof.Icon class="size-6 text-[#edbd58]" strokeWidth={1.6} aria-hidden="true" /></div>
           <h3 class="mt-8 text-2xl font-semibold">{proof.title}</h3>
           <p class="mt-3 max-w-xs text-sm leading-relaxed text-primary-foreground/75">{proof.detail}</p>
         </article>
