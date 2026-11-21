@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "dev": "node scripts/dev.mjs",
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy",
     "typecheck": "tsc --project convex/tsconfig.json",

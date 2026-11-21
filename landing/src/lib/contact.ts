@@ -13,5 +13,7 @@ export const DEMO_MESSAGE = 'Halo, saya ingin melihat demo Rentalin untuk bisnis
 
 export const DEMO_WA_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(DEMO_MESSAGE)}`;
 
-export const APP_LOGIN_URL = `${validatePublicAppOrigin(import.meta.env.PUBLIC_APP_URL)}/login`;
-export const APP_DEMO_URL = `${validatePublicAppOrigin(import.meta.env.PUBLIC_APP_URL)}/demo`;
+const APP_ORIGIN = validatePublicAppOrigin(import.meta.env.PUBLIC_APP_URL, { allowLocalHttp: import.meta.env.DEV });
+
+export const APP_LOGIN_URL = `${APP_ORIGIN}/login`;
+export const APP_DEMO_URL = `${APP_ORIGIN}/demo`;

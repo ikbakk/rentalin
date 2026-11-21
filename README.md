@@ -21,20 +21,36 @@ There is no separate REST API or .NET backend. Tenant-scoped operations use an e
 
 ## Local development
 
-Install dependencies, then start Convex and the frontend in separate terminals:
+Install the dependencies once (the package installs are sequential because the
+root install removes nested `node_modules` directories):
 
 ```bash
 npm install
-npm run convex:dev
+cd frontend && npm install
+cd ../landing && npm install
+cd ..
 ```
 
+Configure `frontend/.env.local` with the URL of your Convex development
+deployment. On first startup, Convex may ask you to sign in or choose a
+development deployment; it stores that selection in the ignored root
+`.env.local` file. Make sure `NEXT_PUBLIC_CONVEX_URL` and `CONVEX_SITE_URL` in
+`frontend/.env.local` point to that same deployment.
+
+Start the backend, app, and marketing site together from the repository root:
+
 ```bash
-cd frontend
-npm install
 npm run dev
 ```
 
-Copy each runtime's example file and fill in the public URLs or contact number before starting or building it:
+This starts Convex, Next.js at [http://localhost:3000](http://localhost:3000),
+and Astro at [http://localhost:4321](http://localhost:4321). Press Ctrl+C to
+stop all three. The landing dev server points its demo and login links to the
+local app and uses a sample WhatsApp number. These development values do not
+change the landing site's production environment.
+
+For release or standalone package builds, copy each runtime's example file and
+fill in the public URLs or contact number:
 
 ```env
 cp frontend/.env.example frontend/.env.local
