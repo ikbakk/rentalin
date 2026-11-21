@@ -19,14 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run test:ops
+          bun-version: 1.4.4
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run test
+      - run: bun run test:ops
 
   frontend:
     name: Frontend checks
@@ -36,19 +35,17 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          bun-version: 1.4.4
       - name: Install shared root dependencies
-        run: npm ci --no-audit --no-fund
+        run: bun install --frozen-lockfile
         working-directory: .
-      - run: npm ci --no-audit --no-fund
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm run test:release-env
-      - run: npm run build
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run test:release-env
+      - run: bun run build
         env:
           NEXT_PUBLIC_CONVEX_URL: https://ci-placeholder.convex.cloud
           CONVEX_SITE_URL: https://ci-placeholder.convex.site
@@ -65,14 +62,12 @@ jobs:
       ASTRO_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: landing/package-lock.json
-      - run: npm ci --no-audit --no-fund
-      - run: npm run test:release-env
-      - run: npm run build
+          bun-version: 1.4.4
+      - run: bun install --frozen-lockfile
+      - run: bun run test:release-env
+      - run: bun run build
         env:
           PUBLIC_APP_URL: "https://app.example.test"
           PUBLIC_WHATSAPP_NUMBER: "6280000000000"
