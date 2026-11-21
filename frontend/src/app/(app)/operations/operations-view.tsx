@@ -199,7 +199,7 @@ export function OperationsView() {
   if (loading) {
     return (
       <div className="p-4 space-y-4">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
           {[1, 2, 3, 4].map(i => <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />)}
         </div>
         <div className="space-y-3">
@@ -212,42 +212,33 @@ export function OperationsView() {
   return (
     <div className="flex flex-col pb-8">
 
-      <div className="px-4 lg:px-6">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <Card key={s.label} className={cn("animate-fade-in overflow-hidden", `stagger-${i + 1}`)}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className={cn("flex size-10 items-center justify-center rounded-lg", s.icon === Car ? "bg-accent/10" : s.icon === TrendingUp ? "bg-primary/10" : s.icon === MessageSquare ? "bg-warning/10" : "bg-primary/10")}>
-                    <s.icon className={cn("size-5", s.icon === Car ? "text-accent" : s.icon === TrendingUp ? "text-primary" : s.icon === MessageSquare ? "text-warning" : "text-primary")} />
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <p className="font-mono text-2xl font-bold tabular-nums">{s.value}</p>
-                  <p className="text-xs font-medium text-muted-foreground">{s.label}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{s.trend}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <dl className="mx-4 grid grid-cols-2 border-b border-border sm:grid-cols-4 lg:mx-6">
+        {stats.map(s => <div key={s.label} className="min-w-0 px-2 py-3 sm:px-4 sm:py-4">
+          <dt className="text-xs text-muted-foreground">{s.label}</dt>
+          <dd className="mt-1 break-words font-mono text-lg font-semibold tabular-nums">{s.value}</dd>
+          <p className="mt-0.5 text-xs text-muted-foreground">{s.trend}</p>
+        </div>)}
+      </dl>
+      <div className="mx-4 mt-5 flex items-center justify-between gap-3 lg:mx-6">
+        <h2 className="text-base font-semibold">Work queue</h2>
+        <Button variant="outline" size="sm" onClick={() => router.push("/reservations")}>Reservations <ArrowRight className="size-4" /></Button>
       </div>
 
-      <div className="mt-6 px-4 lg:px-6">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+      <div className="mt-3 px-4 lg:px-6">
+        <div className="grid grid-cols-3 gap-2 pb-1 sm:flex sm:flex-wrap">
           {timeFilters.map(f => (
             <button
               key={f.key}
               onClick={() => setTimeFilter(f.key)}
               className={cn(
-                "shrink-0 flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all",
+                "flex min-w-0 items-center justify-center gap-1 rounded-full px-2 py-2 text-[11px] font-medium transition-all sm:gap-1.5 sm:px-3 sm:text-sm",
                 timeFilter === f.key
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
               )}
             >
-              <f.icon className="size-3.5" />
-              {f.label}
+              <f.icon className="hidden size-3.5 shrink-0 sm:block" />
+              <span className="whitespace-nowrap">{f.label}</span>
               {counts[f.key] > 0 && (
                 <span className={cn(
                   "ml-1 px-1.5 py-0.5 rounded-full text-xs",
@@ -302,12 +293,12 @@ export function OperationsView() {
                       <Card
                         key={item.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md animate-slide-up border-destructive/30 bg-destructive/5",
+                          "cursor-pointer transition-all hover:bg-muted/40 rounded-none border-x-0 border-t-0 shadow-none border-destructive/30 bg-destructive/5",
                           `stagger-${(i % 8) + 1}`
                         )}
                         onClick={() => router.push(getActionPath(item))}
                       >
-                        <CardContent className="flex items-center gap-4 p-4">
+                        <CardContent className="flex flex-wrap items-center gap-3 p-3 sm:flex-nowrap sm:gap-4 sm:p-4">
                           <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", config.bg)}>
                             <config.icon className={cn("size-5", config.text)} />
                           </div>
@@ -320,8 +311,8 @@ export function OperationsView() {
                             </div>
                             <p className="text-sm text-muted-foreground truncate">{item.subtitle}</p>
                           </div>
-                          <div className="flex shrink-0 items-center gap-2">
-                            <Button size="sm" variant="ghost" className="h-8 text-xs font-medium">
+                          <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+                            <Button size="sm" variant="ghost" className="h-8 max-w-36 whitespace-normal px-2 text-right text-[11px] leading-tight sm:px-3 sm:text-xs">
                               {item.actionLabel}
                             </Button>
                             <ArrowRight className="size-4 text-muted-foreground" />
@@ -341,12 +332,12 @@ export function OperationsView() {
                       <Card
                         key={item.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md animate-slide-up",
+                          "cursor-pointer transition-all hover:bg-muted/40 rounded-none border-x-0 border-t-0 shadow-none",
                           `stagger-${(i % 8) + 1}`
                         )}
                         onClick={() => router.push(getActionPath(item))}
                       >
-                        <CardContent className="flex items-center gap-4 p-4">
+                        <CardContent className="flex flex-wrap items-center gap-3 p-3 sm:flex-nowrap sm:gap-4 sm:p-4">
                           <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", config.bg)}>
                             <config.icon className={cn("size-5", config.text)} />
                           </div>
@@ -359,8 +350,8 @@ export function OperationsView() {
                             </div>
                             <p className="text-sm text-muted-foreground truncate">{item.subtitle}</p>
                           </div>
-                          <div className="flex shrink-0 items-center gap-2">
-                            <Button size="sm" variant="ghost" className="h-8 text-xs font-medium">
+                          <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+                            <Button size="sm" variant="ghost" className="h-8 max-w-36 whitespace-normal px-2 text-right text-[11px] leading-tight sm:px-3 sm:text-xs">
                               {item.actionLabel}
                             </Button>
                             <ArrowRight className="size-4 text-muted-foreground" />
@@ -380,12 +371,12 @@ export function OperationsView() {
                       <Card
                         key={item.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md animate-slide-up",
+                          "cursor-pointer transition-all hover:bg-muted/40 rounded-none border-x-0 border-t-0 shadow-none",
                           `stagger-${(i % 8) + 1}`
                         )}
                         onClick={() => router.push(getActionPath(item))}
                       >
-                        <CardContent className="flex items-center gap-4 p-4">
+                        <CardContent className="flex flex-wrap items-center gap-3 p-3 sm:flex-nowrap sm:gap-4 sm:p-4">
                           <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", config.bg)}>
                             <config.icon className={cn("size-5", config.text)} />
                           </div>
@@ -398,8 +389,8 @@ export function OperationsView() {
                             </div>
                             <p className="text-sm text-muted-foreground truncate">{item.subtitle}</p>
                           </div>
-                          <div className="flex shrink-0 items-center gap-2">
-                            <Button size="sm" variant="ghost" className="h-8 text-xs font-medium">
+                          <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+                            <Button size="sm" variant="ghost" className="h-8 max-w-36 whitespace-normal px-2 text-right text-[11px] leading-tight sm:px-3 sm:text-xs">
                               {item.actionLabel}
                             </Button>
                             <ArrowRight className="size-4 text-muted-foreground" />
@@ -416,9 +407,9 @@ export function OperationsView() {
 
         {filtered.length === 0 && items.length === 0 && (
           <EmptyState
-            title="All clear for today"
+            title="Your work queue is clear"
             description="No pending actions. New inquiries and reservations will appear here."
-            action={{ label: "View Fleet", onClick: () => router.push("/fleet") }}
+            action={{ label: "View reservations", onClick: () => router.push("/reservations") }}
           />
         )}
 

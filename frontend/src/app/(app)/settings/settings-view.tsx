@@ -58,8 +58,8 @@ function BusinessForm({
 
   return (
     <CardContent className="space-y-4">
-      <div className="space-y-3">
-        <div className="grid gap-2">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-2 sm:col-span-2">
           <Label htmlFor="business-name" className="text-xs text-muted-foreground">Business Name</Label>
           <Input
             id="business-name"
@@ -136,7 +136,7 @@ function BusinessForm({
         </p>
       </div>
 
-      <Button className="w-full" onClick={() => onSave({ name, address, phoneNumber, email, timeZone })} disabled={isPending}>
+      <Button className="w-full sm:w-auto" onClick={() => onSave({ name, address, phoneNumber, email, timeZone })} disabled={isPending}>
         {isPending && <Loader2 className="size-4 animate-spin" />}
         Save Changes
       </Button>
@@ -167,8 +167,8 @@ export function SettingsView() {
   }
 
   return (
-    <div className="flex flex-col gap-6 pb-20 lg:pb-6">
-      <div className="flex flex-col gap-4 px-4 lg:px-6 lg:max-w-2xl">
+    <div className="pb-20 lg:pb-6">
+      <div className="grid gap-4 p-4 lg:grid-cols-2 lg:items-start lg:gap-6 lg:px-6">
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ export function SettingsView() {
                 </span>
               </div>
               <div>
-                <p className="font-semibold">{currentUser?.name || currentUser?.email || "Rentalin user"}</p>
+                <p className="break-all font-semibold">{currentUser?.name || currentUser?.email || "Rentalin user"}</p>
                 <Badge variant="secondary" className="mt-1 text-xs">
                   {businessRole ? businessRole.charAt(0).toUpperCase() + businessRole.slice(1) : "No business"}
                 </Badge>
@@ -277,8 +277,8 @@ export function SettingsView() {
                 <LogOut className="size-5 text-destructive" />
               </div>
               <div>
-                <CardTitle className="text-base text-destructive">Danger Zone</CardTitle>
-                <CardDescription className="text-xs">Irreversible actions</CardDescription>
+                <CardTitle className="text-base text-destructive">Session</CardTitle>
+                <CardDescription className="text-xs">Sign out of your account</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -287,8 +287,9 @@ export function SettingsView() {
               variant="destructive"
               className="w-full"
               onClick={() => {
-                void signOut()
-                router.push("/login")
+                void signOut().then(() => router.replace("/login")).catch(() => {
+                  toast.error("Unable to sign out. Please try again.")
+                })
               }}
             >
               <LogOut className="size-4 mr-2" />

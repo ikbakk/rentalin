@@ -74,7 +74,7 @@ export default function HandoverPage() {
           className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="size-4" />
-          Back to Operations
+          Back to Today
         </Link>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

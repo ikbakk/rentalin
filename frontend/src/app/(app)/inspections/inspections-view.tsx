@@ -197,7 +197,7 @@ function InspectionListItem({ inspection }: { inspection: InspectionResponse }) 
   const config = statusConfig[inspection.status]
 
   return (
-    <Card className="transition-all hover:shadow-md cursor-pointer" onClick={() => router.push(`/inspections/${inspection.id}`)}>
+    <Card className="transition-all hover:border-primary/40 cursor-pointer" onClick={() => router.push(`/inspections/${inspection.id}`)}>
       <CardContent className="flex items-center gap-4 p-4">
         <div className={cn("flex size-12 shrink-0 items-center justify-center rounded-xl", config.bg)}>
           <Camera className={cn("size-5", config.text)} />

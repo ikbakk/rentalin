@@ -45,7 +45,7 @@ export default function ReviewInquiryPage() {
         <EmptyState
           title="Inquiry not found"
           description="This inquiry may have been cancelled or does not exist."
-          action={{ label: "Back to Operations", onClick: () => router.push("/operations") }}
+          action={{ label: "Back to Today", onClick: () => router.push("/operations") }}
         />
       </div>
     )
@@ -109,7 +109,7 @@ export default function ReviewInquiryPage() {
           className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="size-4" />
-          Back to Operations
+          Back to Today
         </Link>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

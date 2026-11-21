@@ -94,7 +94,7 @@ export function EventsEntry({ entry }: { entry: TimelineEntryResponse }) {
       <Card
         className={cn(
           "ml-12 mr-0 transition-all hover:shadow-sm lg:ml-20",
-          isInquiry && "cursor-pointer hover:ring-2 hover:ring-primary/40 hover:shadow-md"
+          isInquiry && "cursor-pointer hover:ring-2 hover:ring-primary/40 hover:border-primary/40"
         )}
         onClick={isInquiry ? () => router.push(`/inquiries/${entry.referenceId}/review`) : undefined}
       >

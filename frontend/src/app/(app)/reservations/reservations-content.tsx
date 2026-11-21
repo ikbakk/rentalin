@@ -78,13 +78,13 @@ export function ReservationsContent() {
       </div>
 
       <div className="border-b border-border/50 px-4 lg:px-6">
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1">
           {tabs.map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className={cn(
-                "relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
+                "relative flex items-center gap-1.5 px-2.5 py-3 text-xs sm:gap-2 sm:px-4 sm:text-sm font-medium transition-colors",
                 tab === t.key ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >

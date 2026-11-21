@@ -38,7 +38,7 @@ export function OperationCard({ item, onClick }: { item: OperationItem; onClick?
     <button
       onClick={onClick}
       className={cn(
-        "flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-colors hover:bg-card/80",
+        "flex w-full items-start gap-3 rounded-xl border bg-card p-4 text-left shadow-xs transition-colors hover:border-primary/40 hover:bg-card/80",
         isAction && "border-destructive/30 bg-destructive/5"
       )}
     >
@@ -46,7 +46,7 @@ export function OperationCard({ item, onClick }: { item: OperationItem; onClick?
         <Icon className="size-5" />
       </div>
       <div className="flex flex-1 flex-col gap-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-sm font-semibold truncate">{item.title}</span>
           <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-xs font-semibold", priority.class)}>{priority.label}</span>
         </div>

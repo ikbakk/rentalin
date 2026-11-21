@@ -10,7 +10,7 @@ import { statusColor } from "@/lib/status-config"
 
 export function VehicleCard({ vehicle, onEdit }: { vehicle: VehicleResponse; onEdit?: () => void }) {
   return (
-    <Card className="cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:shadow-md">
+    <Card className="cursor-pointer transition-all hover:ring-2 hover:ring-ring/40 hover:border-primary/40">
       <CardContent className="flex items-center gap-4 p-4">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
           <Car className="size-6 text-primary" />

@@ -109,7 +109,7 @@
   body { @apply bg-background font-sans text-foreground antialiased; }
 
   h1, h2, h3 { font-family: var(--font-heading); }
-  ::selection { background: var(--primary); color: var(--primary-foreground); }
+  ::selection { background: var(--highlight); color: var(--foreground); }
 
   :focus-visible {
     outline: 2px solid var(--ring);
@@ -206,4 +206,25 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Authenticated workspace: compact Dispatch Sheet surfaces shared by every route. */
+.workspace [data-slot="card"] {
+  --card-spacing: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  gap: 0.875rem;
+  min-width: 0;
+}
+.workspace [data-slot="card"]:has(> [data-slot="card-content"]:first-child) {
+  padding-block: 0;
+}
+.workspace [data-slot="card-header"] { border-radius: 0; }
+.workspace [data-slot="card-content"] { min-width: 0; }
+.workspace [data-slot="table-cell"],
+.workspace [data-slot="table-head"] { padding-block: 0.75rem; }
+.workspace h1 { letter-spacing: -0.025em; }
+@media (min-width: 1024px) {
+  .workspace [data-slot="card"] { --card-spacing: 1rem; }
 }
