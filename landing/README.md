@@ -8,8 +8,8 @@ The Astro marketing site serves `/` in production. The Next.js app in `frontend/
 cd landing
 cp .env.example .env
 # Set PUBLIC_APP_URL to the public app origin and PUBLIC_WHATSAPP_NUMBER to the demo contact.
-npm ci
-npm run dev
+bun install --frozen-lockfile
+bun run dev
 ```
 
 The default port is 4321; Astro prints another port if it is occupied. The landing uses Lenis for smooth scrolling and the same self-hosted fonts as the app.
@@ -17,12 +17,12 @@ The default port is 4321; Astro prints another port if it is occupied. The landi
 ## Release
 
 ```bash
-npm run test:release-env
-npm run build
-npm run start
+bun run test:release-env
+bun run build
+bun run start
 ```
 
-`npm run build` validates `PUBLIC_APP_URL` and `PUBLIC_WHATSAPP_NUMBER`, then writes the standalone server to `dist/`. Docker Compose runs the `landing` service on port 4321 behind nginx. nginx routes `/` and `/_astro/` to this service and sends other paths to the Next.js app.
+`bun run build` validates `PUBLIC_APP_URL` and `PUBLIC_WHATSAPP_NUMBER`, then writes the standalone server to `dist/`. Docker Compose runs the `landing` service on port 4321 behind nginx. nginx routes `/` and `/_astro/` to this service and sends other paths to the Next.js app.
 
 On Vercel, the automatically exposed `VERCEL=1` variable makes Astro emit a static site. Local and Docker builds keep the standalone Node server.
 

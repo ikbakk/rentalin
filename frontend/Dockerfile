@@ -1,10 +1,10 @@
 # Build from the repository root: frontend imports the shared Convex API/types.
-FROM node:22-alpine AS build
+FROM oven/bun:1.4.4-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
-COPY frontend/package.json frontend/package-lock.json ./frontend/
-RUN cd frontend && npm ci --no-audit --no-fund
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+COPY frontend/package.json frontend/bun.lock ./frontend/
+RUN cd frontend && bun install --frozen-lockfile
 COPY convex ./convex
 COPY frontend ./frontend
 WORKDIR /app/frontend
@@ -19,12 +19,9 @@ ENV NEXT_PUBLIC_FRONTEND_URL=${NEXT_PUBLIC_FRONTEND_URL}
 ENV NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY}
 ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
-RUN npm prune --omit=dev --no-audit --no-fund
-WORKDIR /app
-RUN npm prune --omit=dev --no-audit --no-fund
+RUN bun run build
 
-FROM node:22-alpine AS final
+FROM oven/bun:1.4.4-alpine AS final
 RUN addgroup -g 1001 -S rentalin && adduser -S rentalin -G rentalin
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -37,4 +34,4 @@ COPY --from=build --chown=rentalin:rentalin /app/frontend/package.json /app/fron
 WORKDIR /app/frontend
 USER rentalin
 EXPOSE 3000
-CMD ["node", "node_modules/next/dist/bin/next", "start", "--hostname", "0.0.0.0"]
+CMD ["bun", "run", "node_modules/next/dist/bin/next", "start", "--hostname", "0.0.0.0"]

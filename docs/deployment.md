@@ -26,7 +26,7 @@ The root example deliberately leaves credentials empty.
 For locally held backend values:
 
 ```sh
-RENTALIN_ENV_FILE=.env.local npm run preflight:backend
+RENTALIN_ENV_FILE=.env.local bun run preflight:backend
 ```
 
 This checks values, not connectivity or delivery. Do not print real env files,
@@ -89,11 +89,8 @@ contact in `PUBLIC_WHATSAPP_NUMBER`. Next.js `/` redirects to `/operations`.
 The existing Astro Node adapter requires a compatible Node host; choose a host-
 specific adapter before deploying SSR Astro to a different runtime.
 
-Install root dependencies first, then frontend, then landing; do not run root
-`npm ci` after installing nested packages. For a frontend host with a project
-root of `frontend`, its install command must install the shared root dependencies
-as well (`cd .. && npm ci && cd frontend && npm ci`). Build with `npm run build`
-and start with `npm start`. The landing project uses its own install/build/start.
+Install root, frontend, and landing dependencies from their respective directories with `bun install --frozen-lockfile`. For a frontend host with project root `frontend`, install the shared root package first from the repository root, then install the frontend package. Build with `bun run build`
+and start with `bun run start`. The landing project uses its own install/build/start.
 
 The Docker frontend context is now the repository root, so shared Convex imports
 exist during typechecking and bundling. `docker compose --env-file .env.local build`

@@ -3,13 +3,13 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const npm = process.platform === "win32" ? "npm.cmd" : "npm";
+const bun = process.platform === "win32" ? "bun.exe" : "bun";
 const services = [
   { name: "Convex", args: ["run", "convex:dev"], cwd: root },
-  { name: "Frontend", args: ["--prefix", "frontend", "run", "dev"], cwd: root },
+  { name: "Frontend", args: ["run", "--cwd", "frontend", "dev"], cwd: root },
   {
     name: "Landing",
-    args: ["--prefix", "landing", "run", "dev"],
+    args: ["run", "--cwd", "landing", "dev"],
     cwd: root,
     env: {
       PUBLIC_APP_URL: "http://localhost:3000",
@@ -37,11 +37,11 @@ console.log("Starting Convex, frontend, and landing site. Press Ctrl+C to stop a
 console.log("Frontend: http://localhost:3000  |  Landing: http://localhost:4321");
 
 for (const service of services) {
-  const child = spawn(npm, service.args, {
+  const child = spawn(bun, service.args, {
     cwd: service.cwd,
     env: { ...process.env, ...service.env },
     stdio: "inherit",
-    shell: process.platform === "win32",
+    shell: false,
   });
   children.push(child);
   child.on("error", (error) => {

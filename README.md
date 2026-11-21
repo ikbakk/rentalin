@@ -21,13 +21,13 @@ There is no separate REST API or .NET backend. Tenant-scoped operations use an e
 
 ## Local development
 
-Install the dependencies once (the package installs are sequential because the
-root install removes nested `node_modules` directories):
+Install dependencies in each package directory; each package has an independent
+Bun lockfile:
 
 ```bash
-npm install
-cd frontend && npm install
-cd ../landing && npm install
+bun install
+cd frontend && bun install
+cd ../landing && bun install
 cd ..
 ```
 
@@ -40,7 +40,7 @@ development deployment; it stores that selection in the ignored root
 Start the backend, app, and marketing site together from the repository root:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 This starts Convex, Next.js at [http://localhost:3000](http://localhost:3000),
@@ -62,7 +62,7 @@ cp landing/.env.example landing/.env
 For Convex Auth, configure the same site URL on the Convex deployment itself as well as in the frontend build environment:
 
 ```bash
-npx convex env set CONVEX_SITE_URL
+bunx convex env set CONVEX_SITE_URL
 ```
 
 Enter the URL shown by your Convex deployment when prompted. Convex deployment variables are separate from local Next.js `.env.local` values.
@@ -82,17 +82,16 @@ Docker Compose passes these public values as build arguments because Next.js and
 ## Verification
 
 ```bash
-npm ci
-npm run typecheck
-npm test
-cd frontend && npm ci && npm run typecheck && npm run lint && npm run test:release-env && npm run build
-cd ../landing && npm ci && npm run test:release-env && ASTRO_TELEMETRY_DISABLED=1 npm run build
+bun install --frozen-lockfile
+bun run typecheck
+bun run test
+cd frontend && bun install --frozen-lockfile && bun run typecheck && bun run lint && bun run test:release-env && bun run build
+cd ../landing && bun install --frozen-lockfile && bun run test:release-env && ASTRO_TELEMETRY_DISABLED=1 bun run build
 ```
 
-Run the package installs sequentially: root `npm ci` removes nested `node_modules`
-directories. Lint currently reports existing warnings but no errors. The frontend
+Install each package separately from its directory; each has its own Bun lockfile. Lint currently reports existing warnings but no errors. The frontend
 and Convex typechecks, Convex tests, and both production builds must pass. Convex
-deployment code generation remains available through `npx convex dev --once`
+deployment code generation remains available through `bunx convex dev --once`
 when a development deployment is configured.
 
 ## Deployment
@@ -100,7 +99,7 @@ when a development deployment is configured.
 Deploy Convex first, then deploy the frontend and landing site independently:
 
 ```bash
-npm run convex:deploy
+bun run convex:deploy
 ```
 
 ## Deployment configuration and operational checks
@@ -112,8 +111,8 @@ Password recovery uses Resend; public inquiries require Turnstile. Optional
 Sentry DSNs enable privacy-filtered Next.js error capture.
 
 ```sh
-npm run test:ops
-RENTALIN_ENV_FILE=.env.local npm run preflight:backend
+bun run test:ops
+RENTALIN_ENV_FILE=.env.local bun run preflight:backend
 ```
 
 The preflight checks values only. Configure backend secrets in the actual

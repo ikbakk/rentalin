@@ -33,7 +33,7 @@ See [deployment setup](deployment.md) for the environment matrix and run command
   unconfigured backend. This does not exercise authentication or live services.
 - Builds use isolated placeholder origins and Turnstile site key, not live
   credentials. No real email, R2 object or public inquiry was sent.
-- `npx convex codegen --typecheck enable` is blocked because no
+- `bunx convex codegen --typecheck enable` is blocked because no
   `CONVEX_DEPLOYMENT` is configured; no project was created or linked. The
   checked-in API declarations include the new modules; regenerate against
   the selected isolated deployment before release.
